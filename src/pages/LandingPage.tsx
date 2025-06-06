@@ -1,11 +1,52 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "framer-motion";
+import { useRef } from "react";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import HeroSection from "@/components/landing/HeroSection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
+import CTASection from "@/components/landing/CTASection";
+import FooterSection from "@/components/layout/Footer";
+
+const GlassCard = ({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay }}
+      className={` bg-white/10 border border-white/20 rounded-2xl shadow-xl ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 const LandingPage = () => {
-  const navigate = useNavigate();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const updateMousePosition = (ev: MouseEvent) => {
+      setMousePosition({ x: ev.clientX, y: ev.clientY });
+    };
+    window.addEventListener("mousemove", updateMousePosition);
+    return () => {
+      window.removeEventListener("mousemove", updateMousePosition);
+    };
+  }, []);
 
   const features = [
     {
@@ -44,103 +85,18 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-white to-emerald-500">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--wisely-purple)]/30 via-[var(--wisely-white)] to-[var(--wisely-mint)]/40 relative overflow-hidden">
+      {/* Animated background elements */}
       <Navbar />
+      <AnimatedBackground mousePosition={mousePosition} />
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16 text-center">
-        <div className="max-w-4xl mx-auto animate-fade-in">
-          <h1 className="text-5xl md:text-6xl font-bold text-[var(--wisely-white)] mb-6">
-            Make Every
-            <span className="bg-gradient-to-r from-[var(--wisely-purple)] via-[var(--wisely-mint)] to-[var(--wisely-pink)] bg-clip-text text-transparent">
-              {" "}
-              Moment{" "}
-            </span>
-            Count
-          </h1>
-          <p className="text-xl text-[var(--wisely-gray)] mb-8 max-w-2xl mx-auto">
-            Use your time wisely with personalized suggestions powered by AI.
-            Discover activities that match your goals and make the most of your
-            free time.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              onClick={() => navigate("/auth")}
-              className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white px-8 py-3 text-lg"
-            >
-              Get Started Free
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-[var(--wisely-mint)] text-[var(--wisely-purple)] hover:bg-[var(--wisely-mint)] hover:text-[var(--wisely-dark)] px-8 py-3 text-lg"
-            >
-              Watch Demo
-            </Button>
-          </div>
-        </div>
-      </section>
-
+      <HeroSection mousePosition={mousePosition} />
       {/* Features Grid */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[var(--wisely-dark)] mb-4">
-            Everything you need to manage time wisely
-          </h2>
-          <p className="text-[var(--wisely-gray)] max-w-2xl mx-auto">
-            From smart scheduling to AI-powered suggestions, TimeWisely has all
-            the tools you need to optimize your daily routine.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <Card
-              key={index}
-              className="p-6 hover:shadow-lg transition-shadow duration-300 animate-fade-in border-0 bg-white/80 backdrop-blur-sm hover:bg-wisely-white"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="p-2 bg-gradient-to-r from-[var(--wisely-purple)] to-[var(--wisely-mint)] rounded-lg mr-3">
-                  <feature.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-[var(--wisely-dark)]">
-                  {feature.title}
-                </h3>
-              </div>
-              <p className="text-[var(--wisely-gray)]">{feature.description}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
+      <FeaturesSection features={features} GlassCard={GlassCard} />
       {/* CTA Section */}
-      <section className="container mx-auto px-6 py-16">
-        <Card className="bg-gradient-to-r from-[var(--wisely-purple)] via-purple-600 to-[var(--wisely-mint)] text-white text-center p-12 border-0">
-          <h2 className="text-3xl font-bold mb-4">
-            Ready to transform your time management?
-          </h2>
-          <p className="text-lg mb-8 opacity-90">
-            Join thousands of users who have already optimized their schedules
-            with TimeWisely.
-          </p>
-          <Button
-            size="lg"
-            variant="secondary"
-            onClick={() => navigate("/auth")}
-            className="bg-white text-[var(--wisely-purple)] hover:bg-[var(--wisely-lightGray)] px-8 py-3 text-lg font-semibold"
-          >
-            Start Your Free Trial
-          </Button>
-        </Card>
-      </section>
-
+      <CTASection GlassCard={GlassCard} />
       {/* Footer */}
-      <footer className="container mx-auto px-6 py-8 border-t border-gray-200">
-        <div className="text-center text-[var(--wisely-gray)]">
-          <p>&copy; 2024 TimeWisely. All rights reserved.</p>
-        </div>
-      </footer>
+      <FooterSection />
     </div>
   );
 };
