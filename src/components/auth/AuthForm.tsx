@@ -12,7 +12,6 @@ import { useAuth } from "@/contexts/useAuth";
 import { useToast } from "@/hooks/useToast";
 import AnimatedInput from "./AnimatedInput";
 import { useNavigate } from "react-router-dom";
-import type { User } from "@/interfaces/User";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -29,17 +28,13 @@ const AuthForm = () => {
     setIsSubmitting(true);
     try {
       if (isLogin) {
-        const user = (await login(email, password)) as User;
+        await login(email, password);
         success("Welcome back! You've successfully signed in to TimeWisely.");
-        if (user && user.hasCompletedSurvey) {
-          navigate("/dashboard");
-        } else {
-          navigate("/onboarding");
-        }
+        navigate("/app", { replace: true });
       } else {
         await register(email, name, password);
         success("Account created! Welcome to TimeWisely, let's get started.");
-        navigate("/onboarding");
+        navigate("/app", { replace: true });
       }
     } catch (err) {
       console.error(err);

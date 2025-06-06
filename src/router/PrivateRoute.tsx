@@ -11,6 +11,6 @@ export const PrivateRoute = ({ children }: { children: ReactNode }) => {
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-wisely-blue"></div>
       </div>
     );
-  if (!isAuthenticated) return <Navigate to="/auth" replace />;
+  if (!isAuthenticated) return <Navigate to="/unauthorized" replace />;
   return <>{children}</>;
 };

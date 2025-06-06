@@ -1,13 +1,28 @@
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import AuthBackground from "@/components/auth/AuthBackground";
 import AuthLogo from "@/components/auth/AuthLogo";
 import AuthForm from "@/components/auth/AuthForm";
 import GlassContainer from "../components/auth/GlassContainer";
+import { useAuth } from "../contexts/useAuth";
 
 const Auth = () => {
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user) {
+      if (user.hasCompletedSurvey) {
+        navigate("/app", { replace: true });
+      } else {
+        navigate("/app", { replace: true });
+      }
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) return null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[var(--wisely-purple)]/20 via-[var(--wisely-white)]/90 to-[var(--wisely-pink)]/80 flex items-center justify-center p-6 relative overflow-hidden">
       <AuthBackground />

@@ -33,13 +33,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Helper: kiểm tra token trong localStorage/cookie
+  const hasAuthToken = () => {
+    // Tùy backend, có thể là localStorage hoặc cookie
+    return (
+      !!localStorage.getItem("token") || !!localStorage.getItem("refreshToken")
+    );
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
+      // Nếu không có token, logout luôn
+      if (!hasAuthToken()) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
       try {
         const userData = await getCurrentUser();
         setUser(userData);
-      } catch {
+      } catch (err: unknown) {
         setUser(null);
+        // Nếu lỗi 401 thì logout luôn
+        interface ApiError {
+          response?: {
+            status?: number;
+          };
+        }
+        if (
+          typeof err === "object" &&
+          err &&
+          "response" in err &&
+          (err as ApiError).response?.status === 401
+          
+        ) {
+          await logout();
+        }
       } finally {
         setLoading(false);
       }
@@ -51,6 +80,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       const userData = await loginService(email, password);
+      // Lưu token nếu backend trả về
+      if (userData.token) localStorage.setItem("token", userData.token);
       setUser(userData);
       return userData;
     } finally {
@@ -66,6 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       const userData = await registerService(email, fullName, password);
+      if (userData.token) localStorage.setItem("token", userData.token);
       setUser(userData);
       return userData;
     } finally {
@@ -77,8 +109,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       await logoutService();
-      setUser(null);
     } finally {
+      // Xóa token khỏi localStorage/cookie
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      setUser(null);
       setLoading(false);
     }
   };
