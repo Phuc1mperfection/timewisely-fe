@@ -1,4 +1,4 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import Dashboard from "../pages/Dashboard";
 import Onboarding from "../pages/Onboarding";
 import { PrivateRoute } from "../router/PrivateRoute";

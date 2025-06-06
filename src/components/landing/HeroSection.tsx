@@ -2,10 +2,13 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ReactTyped } from "react-typed";
-import React from "react";
 import AnalogClock from "./AnalogClock";
 
-const HeroSection = () => {
+type HeroSectionProps = {
+  mousePosition: { x: number; y: number };
+};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const HeroSection = ({ mousePosition }: HeroSectionProps) => {
   const navigate = useNavigate();
   return (
     <section className="container mx-auto px-6 py-16 text-center relative z-10">

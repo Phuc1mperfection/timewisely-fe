@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import type { User } from "../interfaces/User";
 import {
   login as loginService,
@@ -11,12 +11,12 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User | undefined>;
   register: (
-    username: string,
     email: string,
+    fullName: string,
     password: string
-  ) => Promise<void>;
+  ) => Promise<User | undefined>;
   logout: () => Promise<void>;
 }
 
@@ -24,8 +24,8 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
   loading: true,
-  login: async () => {},
-  register: async () => {},
+  login: async () => undefined,
+  register: async () => undefined,
   logout: async () => {},
 });
 
@@ -47,25 +47,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const userData = await loginService(username, password);
+      const userData = await loginService(email, password);
       setUser(userData);
+      return userData;
     } finally {
       setLoading(false);
     }
   };
 
   const register = async (
-    username: string,
     email: string,
+    fullName: string,
     password: string
   ) => {
     setLoading(true);
     try {
-      const userData = await registerService(username, email, password);
+      const userData = await registerService(email, fullName, password);
       setUser(userData);
+      return userData;
     } finally {
       setLoading(false);
     }
@@ -97,5 +99,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
-export { AuthContext }; // Export riêng context để tránh lỗi Fast Refresh
+export { AuthContext };

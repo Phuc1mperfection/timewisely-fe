@@ -1,13 +1,13 @@
 import apiClient from './apiClient';
 import type { User } from '../interfaces/User';
 
-export const login = async (username: string, password: string) => {
-  const res = await apiClient.post('/auth/login', { username, password });
+export const login = async (email: string, password: string) => {
+  const res = await apiClient.post('/auth/login', { email, password });
   return res.data;
 };
 
-export const register = async (username: string, email: string, password: string) => {
-  const res = await apiClient.post('/auth/register', { username, email, password });
+export const register = async (email: string, fullName: string, password: string) => {
+  const res = await apiClient.post('/auth/register', { email, fullName, password });
   return res.data;
 };
 
