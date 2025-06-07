@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import type { User } from "@/interfaces/User";
 
 export function useAuth() {
@@ -10,5 +10,6 @@ export function useAuth() {
     login: (email: string, password: string) => Promise<User | undefined>;
     register: (email: string, fullName: string, password: string) => Promise<User | undefined>;
     logout: () => Promise<void>;
+    setUser?: (user: User | null) => void;
   };
 }

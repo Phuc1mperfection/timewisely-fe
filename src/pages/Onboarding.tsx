@@ -1,190 +1,264 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/useToast";
+import {
+  fetchSurveyQuestions,
+  completeOnboarding,
+} from "@/services/onboardingservices";
+import type { SurveyData } from "@/services/onboardingservices";
+import { useAuth } from "@/contexts/useAuth";
 
-interface SurveyData {
-  age: string;
-  gender: string;
-  hobbies: string[];
-  isActive: string;
-  likesReading: string;
-  partyAnimal: string;
-  horoscope: string;
+// Định nghĩa type cho SurveyQuestion
+interface SurveyQuestion {
+  key: string;
+  label: string;
+  type: "radio" | "checkbox" | "text";
+  options?: string[];
+  required?: boolean;
+  placeholder?: string;
 }
 
-const defaultSurvey: SurveyData = {
-  age: "",
-  gender: "",
-  hobbies: [],
-  isActive: "",
-  likesReading: "",
-  partyAnimal: "",
-  horoscope: "",
-};
+const Onboarding = () => {
+  const [step, setStep] = useState(1);
+  const [questions, setQuestions] = useState<SurveyQuestion[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [formData, setFormData] = useState<SurveyData & { [key: string]: any }>(
+    {
+      age: "",
+      gender: "",
+      hobbies: [],
+      isActive: "",
+      likesReading: "",
+      partyAnimal: "",
+      horoscope: "",
+    }
+  );
+  const [readingNow, setReadingNow] = useState("no");
+  const navigate = useNavigate();
+  const { success } = useToast();
+  const { setUser } = useAuth();
 
-// const hobbiesList = [
-//   "Đọc sách",
-//   "Thể thao",
-//   "Du lịch",
-//   "Âm nhạc",
-//   "Nấu ăn",
-//   "Chơi game",
-//   "Xem phim",
-// ];
-// const horoscopeList = [
-//   "Bạch Dương",
-//   "Kim Ngưu",
-//   "Song Tử",
-//   "Cự Giải",
-//   "Sư Tử",
-//   "Xử Nữ",
-//   "Thiên Bình",
-//   "Bọ Cạp",
-//   "Nhân Mã",
-//   "Ma Kết",
-//   "Bảo Bình",
-//   "Song Ngư",
-// ];
+  useEffect(() => {
+    fetchSurveyQuestions().then((data) => {
+      setQuestions([
+        ...data,
+        {
+          key: "readingNow",
+          label: "Bạn có đang đọc sách không?",
+          type: "radio",
+          options: ["Có", "Không"],
+          required: false,
+        },
+        {
+          key: "bookName",
+          label: "Nếu có, tên sách là gì?",
+          type: "text",
+          required: false,
+          placeholder: "Nhập tên sách...",
+        },
+      ]);
+    });
+  }, []);
 
-const Onboarding: React.FC<{ onSubmit?: (data: SurveyData) => void }> = ({
-  onSubmit,
-}) => {
-  const [form, setForm] = useState<SurveyData>(defaultSurvey);
+  const handleChange = (key: string, value: string) => {
+    setFormData((prev: typeof formData) => ({ ...prev, [key]: value }));
+    if (key === "readingNow") setReadingNow(value);
+  };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  const handleCheckboxChange = (
+    key: string,
+    value: string,
+    checked: boolean
   ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setForm((prev) => ({
-        ...prev,
-        hobbies: checked
-          ? [...prev.hobbies, value]
-          : prev.hobbies.filter((h) => h !== value),
-      }));
+    setFormData((prev) => ({
+      ...prev,
+      [key]: checked
+        ? [...(Array.isArray(prev[key]) ? prev[key] : []), value]
+        : (Array.isArray(prev[key]) ? prev[key] : []).filter(
+            (v: string) => v !== value
+          ),
+    }));
+  };
+
+  const handleNext = () => {
+    if (step < Math.ceil(questions.length / 2)) {
+      setStep(step + 1);
     } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
+      handleSubmit();
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onSubmit) onSubmit(form);
-    // TODO: Gọi API lưu survey lên backend
+  const handleSubmit = async () => {
+    await completeOnboarding(formData as SurveyData);
+    // Sau khi hoàn thành onboarding, gọi lại getCurrentUser để lấy trạng thái mới
+    const userData = await import("@/services/authservices").then((m) =>
+      m.getCurrentUser()
+    );
+    setUser?.(userData); // cập nhật context user nếu có
+    if (userData.hasCompletedSurvey !== undefined) {
+      localStorage.setItem(
+        "hasCompletedSurvey",
+        String(userData.hasCompletedSurvey)
+      );
+    }
+    success("Your preferences have been saved successfully!");
+    navigate("/app/dashboard");
+  };
+
+  // Render form động dựa trên questions
+  const renderStep = () => {
+    if (questions.length === 0) return null;
+    // Hiển thị 2 câu hỏi mỗi bước
+    const start = (step - 1) * 2;
+    const end = start + 2;
+    const stepQuestions = questions.slice(start, end);
+    return (
+      <div className="space-y-6">
+        {stepQuestions.map((q) => {
+          if (q.key === "bookName" && readingNow !== "Có") return null;
+          if (q.type === "radio") {
+            return (
+              <div key={q.key}>
+                <Label className="text-base font-medium">{q.label}</Label>
+                <RadioGroup
+                  key={q.key}
+                  name={q.key}
+                  value={
+                    typeof formData[q.key] === "string" ? formData[q.key] : ""
+                  }
+                  onValueChange={(value) => handleChange(q.key, value)}
+                >
+                  {q.options &&
+                    q.options.map((opt: string) => (
+                      <div
+                        key={`${q.key}-${encodeURIComponent(opt)}`}
+                        className="flex items-center space-x-2"
+                      >
+                        <RadioGroupItem
+                          value={opt}
+                          id={`${q.key}-${encodeURIComponent(opt)}`}
+                        />
+                        <Label htmlFor={`${q.key}-${encodeURIComponent(opt)}`}>
+                          {opt}
+                        </Label>
+                      </div>
+                    ))}
+                </RadioGroup>
+              </div>
+            );
+          }
+          if (q.type === "checkbox") {
+            return (
+              <div key={q.key}>
+                <Label className="text-base font-medium">{q.label}</Label>
+                <div className="grid grid-cols-2 gap-4 mt-3">
+                  {q.options &&
+                    q.options.map((opt: string) => (
+                      <div
+                        key={`${q.key}-${encodeURIComponent(opt)}`}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`${q.key}-${encodeURIComponent(opt)}`}
+                          checked={
+                            Array.isArray(formData[q.key]) &&
+                            formData[q.key].includes(opt)
+                          }
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange(q.key, opt, !!checked)
+                          }
+                        />
+                        <Label htmlFor={`${q.key}-${encodeURIComponent(opt)}`}>
+                          {opt}
+                        </Label>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            );
+          }
+          if (q.type === "text") {
+            return (
+              <div key={q.key}>
+                <Label className="text-base font-medium">{q.label}</Label>
+                <input
+                  type="text"
+                  className="border rounded px-2 py-1 ml-2"
+                  placeholder={q.placeholder || ""}
+                  value={formData[q.key] || ""}
+                  onChange={(e) => handleChange(q.key, e.target.value)}
+                />
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Khảo sát cá nhân</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label>Tuổi:</label>
-          <input
-            name="age"
-            value={form.age}
-            onChange={handleChange}
-            className="border rounded px-2 py-1 ml-2"
-            required
-          />
-        </div>
-        <div>
-          <label>Giới tính:</label>
-          <select
-            name="gender"
-            value={form.gender}
-            onChange={handleChange}
-            className="border rounded px-2 py-1 ml-2"
-            required
-          >
-            <option value="">Chọn</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-            <option value="Khác">Khác</option>
-          </select>
-        </div>
-        <div>
-          <label>Sở thích:</label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {/* {hobbiesList.map((hobby) => (
-              <label key={hobby} className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="hobbies"
-                  value={hobby}
-                  checked={form.hobbies.includes(hobby)}
-                  onChange={handleChange}
-                  className="mr-1"
-                />
-                {hobby}
-              </label>
-            ))} */}
-          </div>
-        </div>
-        <div>
-          <label>Bạn có hay vận động không?</label>
-          <select
-            name="isActive"
-            value={form.isActive}
-            onChange={handleChange}
-            className="border rounded px-2 py-1 ml-2"
-            required
-          >
-            <option value="">Chọn</option>
-            <option value="Có">Có</option>
-            <option value="Không">Không</option>
-          </select>
-        </div>
-        <div>
-          <label>Bạn có thích đọc sách không?</label>
-          <select
-            name="likesReading"
-            value={form.likesReading}
-            onChange={handleChange}
-            className="border rounded px-2 py-1 ml-2"
-            required
-          >
-            <option value="">Chọn</option>
-            <option value="Có">Có</option>
-            <option value="Không">Không</option>
-          </select>
-        </div>
-        <div>
-          <label>Bạn có phải party animal?</label>
-          <select
-            name="partyAnimal"
-            value={form.partyAnimal}
-            onChange={handleChange}
-            className="border rounded px-2 py-1 ml-2"
-            required
-          >
-            <option value="">Chọn</option>
-            <option value="Có">Có</option>
-            <option value="Không">Không</option>
-          </select>
-        </div>
-        <div>
-          <label>Cung hoàng đạo:</label>
-          <select
-            name="horoscope"
-            value={form.horoscope}
-            onChange={handleChange}
-            className="border rounded px-2 py-1 ml-2"
-            required
-          >
-            <option value="">Chọn</option>
-            {/* {horoscopeList.map((h) => (
-              <option key={h} value={h}>
-                {h}
-              </option>
-            ))} */}
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Lưu thông tin
-        </button>
-      </form>
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-white to-emerald-500 flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl">
+        <Card className="animate-fade-in bg-white shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-wisely-dark">
+              Let's personalize your TimeWisely experience
+            </CardTitle>
+            <CardDescription className="text-wisely-gray">
+              Help us understand your preferences so we can suggest the perfect
+              activities for you.
+            </CardDescription>
+            <div className="flex justify-center mt-4">
+              <div className="flex space-x-2">
+                {Array.from(
+                  { length: Math.ceil(questions.length / 2) },
+                  (_, i) => i + 1
+                ).map((stepNumber) => (
+                  <div
+                    key={"step-" + stepNumber}
+                    className={`w-3 h-3 rounded-full ${
+                      stepNumber <= step
+                        ? "bg-[var(--wisely-purple)]"
+                        : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {renderStep()}
+            <div className="flex justify-between mt-8">
+              <Button
+                variant="outline"
+                onClick={() => setStep(step - 1)}
+                disabled={step === 1}
+                className="border-gray-300 text-wisely-gray hover:bg-gray-50"
+              >
+                Previous
+              </Button>
+              <Button
+                onClick={handleNext}
+                className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
+              >
+                {step === Math.ceil(questions.length / 2) ? "Finish" : "Next"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

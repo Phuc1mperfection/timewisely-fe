@@ -18,6 +18,7 @@ interface AuthContextType {
     password: string
   ) => Promise<User | undefined>;
   logout: () => Promise<void>;
+  setUser?: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => undefined,
   register: async () => undefined,
   logout: async () => {},
+  setUser: undefined,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -65,7 +67,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           err &&
           "response" in err &&
           (err as ApiError).response?.status === 401
-          
         ) {
           await logout();
         }
@@ -83,6 +84,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Lưu token nếu backend trả về
       if (userData.token) localStorage.setItem("token", userData.token);
       setUser(userData);
+      if (userData.hasCompletedSurvey !== undefined) {
+        localStorage.setItem(
+          "hasCompletedSurvey",
+          String(userData.hasCompletedSurvey)
+        );
+      }
       return userData;
     } finally {
       setLoading(false);
@@ -99,6 +106,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const userData = await registerService(email, fullName, password);
       if (userData.token) localStorage.setItem("token", userData.token);
       setUser(userData);
+      if (userData.hasCompletedSurvey !== undefined) {
+        localStorage.setItem(
+          "hasCompletedSurvey",
+          String(userData.hasCompletedSurvey)
+        );
+      }
       return userData;
     } finally {
       setLoading(false);
@@ -113,6 +126,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Xóa token khỏi localStorage/cookie
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
+      localStorage.removeItem("hasCompletedSurvey");
+      // Cập nhật state user
       setUser(null);
       setLoading(false);
     }
@@ -127,6 +142,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         register,
         logout,
+        setUser,
       }}
     >
       {children}
