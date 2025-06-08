@@ -5,8 +5,8 @@ import { Outlet } from "react-router-dom";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-wisely-lightGray">
+    <SidebarProvider className="bg-[var(--wisely-lightGray)]">
+      <div className="min-h-screen flex w-full ">
         <AppSidebar />
         <main className="flex-1 flex flex-col">
           <header className="bg-white border-b border-gray-200 p-4">

@@ -10,16 +10,15 @@ import {
 
 export function OverviewPage() {
   return (
-      <div className="flex-1 w-full max-w-6xl mx-auto px-4 py-8 md:px-8 md:py-10 space-y-8">
         <div className="flex-1 p-6 space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">Dashboard</h1>
-          <p className="text-[var(--wisely-gray)]">Welcome back! Here's your productivity overview.</p>
+          <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">Overview</h1>
+          <p className="text-[var(--wisely-gray)]">Let's do something cool </p>
         </div>
 
         {/* Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="bg-white ">
+          <Card className="bg-white border border-purple-300 shadow-sm ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">Today's Schedule</CardTitle>
               <Clock className="h-4 w-4 text-[var(--wisely-purple)]" />
@@ -30,7 +29,7 @@ export function OverviewPage() {
             </CardContent>
           </Card>
           
-          <Card className="bg-white ">
+          <Card className="bg-white border border-purple-300 shadow-sm ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">Active Goals</CardTitle>
               <Target className="h-4 w-4 text-[var(--wisely-mint)]" />
@@ -41,7 +40,7 @@ export function OverviewPage() {
             </CardContent>
           </Card>
           
-          <Card className="bg-white ">
+          <Card className="bg-white border border-purple-300 shadow-sm ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">Weekly Progress</CardTitle>
               <TrendingUp className="h-4 w-4 text-[var(--wisely-pink)]" />
@@ -52,7 +51,7 @@ export function OverviewPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white ">
+          <Card className="bg-white border border-purple-300 shadow-sm ">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">AI Suggestions</CardTitle>
               <Sparkles className="h-4 w-4 text-[var(--wisely-purple)]" />
@@ -67,7 +66,7 @@ export function OverviewPage() {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link to="/app/dashboard/calendar">
-            <Card className="bg-white  hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <CalendarIcon className="h-8 w-8 text-[var(--wisely-purple)] mx-auto mb-2" />
                 <CardTitle className="text-[var(--wisely-dark)]">Calendar</CardTitle>
@@ -79,7 +78,7 @@ export function OverviewPage() {
           </Link>
 
           <Link to="/app/dashboard/motivation">
-            <Card className="bg-white  hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <Sparkles className="h-8 w-8 text-[var(--wisely-mint)] mx-auto mb-2" />
                 <CardTitle className="text-[var(--wisely-dark)]">Daily Motivation</CardTitle>
@@ -91,7 +90,7 @@ export function OverviewPage() {
           </Link>
 
           <Link to="/app/dashboard/goals">
-            <Card className="bg-white  hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <Target className="h-8 w-8 text-[var(--wisely-pink)] mx-auto mb-2" />
                 <CardTitle className="text-[var(--wisely-dark)]">Goals</CardTitle>
@@ -103,7 +102,7 @@ export function OverviewPage() {
           </Link>
 
           <Link to="/app/dashboard/ai-suggestions">
-            <Card className="bg-white  hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <Sparkles className="h-8 w-8 text-[var(--wisely-purple)] mx-auto mb-2" />
                 <CardTitle className="text-[var(--wisely-dark)]">AI Suggestions</CardTitle>
@@ -114,7 +113,6 @@ export function OverviewPage() {
             </Card>
           </Link>
         </div>
-      </div>
       </div>
   );
 }

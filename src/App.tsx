@@ -6,13 +6,12 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import LandingPage from "@/pages/LandingPage";
 import Auth from "@/pages/Auth";
 import Onboarding from "@/pages/Onboarding";
-import DebugPage from "@/pages/DebugPage";
 import Unauthorized from "@/pages/Unauthorized";
 import { PrivateRoute } from "@/router/PrivateRoute";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
-import { DashboardContent } from "@/components/dashboard/DashboardContent";
 import CalendarPage from "@/pages/CalendarPage";
 import { OverviewPage } from "@/pages/OverviewPage";
+import { DashboardContent } from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -58,15 +57,7 @@ function App() {
               <Route path="settings" element={<div>Settings Page</div>} />
               {/* ...thêm các page con khác tại đây */}
             </Route>
-            {/* Route debug nếu cần */}
-            <Route
-              path="/app/debug"
-              element={
-                <PrivateRoute>
-                  <DebugPage />
-                </PrivateRoute>
-              }
-            />
+           
             {/* Redirect /app và /app/* về dashboard nếu không khớp route con */}
             <Route
               path="/app"

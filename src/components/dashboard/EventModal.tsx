@@ -85,7 +85,7 @@ export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
-          <DialogTitle className="text-wisely-dark">
+          <DialogTitle className="text-[var(--wisely-dark)]">
             {event ? 'Edit Event' : 'Create New Event'}
           </DialogTitle>
         </DialogHeader>
@@ -93,44 +93,44 @@ export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete 
         <div className="space-y-4">
           {(event || timeSlot) && (
             <div className="bg-purple-50 p-3 rounded-lg">
-              <p className="text-sm text-wisely-gray">
+              <p className="text-sm text-[var(--wisely-gray)]">
                 <strong>Time:</strong> {formatTime((event || timeSlot)!.start)} - {formatTime((event || timeSlot)!.end)}
               </p>
             </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-wisely-dark">Event Title</Label>
+            <Label htmlFor="title" className="text-[var(--wisely-dark)]">Event Title</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter event title"
-              className="border-gray-300 focus:border-wisely-purple focus:ring-wisely-purple"
+              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-wisely-dark">Description (Optional)</Label>
+            <Label htmlFor="description" className="text-[var(--wisely-dark)]">Description (Optional)</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add event description"
               rows={3}
-              className="border-gray-300 focus:border-wisely-purple focus:ring-wisely-purple"
+              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-wisely-dark">Color</Label>
+            <Label className="text-[var(--wisely-dark)]">Color</Label>
             <div className="flex space-x-2">
               {colorOptions.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => setColor(option.value)}
                   className={`w-8 h-8 rounded-full border-2 ${
-                    color === option.value ? 'border-wisely-purple' : 'border-gray-200'
+                    color === option.value ? 'border-[var(--wisely-purple)]' : 'border-gray-200'
                   }`}
                   style={{ backgroundColor: option.value }}
                   title={option.label}
@@ -152,13 +152,13 @@ export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete 
             )}
             
             <div className="flex space-x-2 ml-auto">
-              <Button variant="outline" onClick={handleClose} className="border-gray-300 text-wisely-gray hover:bg-gray-50">
+              <Button variant="outline" onClick={handleClose} className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50">
                 Cancel
               </Button>
               <Button 
                 onClick={handleSave}
                 disabled={!title.trim()}
-                className="bg-wisely-purple hover:bg-purple-600 text-white"
+                className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
               >
                 {event ? 'Update' : 'Create'}
               </Button>
