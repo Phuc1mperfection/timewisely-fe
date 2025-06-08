@@ -57,7 +57,7 @@ const Navbar = () => {
               <DropdownMenuContent align="end" className="w-48 text-[var(--wisely-dark)] bg-white/90  border border-white/20 rounded-lg shadow-lg">
                 <DropdownMenuItem
                   onClick={() => {
-                    navigate("/dashboard");
+                    navigate("app/dashboard");
                   }}
                   className="hover:bg-[var(--wisely-purple)]/10 hover:cursor-pointer text-md"
                 >

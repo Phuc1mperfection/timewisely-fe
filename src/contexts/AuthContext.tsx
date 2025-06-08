@@ -6,6 +6,7 @@ import {
   getCurrentUser,
   logout as logoutService,
 } from "../services/authservices";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   user: User | null;
@@ -34,6 +35,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Helper: kiểm tra token trong localStorage/cookie
   const hasAuthToken = () => {
@@ -130,6 +132,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Cập nhật state user
       setUser(null);
       setLoading(false);
+      navigate("/auth"); // Điều hướng về trang đăng nhập
     }
   };
 

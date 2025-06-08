@@ -186,7 +186,6 @@
   animation: slide-in 0.3s ease-out;
 }
 
-
 @layer base {
   * {
     border-color: var(--border);
@@ -196,5 +195,14 @@
   body {
     color: var(--foreground);
     font-family: var(--font-display), sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
