@@ -1,10 +1,25 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Trash2 } from 'lucide-react';
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Trash2 } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CalendarEvent {
   id: string;
@@ -13,6 +28,7 @@ interface CalendarEvent {
   end: Date;
   description?: string;
   color?: string;
+  allDay?: boolean; // Thêm trường allDay
 }
 
 interface EventModalProps {
@@ -25,82 +41,182 @@ interface EventModalProps {
 }
 
 const colorOptions = [
-  { label: 'Purple', value: '#8b5cf6' },    // Primary
-  { label: 'Mint', value: '#5eead4' },      // Accent
-  { label: 'Pink', value: '#f9a8d4' },      // Accent
-  { label: 'Yellow', value: '#fde68a' },    // Highlight only
-  { label: 'Dark', value: '#1e1e2f' },      // Dark
-  { label: 'Gray', value: '#6b7280' },      // Medium gray
+  { label: "Purple", value: "#8b5cf6" }, // Primary
+  { label: "Mint", value: "#5eead4" }, // Accent
+  { label: "Pink", value: "#f9a8d4" }, // Accent
+  { label: "Yellow", value: "#fde68a" }, // Highlight only
+  { label: "Dark", value: "#1e1e2f" }, // Dark
+  { label: "Gray", value: "#6b7280" }, // Medium gray
 ];
 
-export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete }: EventModalProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [color, setColor] = useState('#8b5cf6');  // Default to purple
+export function EventModal({
+  isOpen,
+  onClose,
+  event,
+  timeSlot,
+  onSave,
+  onDelete,
+}: EventModalProps) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [color, setColor] = useState("#8b5cf6");
+  const [allDay, setAllDay] = useState(false); // Thêm state allDay
+  const [start, setStart] = useState<Date | null>(null);
+  const [end, setEnd] = useState<Date | null>(null);
 
   useEffect(() => {
     if (event) {
       setTitle(event.title);
-      setDescription(event.description || '');
-      setColor(event.color || '#8b5cf6');
+      setDescription(event.description || "");
+      setColor(event.color || "#8b5cf6");
+      setAllDay(event.allDay || false);
+      setStart(event.start);
+      setEnd(event.end);
+    } else if (timeSlot) {
+      setTitle("");
+      setDescription("");
+      setColor("#8b5cf6");
+      setAllDay(false);
+      setStart(timeSlot.start);
+      setEnd(timeSlot.end);
     } else {
-      setTitle('');
-      setDescription('');
-      setColor('#8b5cf6');
+      setTitle("");
+      setDescription("");
+      setColor("#8b5cf6");
+      setAllDay(false);
+      setStart(null);
+      setEnd(null);
     }
-  }, [event, isOpen]);
+  }, [event, timeSlot, isOpen]);
 
   const handleSave = () => {
-    if (!title.trim()) return;
-    
+    if (!title.trim() || !start || !end) return;
     onSave({
       title: title.trim(),
       description: description.trim(),
-      color
+      color,
+      allDay,
+      start,
+      end,
     });
-    
-    setTitle('');
-    setDescription('');
-    setColor('#8b5cf6');
+    setTitle("");
+    setDescription("");
+    setColor("#8b5cf6");
+    setAllDay(false);
+    setStart(null);
+    setEnd(null);
   };
 
   const handleClose = () => {
-    setTitle('');
-    setDescription('');
-    setColor('#8b5cf6');
+    setTitle("");
+    setDescription("");
+    setColor("#8b5cf6");
+    setAllDay(false);
+    setStart(null);
+    setEnd(null);
     onClose();
-  };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
-    });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[700px] bg-white">
         <DialogHeader>
           <DialogTitle className="text-[var(--wisely-dark)]">
-            {event ? 'Edit Event' : 'Create New Event'}
+            {event ? "Edit Event" : "Create New Activity"}
           </DialogTitle>
         </DialogHeader>
-        
         <div className="space-y-4">
-          {(event || timeSlot) && (
-            <div className="bg-purple-50 p-3 rounded-lg">
-              <p className="text-sm text-[var(--wisely-gray)]">
-                <strong>Time:</strong> {formatTime((event || timeSlot)!.start)} - {formatTime((event || timeSlot)!.end)}
-              </p>
+          {/* Thời gian bắt đầu/kết thúc */}
+          <div className="space-y-2">
+            <Label className="text-[var(--wisely-dark)]">Time</Label>
+            <div className="flex space-x-2 items-center">
+              {/* Start Date Picker */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    data-empty={!start}
+                    className={cn(
+                      "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {start ? format(start, "PPP") : <span>Pick start</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={start || undefined}
+                    onSelect={(d) => d && setStart(new Date(d))}
+                  />
+                </PopoverContent>
+              </Popover>
+              {!allDay && (
+                <Input
+                  type="time"
+                  value={start ? format(start, "HH:mm") : ""}
+                  onChange={(e) => {
+                    if (start && e.target.value) {
+                      const [h, m] = e.target.value.split(":");
+                      const d = new Date(start);
+                      d.setHours(Number(h), Number(m), 0, 0);
+                      setStart(new Date(d));
+                    }
+                  }}
+                  className="w-30 min-w-0"
+                />
+              )}
+              <span className="self-center">-</span>
+              {/* End Date Picker */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    data-empty={!end}
+                    className={cn(
+                      "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {end ? format(end, "PPP") : <span>Pick end</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={end || undefined}
+                    onSelect={(d) => d && setEnd(new Date(d))}
+                  />
+                </PopoverContent>
+              </Popover>
+              {!allDay && (
+                <Input
+                  type="time"
+                  value={end ? format(end, "HH:mm") : ""}
+                  onChange={(e) => {
+                    if (end && e.target.value) {
+                      const [h, m] = e.target.value.split(":");
+                      const d = new Date(end);
+                      d.setHours(Number(h), Number(m), 0, 0);
+                      setEnd(new Date(d));
+                    }
+                  }}
+                  className="w-30 min-w-0"
+                />
+              )}
             </div>
-          )}
+            {allDay && (
+              <div className="text-xs text-[var(--wisely-gray)]">
+                All day: chỉ chọn ngày, không chọn giờ phút.
+              </div>
+            )}
+          </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-[var(--wisely-dark)]">Event Title</Label>
+            <Label htmlFor="title" className="text-[var(--wisely-dark)]">
+              Event Title
+            </Label>
             <Input
               id="title"
               value={title}
@@ -111,7 +227,9 @@ export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete 
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-[var(--wisely-dark)]">Description (Optional)</Label>
+            <Label htmlFor="description" className="text-[var(--wisely-dark)]">
+              Description (Optional)
+            </Label>
             <Textarea
               id="description"
               value={description}
@@ -130,13 +248,25 @@ export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete 
                   key={option.value}
                   onClick={() => setColor(option.value)}
                   className={`w-8 h-8 rounded-full border-2 ${
-                    color === option.value ? 'border-[var(--wisely-purple)]' : 'border-gray-200'
+                    color === option.value
+                      ? "border-[var(--wisely-purple)]"
+                      : "border-gray-200"
                   }`}
                   style={{ backgroundColor: option.value }}
                   title={option.label}
                 />
               ))}
             </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="allDay"
+              checked={allDay}
+              onCheckedChange={(v) => setAllDay(!!v)}
+            />
+            <Label htmlFor="allDay" className="text-[var(--wisely-dark)]">
+              All day
+            </Label>
           </div>
 
           <div className="flex justify-between pt-4">
@@ -150,17 +280,21 @@ export function EventModal({ isOpen, onClose, event, timeSlot, onSave, onDelete 
                 <span>Delete</span>
               </Button>
             )}
-            
+
             <div className="flex space-x-2 ml-auto">
-              <Button variant="outline" onClick={handleClose} className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50"
+              >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleSave}
                 disabled={!title.trim()}
                 className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
               >
-                {event ? 'Update' : 'Create'}
+                {event ? "Update" : "Create"}
               </Button>
             </div>
           </div>
