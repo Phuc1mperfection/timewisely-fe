@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -69,6 +69,10 @@ export function EventModal({
   const [location, setLocation] = useState("");
   const [goalTag, setGoalTag] = useState("");
   const [completed, setCompleted] = useState(false);
+  const [customColorLabel, setCustomColorLabel] = useState("");
+
+  const [showActionPopover, setShowActionPopover] = useState(false);
+  const actionButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (event) {
@@ -102,6 +106,7 @@ export function EventModal({
       setGoalTag("");
       setCompleted(false);
     }
+    setCustomColorLabel("");
   }, [event, timeSlot, isOpen]);
 
   const handleSave = () => {
@@ -141,8 +146,16 @@ export function EventModal({
     onClose();
   };
 
+  // Sửa lỗi ESC: chỉ reset state khi thực sự tạo mới/cancel, không reset khi đóng modal bằng ESC
+  const handleDialogOpenChange = (open: boolean) => {
+    if (!open) {
+      // Chỉ gọi onClose, không reset state (giữ nguyên event/timeSlot)
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
       <DialogContent className="sm:max-w-[700px] bg-white">
         <DialogHeader>
           <DialogTitle className="text-[var(--wisely-dark)]">
@@ -266,11 +279,14 @@ export function EventModal({
 
           <div className="space-y-2">
             <Label className="text-[var(--wisely-dark)]">Color</Label>
-            <div className="flex space-x-2">
+            <div className="flex items-center space-x-2">
               {colorOptions.map((option) => (
                 <button
                   key={option.value}
-                  onClick={() => setColor(option.value)}
+                  onClick={() => {
+                    setColor(option.value);
+                    setCustomColorLabel("");
+                  }}
                   className={`w-8 h-8 rounded-full border-2 ${
                     color === option.value
                       ? "border-[var(--wisely-purple)]"
@@ -278,8 +294,43 @@ export function EventModal({
                   }`}
                   style={{ backgroundColor: option.value }}
                   title={option.label}
+                  type="button"
                 />
               ))}
+              {/* Color picker for custom color */}
+              <label
+                className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center cursor-pointer hover:border-[var(--wisely-purple)] relative"
+                title={customColorLabel ? customColorLabel : "Custom color"}
+              >
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  aria-label="Pick custom color"
+                />
+                <span
+                  className="w-6 h-6 rounded-full border border-gray-300"
+                  style={{ backgroundColor: color }}
+                />
+              </label>
+            </div>
+            {/* Show input for custom color label if color is not in preset */}
+            {!colorOptions.some((opt) => opt.value === color) && (
+              <div className="pt-1 flex items-center space-x-2">
+                <Input
+                  type="text"
+                  value={customColorLabel}
+                  onChange={(e) => setCustomColorLabel(e.target.value)}
+                  placeholder="Enter color name (legend)"
+                  className="w-48 border-gray-300 text-xs py-1 px-2"
+                  maxLength={20}
+                />
+                <span className="text-xs text-gray-400">(Optional)</span>
+              </div>
+            )}
+            <div className="text-xs text-gray-400 pt-1">
+              You can pick any color or use a preset.
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -357,6 +408,53 @@ export function EventModal({
               </Button>
             </div>
           </div>
+
+          {/* Popover for right-click action (delete, change color) */}
+          {event && (
+            <Popover
+              open={showActionPopover}
+              onOpenChange={setShowActionPopover}
+            >
+              <PopoverTrigger asChild>
+                <button
+                  ref={actionButtonRef}
+                  type="button"
+                  className="hidden" // You can trigger this programmatically
+                />
+              </PopoverTrigger>
+              <PopoverContent side="right" align="start" className="z-50 w-56">
+                <div className="space-y-2">
+                  <Button
+                    variant="destructive"
+                    onClick={onDelete}
+                    className="w-full text-left"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" /> Delete activity
+                  </Button>
+                  <div className="flex items-center gap-2 pt-2">
+                    <span className="text-xs">Change color:</span>
+                    {colorOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setColor(option.value);
+                          setShowActionPopover(false);
+                        }}
+                        className={`w-6 h-6 rounded-full border-2 ${
+                          color === option.value
+                            ? "border-[var(--wisely-purple)]"
+                            : "border-gray-200"
+                        }`}
+                        style={{ backgroundColor: option.value }}
+                        title={option.label}
+                        type="button"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       </DialogContent>
     </Dialog>

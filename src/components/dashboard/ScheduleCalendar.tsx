@@ -5,6 +5,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { CustomEventCard } from "@/components/dashboard/CustomEventCard";
+import EventWrapper from "@/components/dashboard/EventWrapper";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -78,7 +79,11 @@ export function ScheduleCalendar({
       step={30}
       timeslots={2}
       components={{
-        event: (props) => <CustomEventCard event={props.event as UserActivity} />,
+        event: (props) => (
+          <EventWrapper>
+            <CustomEventCard event={props.event as UserActivity} />
+          </EventWrapper>
+        ),
       }}
     />
   );
