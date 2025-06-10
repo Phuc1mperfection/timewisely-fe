@@ -6,7 +6,6 @@ import {
   deleteActivity,
 } from "@/services/activityServices";
 import type { ActivityApiData } from "@/services/activityServices";
-import { useToast } from "@/hooks/useToast";
 
 export interface UserActivity {
   id: string;
@@ -50,7 +49,6 @@ export function useUserActivities() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const toast = useToast();
 
   useEffect(() => {
     setLoading(true);
@@ -58,7 +56,7 @@ export function useUserActivities() {
       .then((data) => {
         setActivities(data.map(mapApiToUserActivity));
         setError(null);
-        console.log("Activities loaded successfully");
+        // console.log("Activities loaded successfully");
       })
       .catch(() => {
         setError("Failed to load activities");
@@ -106,10 +104,8 @@ export function useUserActivities() {
         )
       );
       setSuccess("Activity updated");
-      toast.success("Activity updated");
     } catch {
       setError("Failed to update activity");
-      toast.error("Failed to update activity");
     } finally {
       setLoading(false);
     }
@@ -128,28 +124,17 @@ export function useUserActivities() {
           )
         );
         setSuccess("Activity updated");
-        toast.success("Activity updated");
       } else if (selectedSlot) {
-        // Debug log
-        console.log("[CREATE] selectedSlot:", selectedSlot, "activityData:", activityData);
         const start = activityData.start || selectedSlot.start;
         const end = activityData.end || selectedSlot.end;
-        if (start) {
-          console.log("[CREATE] start hour/min:", start.getHours(), start.getMinutes());
-        }
-        if (end) {
-          console.log("[CREATE] end hour/min:", end.getHours(), end.getMinutes());
-        }
         const apiData = mapUserActivityToApi({ ...activityData, start, end });
         const created = await createActivity(apiData);
         setActivities((prev) => [...prev, mapApiToUserActivity(created)]);
         setSuccess("Activity created");
-        toast.success("Activity created");
       }
       setIsActivityModalOpen(false);
     } catch {
       setError("Failed to save activity");
-      toast.error("Failed to save activity");
     } finally {
       setLoading(false);
     }
@@ -162,11 +147,9 @@ export function useUserActivities() {
         await deleteActivity(selectedActivity.id);
         setActivities((prev) => prev.filter((activity) => activity.id !== selectedActivity.id));
         setSuccess("Activity deleted");
-        toast.success("Activity deleted");
         setIsActivityModalOpen(false);
       } catch {
         setError("Failed to delete activity");
-        toast.error("Failed to delete activity");
       } finally {
         setLoading(false);
       }

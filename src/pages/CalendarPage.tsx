@@ -1,4 +1,7 @@
+import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
+import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import { useUserActivities } from "@/hooks/useUserActivities";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { EventModal } from "@/components/dashboard/EventModal";
 import { ScheduleCalendar } from "@/components/dashboard/ScheduleCalendar";
-import { useState } from "react";
 import type { View } from "react-big-calendar";
 
 const CalendarPage = () => {
@@ -27,14 +29,47 @@ const CalendarPage = () => {
     handleSaveActivity,
     handleDeleteActivity,
     activityStyleGetter,
+    error,
+    success,
+    setError,
+    setSuccess,
   } = useUserActivities();
   const [view, setView] = useState<View>("week");
   const [date, setDate] = useState(new Date());
+  const [search, setSearch] = useState("");
+  const [filterColor, setFilterColor] = useState<string | null>(null);
+  const [filterAllDay, setFilterAllDay] = useState<null | boolean>(null);
+
+  // Filtered activities
+  const filteredActivities = activities.filter((a) => {
+    if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
+      return false;
+    if (filterColor && a.color !== filterColor) return false;
+    if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
+    return true;
+  });
+
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 relative">
+      <ActivityToastListener
+        error={error}
+        success={success}
+        onResetError={() => setError(null)}
+        onResetSuccess={() => setSuccess(null)}
+      />
+      <ActivityFilterBar
+        search={search}
+        setSearch={setSearch}
+        filterColor={filterColor}
+        setFilterColor={setFilterColor}
+        filterAllDay={filterAllDay}
+        setFilterAllDay={setFilterAllDay}
+      />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">Calendar</h1>
+          <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">
+            Calendar
+          </h1>
           <p className="text-[var(--wisely-gray)]">
             Manage your schedule and activities - drag to reschedule!
           </p>
@@ -55,7 +90,9 @@ const CalendarPage = () => {
 
       <Card className="bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-[var(--wisely-dark)]">Your Schedule</CardTitle>
+          <CardTitle className="text-[var(--wisely-dark)]">
+            Your Schedule
+          </CardTitle>
           <CardDescription className="text-[var(--wisely-gray)]">
             Click on any time slot to create an activity, click existing
             activities to edit them, or drag activities to reschedule.
@@ -64,7 +101,7 @@ const CalendarPage = () => {
         <CardContent>
           <div className="h-[900px]">
             <ScheduleCalendar
-              events={activities}
+              events={filteredActivities}
               onSelectSlot={handleSelectSlot}
               onSelectEvent={handleSelectActivity}
               onEventDrop={(args) =>

@@ -12,8 +12,10 @@ import { EventModal } from "@/components/dashboard/EventModal";
 import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
 import { ScheduleCalendar } from "@/components/dashboard/ScheduleCalendar";
 import { useUserActivities } from "@/hooks/useUserActivities";
-import  { useState } from "react";
+import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
+import { useState } from "react";
 import type { View } from "react-big-calendar";
+import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 
 export function DashboardContent() {
   const {
@@ -29,17 +31,52 @@ export function DashboardContent() {
     handleSaveActivity,
     handleDeleteActivity,
     activityStyleGetter,
+    error,
+    success,
+    setError,
+    setSuccess,
   } = useUserActivities();
-   const [view, setView] = useState<View>("week");
-    const [date, setDate] = useState(new Date());
+  const [view, setView] = useState<View>("week");
+  const [date, setDate] = useState(new Date());
+  const [search, setSearch] = useState("");
+  const [filterColor, setFilterColor] = useState<string | null>(null);
+  const [filterAllDay, setFilterAllDay] = useState<null | boolean>(null);
+
+  // Filtered activities
+  const filteredActivities = activities.filter((a) => {
+    if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
+      return false;
+    if (filterColor && a.color !== filterColor) return false;
+    if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
+    return true;
+  });
 
   return (
     <main className="flex-1 flex flex-col">
+      <ActivityToastListener
+        error={error}
+        success={success}
+        onResetError={() => setError(null)}
+        onResetSuccess={() => setSuccess(null)}
+      />
+      <div
+      className="p-6 bg-white shadow-sm hidden"
+       >
+      <ActivityFilterBar
+        search={search}
+        setSearch={setSearch}
+        filterColor={filterColor}
+        setFilterColor={setFilterColor}
+        filterAllDay={filterAllDay}
+        setFilterAllDay={setFilterAllDay}
+        loading={false}
+      />
+      </div>
       {/* Top Navigation */}
       <div className="flex-1 p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-wisely-dark">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">Dashboard</h1>
             <p className="text-wisely-gray">
               Welcome back! Here's your productivity overview.
             </p>
@@ -64,13 +101,13 @@ export function DashboardContent() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-white shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-wisely-dark">
+              <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
                 Today's Schedule
               </CardTitle>
               <Clock className="h-4 w-4 text-wisely-purple" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-wisely-dark">
+              <div className="text-2xl font-bold text-[var(--wisely-dark)]">
                 3 events
               </div>
               <p className="text-xs text-wisely-gray">2 hours of free time</p>
@@ -79,13 +116,13 @@ export function DashboardContent() {
 
           <Card className="bg-white shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-wisely-dark">
+              <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
                 AI Suggestions
               </CardTitle>
               <Sparkles className="h-4 w-4 text-wisely-mint" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-wisely-dark">5 new</div>
+              <div className="text-2xl font-bold text-[var(--wisely-dark)]">5 new</div>
               <p className="text-xs text-wisely-gray">
                 Based on your preferences
               </p>
@@ -94,13 +131,13 @@ export function DashboardContent() {
 
           <Card className="bg-white shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-wisely-dark">
+              <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
                 Goals Progress
               </CardTitle>
               <Target className="h-4 w-4 text-wisely-pink" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-wisely-dark">78%</div>
+              <div className="text-2xl font-bold text-[var(--wisely-dark)]">78%</div>
               <p className="text-xs text-wisely-gray">This week's completion</p>
             </CardContent>
           </Card>
@@ -111,7 +148,7 @@ export function DashboardContent() {
           {/* Calendar */}
           <Card className="lg:col-span-3 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-wisely-dark">Calendar</CardTitle>
+              <CardTitle className="text-[var(--wisely-dark)]">Calendar</CardTitle>
               <CardDescription className="text-wisely-gray">
                 Click on any time slot to create an activity, or click existing
                 activities to edit them.
@@ -120,7 +157,7 @@ export function DashboardContent() {
             <CardContent>
               <div className="h-96">
                 <ScheduleCalendar
-                  events={activities}
+                  events={filteredActivities}
                   onSelectSlot={handleSelectSlot}
                   onSelectEvent={handleSelectActivity}
                   onEventDrop={(args) =>
@@ -138,11 +175,11 @@ export function DashboardContent() {
                     })
                   }
                   eventStyleGetter={activityStyleGetter}
-                    views={["month", "week", "day", "agenda"]}
-              view={view}
-              onView={setView}
-              date={date}
-              onNavigate={setDate}
+                  views={["month", "week", "day", "agenda"]}
+                  view={view}
+                  onView={setView}
+                  date={date}
+                  onNavigate={setDate}
                 />
               </div>
             </CardContent>

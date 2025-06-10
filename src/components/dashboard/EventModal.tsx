@@ -122,7 +122,7 @@ export function EventModal({
       <DialogContent className="sm:max-w-[700px] bg-white">
         <DialogHeader>
           <DialogTitle className="text-[var(--wisely-dark)]">
-            {event ? "Edit Event" : "Create New Activity"}
+            {event ? "Edit Activity" : "Create New Activity"}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
