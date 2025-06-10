@@ -28,7 +28,10 @@ interface CalendarEvent {
   end: Date;
   description?: string;
   color?: string;
-  allDay?: boolean; // Thêm trường allDay
+  allDay?: boolean;
+  location?: string;
+  goalTag?: string;
+  completed?: boolean;
 }
 
 interface EventModalProps {
@@ -63,6 +66,9 @@ export function EventModal({
   const [allDay, setAllDay] = useState(false); // Thêm state allDay
   const [start, setStart] = useState<Date | null>(null);
   const [end, setEnd] = useState<Date | null>(null);
+  const [location, setLocation] = useState("");
+  const [goalTag, setGoalTag] = useState("");
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     if (event) {
@@ -72,6 +78,9 @@ export function EventModal({
       setAllDay(event.allDay || false);
       setStart(event.start);
       setEnd(event.end);
+      setLocation(event.location || "");
+      setGoalTag(event.goalTag || "");
+      setCompleted(event.completed || false);
     } else if (timeSlot) {
       setTitle("");
       setDescription("");
@@ -79,6 +88,9 @@ export function EventModal({
       setAllDay(false);
       setStart(timeSlot.start);
       setEnd(timeSlot.end);
+      setLocation("");
+      setGoalTag("");
+      setCompleted(false);
     } else {
       setTitle("");
       setDescription("");
@@ -86,6 +98,9 @@ export function EventModal({
       setAllDay(false);
       setStart(null);
       setEnd(null);
+      setLocation("");
+      setGoalTag("");
+      setCompleted(false);
     }
   }, [event, timeSlot, isOpen]);
 
@@ -98,6 +113,9 @@ export function EventModal({
       allDay,
       start,
       end,
+      location,
+      goalTag,
+      completed,
     });
     setTitle("");
     setDescription("");
@@ -105,6 +123,9 @@ export function EventModal({
     setAllDay(false);
     setStart(null);
     setEnd(null);
+    setLocation("");
+    setGoalTag("");
+    setCompleted(false);
   };
 
   const handleClose = () => {
@@ -114,6 +135,9 @@ export function EventModal({
     setAllDay(false);
     setStart(null);
     setEnd(null);
+    setLocation("");
+    setGoalTag("");
+    setCompleted(false);
     onClose();
   };
 
@@ -266,6 +290,41 @@ export function EventModal({
             />
             <Label htmlFor="allDay" className="text-[var(--wisely-dark)]">
               All day
+            </Label>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="location" className="text-[var(--wisely-dark)]">
+              Location
+            </Label>
+            <Input
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Enter location"
+              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="goalTag" className="text-[var(--wisely-dark)]">
+              Goal Tag
+            </Label>
+            <Input
+              id="goalTag"
+              value={goalTag}
+              onChange={(e) => setGoalTag(e.target.value)}
+              placeholder="Enter goal tag"
+              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="completed"
+              checked={completed}
+              onCheckedChange={(v) => setCompleted(!!v)}
+            />
+            <Label htmlFor="completed" className="text-[var(--wisely-dark)]">
+              Completed
             </Label>
           </div>
 

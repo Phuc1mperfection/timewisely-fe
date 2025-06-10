@@ -8,6 +8,9 @@ export interface ActivityApiData {
   endTime: string;
   color?: string;
   allDay?: boolean; 
+  location?: string;
+  goalTag?: string;
+  completed?: boolean;
 }
 
 export const getActivities = async () => {

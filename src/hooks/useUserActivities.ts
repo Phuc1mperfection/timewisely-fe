@@ -15,6 +15,10 @@ export interface UserActivity {
   description?: string;
   color?: string;
   allDay?: boolean;
+  location?: string;
+  goalTag?: string;
+  category?: string;
+  completed?: boolean;
 }
 
 function mapApiToUserActivity(api: ActivityApiData): UserActivity {
@@ -26,6 +30,9 @@ function mapApiToUserActivity(api: ActivityApiData): UserActivity {
     description: api.description,
     color: api.color,
     allDay: api.allDay,
+    location: api.location,
+    goalTag: api.goalTag,
+    completed: api.completed,
   };
 }
 
@@ -38,6 +45,9 @@ function mapUserActivityToApi(activity: Partial<UserActivity>): ActivityApiData 
     endTime: activity.end instanceof Date ? activity.end.toISOString() : "",
     color: activity.color,
     allDay: activity.allDay,
+    location: activity.location,
+    goalTag: activity.goalTag,
+    completed: activity.completed,
   };
 }
 
