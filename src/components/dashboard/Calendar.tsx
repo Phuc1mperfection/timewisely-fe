@@ -6,6 +6,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { CustomEventCard } from "@/components/dashboard/CustomEventCard";
 import EventWrapper from "@/components/dashboard/EventWrapper";
+import YearView from "./YearView";
+import React, { useMemo } from "react";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -39,6 +41,7 @@ interface ScheduleCalendarProps {
   onView?: (view: View) => void;
   date?: Date;
   onNavigate?: (date: Date) => void;
+  onEventDelete?: (event: UserActivity) => void; // <-- Add this prop
 }
 
 export function ScheduleCalendar({
@@ -48,12 +51,24 @@ export function ScheduleCalendar({
   onEventDrop,
   onEventResize,
   eventStyleGetter,
-  views = ["month", "week", "day", "agenda"],
   view,
   onView,
   date,
   onNavigate,
+  onEventDelete,
 }: ScheduleCalendarProps) {
+  // Custom views object with YearView
+  const customViews = useMemo(
+    () => ({
+      month: true,
+      week: true,
+      day: true,
+      agenda: true,
+      year: YearView ,
+    }),
+    []
+  );
+
   return (
     <DragAndDropCalendar
       localizer={localizer}
@@ -68,7 +83,7 @@ export function ScheduleCalendar({
       resizable
       draggableAccessor={() => true}
       eventPropGetter={eventStyleGetter}
-      views={views}
+      views={customViews}
       view={view}
       onView={onView}
       date={date}
@@ -78,9 +93,25 @@ export function ScheduleCalendar({
       showMultiDayTimes
       step={30}
       timeslots={2}
+      messages={{
+        month: "Month",
+        week: "Week",
+        day: "Day",
+        agenda: "Agenda",
+        today: "Today",
+        previous: "Previous",
+        next: "Next",
+        allDay: "All Day",
+        date: "Date",
+        time: "Time",
+        year:"Year"
+        
+      }}
       components={{
         event: (props) => (
-          <EventWrapper>
+          <EventWrapper
+            onDelete={() => onEventDelete?.(props.event as UserActivity)}
+          >
             <CustomEventCard event={props.event as UserActivity} />
           </EventWrapper>
         ),

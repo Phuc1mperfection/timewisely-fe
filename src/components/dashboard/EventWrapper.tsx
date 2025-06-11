@@ -7,7 +7,13 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 
-function EventWrapper({ children }: { children: React.ReactElement }) {
+function EventWrapper({
+  children,
+  onDelete,
+}: {
+  children: React.ReactElement;
+  onDelete?: () => void;
+}) {
   // Lấy event từ children.props.event
   const child = children as React.ReactElement<Record<string, unknown>>;
   const event = child.props.event as CustomEvent;
@@ -112,7 +118,6 @@ function EventWrapper({ children }: { children: React.ReactElement }) {
           </div>
         </PopoverContent>
       </Popover>
-      {/* Action Popover (right click) - floating at mouse position */}
       {showAction && mousePosition && (
         <Popover open={showAction} onOpenChange={setShowAction}>
           <PopoverContent
@@ -130,11 +135,25 @@ function EventWrapper({ children }: { children: React.ReactElement }) {
             }}
           >
             <div className="space-y-2 p-4">
-              <Button variant="destructive" className="w-full text-left">
-                Xóa activity
+              <Button
+                variant="destructive"
+                className="w-full text-left"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  console.log(
+                    "[EventWrapper] Clicked Delete Activity button",
+                    event
+                  );
+                  if (onDelete) onDelete();
+                  setShowAction(false);
+                  setShowDetail(false);
+                }}
+              >
+                Delete Activity
               </Button>
               <div className="flex items-center gap-2 pt-2">
-                <span className="text-xs">Đổi màu:</span>
+                <span className="text-xs">Change Color</span>
                 {/* TODO: render color picker ở đây nếu muốn */}
               </div>
             </div>

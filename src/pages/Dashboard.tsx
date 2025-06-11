@@ -10,7 +10,7 @@ import { Plus, Sparkles, Clock, Target } from "lucide-react";
 import { AISuggestions } from "@/components/dashboard/AISuggestions";
 import { EventModal } from "@/components/dashboard/EventModal";
 import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
-import { ScheduleCalendar } from "@/components/dashboard/ScheduleCalendar";
+import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import { useUserActivities } from "@/hooks/useUserActivities";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { useState } from "react";
@@ -59,24 +59,24 @@ export function DashboardContent() {
         onResetError={() => setError(null)}
         onResetSuccess={() => setSuccess(null)}
       />
-      <div
-      className="p-6 bg-white shadow-sm hidden"
-       >
-      <ActivityFilterBar
-        search={search}
-        setSearch={setSearch}
-        filterColor={filterColor}
-        setFilterColor={setFilterColor}
-        filterAllDay={filterAllDay}
-        setFilterAllDay={setFilterAllDay}
-        loading={false}
-      />
+      <div className="p-6 bg-white shadow-sm hidden">
+        <ActivityFilterBar
+          search={search}
+          setSearch={setSearch}
+          filterColor={filterColor}
+          setFilterColor={setFilterColor}
+          filterAllDay={filterAllDay}
+          setFilterAllDay={setFilterAllDay}
+          loading={false}
+        />
       </div>
       {/* Top Navigation */}
       <div className="flex-1 p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">
+              Dashboard
+            </h1>
             <p className="text-wisely-gray">
               Welcome back! Here's your productivity overview.
             </p>
@@ -122,7 +122,9 @@ export function DashboardContent() {
               <Sparkles className="h-4 w-4 text-wisely-mint" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[var(--wisely-dark)]">5 new</div>
+              <div className="text-2xl font-bold text-[var(--wisely-dark)]">
+                5 new
+              </div>
               <p className="text-xs text-wisely-gray">
                 Based on your preferences
               </p>
@@ -137,7 +139,9 @@ export function DashboardContent() {
               <Target className="h-4 w-4 text-wisely-pink" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[var(--wisely-dark)]">78%</div>
+              <div className="text-2xl font-bold text-[var(--wisely-dark)]">
+                78%
+              </div>
               <p className="text-xs text-wisely-gray">This week's completion</p>
             </CardContent>
           </Card>
@@ -148,7 +152,9 @@ export function DashboardContent() {
           {/* Calendar */}
           <Card className="lg:col-span-3 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-[var(--wisely-dark)]">Calendar</CardTitle>
+              <CardTitle className="text-[var(--wisely-dark)]">
+                Calendar
+              </CardTitle>
               <CardDescription className="text-wisely-gray">
                 Click on any time slot to create an activity, or click existing
                 activities to edit them.

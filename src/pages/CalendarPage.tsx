@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { EventModal } from "@/components/dashboard/EventModal";
-import { ScheduleCalendar } from "@/components/dashboard/ScheduleCalendar";
+import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import type { View } from "react-big-calendar";
 
 const CalendarPage = () => {
@@ -33,6 +33,7 @@ const CalendarPage = () => {
     success,
     setError,
     setSuccess,
+    setSelectedActivity, // Import setSelectedActivity
   } = useUserActivities();
   const [view, setView] = useState<View>("week");
   const [date, setDate] = useState(new Date());
@@ -119,11 +120,14 @@ const CalendarPage = () => {
                 })
               }
               eventStyleGetter={activityStyleGetter}
-              views={["month", "week", "day", "agenda"]}
               view={view}
               onView={setView}
               date={date}
               onNavigate={setDate}
+              onEventDelete={(event) => {
+                setSelectedActivity(event); // Use setSelectedActivity from useUserActivities
+                handleDeleteActivity();
+              }}
             />
           </div>
         </CardContent>

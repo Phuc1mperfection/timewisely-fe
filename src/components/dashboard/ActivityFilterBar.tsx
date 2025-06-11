@@ -66,39 +66,47 @@ export const ActivityFilterBar: React.FC<ActivityFilterBarProps> = ({
         )
       )}
       <Label>All day:</Label>
-      <button
-        className={cn(
-          "px-2 py-1 rounded border",
-          filterAllDay === null
-            ? "border-[var(--wisely-purple)]"
-            : "border-gray-200"
-        )}
-        onClick={() => setFilterAllDay(null)}
-      >
+      <div className="flex gap-1">
+        <Label
+          asChild
+          className={cn(
+        "px-2 py-1 rounded border cursor-pointer",
+        filterAllDay === null
+          ? "border-[var(--wisely-purple)]"
+          : "border-gray-200"
+          )}
+        >
+          <button type="button" onClick={() => setFilterAllDay(null)}>
         All
-      </button>
-      <button
-        className={cn(
-          "px-2 py-1 rounded border",
-          filterAllDay === true
-            ? "border-[var(--wisely-purple)]"
-            : "border-gray-200"
-        )}
-        onClick={() => setFilterAllDay(true)}
-      >
+          </button>
+        </Label>
+        <Label
+          asChild
+          className={cn(
+        "px-2 py-1 rounded border cursor-pointer",
+        filterAllDay === true
+          ? "border-[var(--wisely-purple)]"
+          : "border-gray-200"
+          )}
+        >
+          <button type="button" onClick={() => setFilterAllDay(true)}>
         Yes
-      </button>
-      <button
-        className={cn(
-          "px-2 py-1 rounded border",
-          filterAllDay === false
-            ? "border-[var(--wisely-purple)]"
-            : "border-gray-200"
-        )}
-        onClick={() => setFilterAllDay(false)}
-      >
+          </button>
+        </Label>
+        <Label
+          asChild
+          className={cn(
+        "px-2 py-1 rounded border cursor-pointer",
+        filterAllDay === false
+          ? "border-[var(--wisely-purple)]"
+          : "border-gray-200"
+          )}
+        >
+          <button type="button" onClick={() => setFilterAllDay(false)}>
         No
-      </button>
+          </button>
+        </Label>
+      </div>
     </div>
   </div>
 );
