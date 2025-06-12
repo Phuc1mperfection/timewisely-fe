@@ -28,6 +28,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import Logo from "@/assets/icon.svg"; // Adjust the path as necessary
 
 const menuItems = [
   { title: "Dashboard", url: "/app/dashboard", icon: Home },
@@ -41,7 +42,6 @@ const menuItems = [
   },
   { title: "Profile", url: "/app/dashboard/profile", icon: User },
   { title: "Settings", url: "/app/dashboard/settings", icon: Settings },
-  { title: "Debug", url: "/app/debug", icon: Home },
 ];
 
 export function AppSidebar() {
@@ -55,11 +55,12 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-gray-200 bg-white">
+    <Sidebar className="border-r border-gray-200 bg-white w-64">
       <SidebarHeader className="p-6">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-r from-[var(--wisely-purple)] to-[var(--wisely-mint)] rounded-lg"></div>
-          <span className="text-xl font-bold text-wisely-dark">TimeWisely</span>
+          <img src={Logo} alt="TimeWisely Logo" className="w-8 h-8" />
+          {/* You can replace the logo with an SVG or any other image */}
+          <span className="text-xl font-bold text-[var(--wisely-gray)]">TimeWisely</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -80,8 +81,8 @@ export function AppSidebar() {
                         className={
                           "flex items-center space-x-3 p-3 rounded-lg transition-colors group w-full text-left " +
                           (isActive
-                            ? "bg-purple-500 text-[var(--wisely-purple)] font-semibold"
-                            : "hover:bg-purple-500 group-hover:text-[var(--wisely-purple)]")
+                            ? " text-[var(--wisely-purple)] font-semibold"
+                            : "hover:bg-purple-500 group-hover:text-[var(--wisely-purple)] hover:cursor-pointer")
                         }
                         aria-current={isActive ? "page" : undefined}
                       >
@@ -97,7 +98,7 @@ export function AppSidebar() {
                           className={
                             isActive
                               ? "text-[var(--wisely-purple)]"
-                              : "text-wisely-dark group-hover:text-[var(--wisely-purple)]"
+                              : "text-[var(--wisely-gray)] group-hover:text-[var(--wisely-purple)]"
                           }
                         >
                           {item.title}
@@ -127,7 +128,7 @@ export function AppSidebar() {
                   </span> */}
                 </div>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-sm font-medium text-wisely-dark truncate">
+                  <p className="text-sm font-medium text-[var(--wisely-gray)] truncate">
                     {user?.fullName || user?.username || user?.email}
                   </p>
                 

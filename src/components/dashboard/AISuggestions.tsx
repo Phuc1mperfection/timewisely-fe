@@ -65,15 +65,15 @@ export function AISuggestions() {
   };
 
   return (
-    <Card className="bg-white shadow-sm">
+    <Card className="bg-white shadow-sm ">
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
-          <Sparkles className="w-5 h-5 text-wisely-purple" />
-          <span className="text-wisely-dark">AI Suggestions</span>
+          <Sparkles className="w-5 h-5 text-[var(--wisely-purple)]" />
+          <span className="text-[var(--wisely-dark)]">AI Suggestions</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-wisely-gray mb-4">
+        <p className="text-sm text-[var(--wisely-gray)] mb-4">
           Smart activity recommendations based on your free time and preferences.
         </p>
         
@@ -84,24 +84,24 @@ export function AISuggestions() {
               className="p-3 bg-gray-50 rounded-lg hover:bg-purple-50 transition-colors"
             >
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-medium text-sm text-wisely-dark">
+                <h4 className="font-medium text-sm text-[var(--wisely-dark)]">
                   {suggestion.title}
                 </h4>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => handleAddSuggestion(suggestion)}
-                  className="h-6 w-6 p-0 hover:bg-white hover:text-wisely-purple"
+                  className="h-6 w-6 p-0 hover:bg-white hover:text-[var(--wisely-purple)]"
                 >
                   <Plus className="w-3 h-3" />
                 </Button>
               </div>
               
-              <p className="text-xs text-wisely-gray mb-2">
+              <p className="text-xs text-[var(--wisely-gray)] mb-2">
                 {suggestion.description}
               </p>
               
-              <div className="flex items-center justify-between text-xs text-wisely-gray">
+              <div className="flex items-center justify-between text-xs text-[var(--wisely-gray)]">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-3 h-3" />
@@ -125,7 +125,7 @@ export function AISuggestions() {
           ))}
         </div>
         
-        <Button variant="outline" className="w-full mt-4 border-wisely-purple text-wisely-purple hover:bg-wisely-purple hover:text-white">
+        <Button variant="outline" className="w-full mt-4 border-[var(--wisely-purple)] text-[var(--wisely-purple)] hover:bg-[var(--wisely-purple)] hover:text-white">
           <Sparkles className="w-4 h-4 mr-2" />
           Get More Suggestions
         </Button>

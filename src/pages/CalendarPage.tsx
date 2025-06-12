@@ -102,6 +102,7 @@ const CalendarPage = () => {
         <CardContent>
           <div className="h-[900px]">
             <ScheduleCalendar
+            className="modern-calendar"
               events={filteredActivities}
               onSelectSlot={handleSelectSlot}
               onSelectEvent={handleSelectActivity}
@@ -128,6 +129,7 @@ const CalendarPage = () => {
                 setSelectedActivity(event); // Use setSelectedActivity from useUserActivities
                 handleDeleteActivity();
               }}
+              
             />
           </div>
         </CardContent>

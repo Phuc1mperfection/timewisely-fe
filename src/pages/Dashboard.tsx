@@ -36,7 +36,7 @@ export function DashboardContent() {
     setError,
     setSuccess,
   } = useUserActivities();
-  const [view, setView] = useState<View>("week");
+  const [view, setView] = useState<View>("agenda");
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
   const [filterColor, setFilterColor] = useState<string | null>(null);
@@ -163,6 +163,7 @@ export function DashboardContent() {
             <CardContent>
               <div className="h-96">
                 <ScheduleCalendar
+                 className="modern-calendar"
                   events={filteredActivities}
                   onSelectSlot={handleSelectSlot}
                   onSelectEvent={handleSelectActivity}

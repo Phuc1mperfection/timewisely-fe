@@ -42,6 +42,7 @@ interface ScheduleCalendarProps {
   date?: Date;
   onNavigate?: (date: Date) => void;
   onEventDelete?: (event: UserActivity) => void; // <-- Add this prop
+  className?: string;
 }
 
 export function ScheduleCalendar({
@@ -56,6 +57,7 @@ export function ScheduleCalendar({
   date,
   onNavigate,
   onEventDelete,
+  className = "",
 }: ScheduleCalendarProps) {
   // Custom views object with YearView
   const customViews = useMemo(
@@ -71,6 +73,7 @@ export function ScheduleCalendar({
 
   return (
     <DragAndDropCalendar
+      className={className}
       localizer={localizer}
       events={events}
       startAccessor={(activity) => (activity as UserActivity).start}
@@ -90,7 +93,7 @@ export function ScheduleCalendar({
       onNavigate={onNavigate}
       style={{ height: "100%" }}
       popup
-      showMultiDayTimes
+      showMultiDayTimes 
       step={30}
       timeslots={2}
       messages={{
@@ -105,6 +108,7 @@ export function ScheduleCalendar({
         date: "Date",
         time: "Time",
         year:"Year"
+        
         
       }}
       components={{
