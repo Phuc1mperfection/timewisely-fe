@@ -8,6 +8,7 @@ import { CustomEventCard } from "@/components/dashboard/CustomEventCard";
 import EventWrapper from "@/components/dashboard/EventWrapper";
 import YearView from "./YearView";
 import React, { useMemo } from "react";
+import { CustomToolbar } from "@/components/dashboard/CustomToolbar";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -66,7 +67,7 @@ export function ScheduleCalendar({
       week: true,
       day: true,
       agenda: true,
-      year: YearView ,
+      year: YearView,
     }),
     []
   );
@@ -93,7 +94,7 @@ export function ScheduleCalendar({
       onNavigate={onNavigate}
       style={{ height: "100%" }}
       popup
-      showMultiDayTimes 
+      showMultiDayTimes
       step={30}
       timeslots={2}
       messages={{
@@ -107,9 +108,7 @@ export function ScheduleCalendar({
         allDay: "All Day",
         date: "Date",
         time: "Time",
-        year:"Year"
-        
-        
+        // year: undefined, // Remove or comment out this line to fix type error
       }}
       components={{
         event: (props) => (
@@ -118,6 +117,15 @@ export function ScheduleCalendar({
           >
             <CustomEventCard event={props.event as UserActivity} />
           </EventWrapper>
+        ),
+        toolbar: (toolbarProps) => (
+          <CustomToolbar
+            label={toolbarProps.label}
+            onNavigate={toolbarProps.onNavigate}
+            onView={toolbarProps.onView}
+            views={toolbarProps.views}
+            view={toolbarProps.view}
+          />
         ),
       }}
     />
