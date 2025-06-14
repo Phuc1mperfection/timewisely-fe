@@ -9,17 +9,9 @@ import EventWrapper from "@/components/dashboard/EventWrapper";
 import YearView from "./YearView";
 import React, { useMemo } from "react";
 import { CustomToolbar } from "@/components/dashboard/CustomToolbar";
-
+import type { UserActivity } from "@/hooks/useUserActivities";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
-interface UserActivity {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;
-  description?: string;
-  color?: string;
-}
 
 interface ScheduleCalendarProps {
   events: UserActivity[];
@@ -108,8 +100,7 @@ export function ScheduleCalendar({
         allDay: "All Day",
         date: "Date",
         time: "Time",
-        // year: undefined, // Remove or comment out this line to fix type error
-      }}
+        }}
       components={{
         event: (props) => (
           <EventWrapper
