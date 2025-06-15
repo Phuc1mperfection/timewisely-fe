@@ -136,8 +136,8 @@ export function DailyMotivationHub() {
         {/* Action Button */}
         <Button 
           onClick={getNewQuote}
-          variant="outline" 
-          className="w-full border-purple-200 text-wisely-purple hover:bg-purple-500 hover:border-purple-300"
+          variant="default" 
+          className="w-full border-purple-200 hover:bg-purple-500 hover:border-purple-300"
         >
           <Sparkles className="w-4 h-4 mr-2" />
           Get New Inspiration

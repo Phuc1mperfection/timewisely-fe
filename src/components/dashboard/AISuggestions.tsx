@@ -125,7 +125,7 @@ export function AISuggestions() {
           ))}
         </div>
         
-        <Button variant="outline" className="w-full mt-4 border-[var(--wisely-purple)] text-[var(--wisely-purple)] hover:bg-[var(--wisely-purple)] hover:text-white">
+        <Button variant="default" className="w-full mt-4 border-[var(--wisely-purple)] text-[var(--wisely-white)] hover:bg-[var(--wisely-purple)] hover:text-white">
           <Sparkles className="w-4 h-4 mr-2" />
           Get More Suggestions
         </Button>
