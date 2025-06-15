@@ -31,7 +31,7 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--wisely-purple)]/20 via-[var(--wisely-white)]/90 to-[var(--wisely-pink)]/80 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[var(--wisely-purple)]/20 via-[var(--wisely-mint)]/10 to-[var(--wisely-pink)]/80 flex items-center justify-center p-6 relative overflow-hidden">
       <AuthBackground />
       <div className={`w-full max-w-md relative z-10`}>
         <AuthLogo />
@@ -48,7 +48,7 @@ const Auth = () => {
             <Button
               variant="ghost"
               onClick={() => navigate("/")}
-              className="text-2xl text-[var(--wisely-gray)] hover:text-[var(--wisely-dark)] backdrop-blur-md hover:bg-white/10 transition-all duration-300"
+              className="text-2xl text-[var(--wisely-gray)] hover:text-[var(--wisely-dark)]  hover:bg-white/10 transition-all duration-300 translate-y-1"
             >
               ← Back to Home
             </Button>

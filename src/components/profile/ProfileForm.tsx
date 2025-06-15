@@ -11,15 +11,21 @@ import {
 import { FormFieldWrapper } from "./FormFieldWrapper";
 import { AvatarSection } from "./AvatarSection";
 import { Card } from "../ui/card";
+import { useToast } from "../../hooks/useToast";
+import { useProfile } from "../../hooks/useProfile";
+import { useState } from "react";
+import type { ProfileUpdateResponse } from "../../interfaces/ProfileUpdateResponse";
 
 export function ProfileForm() {
-  const { user } = useAuth();
+  const { user, setUser, setToken } = useAuth();
   const { updateProfile, isLoading } = useProfileUpdate();
+  const { error } = useProfile();
+  const toast = useToast();
+  const [displayFullName, setDisplayFullName] = useState(user?.fullName || "");
 
   const defaultValues: Partial<ProfileFormValues> = {
-    username: user?.username || "",
     email: user?.email || "",
-    fullname: user?.fullName || "",
+    fullName: user?.fullName || "",
   };
 
   const form = useForm<ProfileFormValues>({
@@ -27,24 +33,62 @@ export function ProfileForm() {
     defaultValues,
     mode: "onChange",
   });
+  async function onSubmit(data: ProfileFormValues) {
+    try {
+      const response: ProfileUpdateResponse = await updateProfile({
+        fullName: data.fullName,
+        email: data.email,
+      });
+      console.log("Update profile response:", response);
+      setDisplayFullName(data.fullName);
+      // Handle the updated profile response that follows the ProfileUpdateResponse interface
+      if (user && setUser) {
+        // Check if we got a token in the response (email was changed)
+        if (response && response.token && setToken) {
+          console.log(
+            "Found token in response, updating token in localStorage"
+          );
+          setToken(response.token);
+        }
 
-  function onSubmit(data: ProfileFormValues) {
-    updateProfile(data);
+        // Update the user in the context with the new user data from response
+        if (response && response.user) {
+          console.log(
+            "Updating user in AuthContext with response data",
+            response.user
+          );
+          setUser({
+            ...user,
+            ...response.user,
+            email: response.user.email || data.email,
+            fullName: response.user.fullName || data.fullName,
+          });
+        } else {
+          // Fallback if we don't get user data in the response
+          console.log("Updating user in AuthContext with form data");
+          setUser({ ...user, email: data.email, fullName: data.fullName });
+        }
+      }
+      toast.success(
+        "Profile updated successfully. You're still logged in with your new details."
+      );
+    } catch {
+      toast.error(error || "Có lỗi xảy ra khi cập nhật thông tin!");
+    }
   }
 
-  const handleAvatarChange = (filename: string) => {
-    form.setValue("avatar", filename);
-    form.handleSubmit((data) => {
-      updateProfile(data);
-    })();
-  };
+  // const handleAvatarChange = (filename: string) => {
+  //   form.setValue("avatar", filename);
+  //   form.handleSubmit(onSubmit)();
+  // };
 
   return (
     <div className="space-y-6">
       <Card className="p-6">
         <AvatarSection
           username={user?.username}
-          onAvatarChange={handleAvatarChange}
+          fullName={displayFullName || user?.fullName}
+          // onAvatarChange={handleAvatarChange}
         />
         <Form {...form}>
           <form
@@ -54,26 +98,28 @@ export function ProfileForm() {
             <div className="grid gap-4 md:grid-cols-2">
               <FormFieldWrapper
                 control={form.control}
-                name="username"
-                label="Username"
-                placeholder="Username"
-              />
-              <FormFieldWrapper
-                control={form.control}
                 name="email"
                 label="Email"
                 placeholder="Email"
               />
               <FormFieldWrapper
                 control={form.control}
-                name="fullname"
+                name="fullName"
                 label="Full Name"
                 placeholder="Full Name"
               />
-              <input type="hidden" {...form.register("avatar")} />
+              {/* <input type="hidden" {...form.register("avatar")} /> */}
             </div>
             <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
+              <Button
+                type="button"
+                disabled={isLoading}
+                onClick={() => {
+                  const values = form.getValues();
+                  console.log("Submit values:", values);
+                  form.handleSubmit(onSubmit)();
+                }}
+              >
                 {isLoading ? "Loading" : "Update Profile"}
               </Button>
             </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
 
 interface Profile {
   fullName: string;
@@ -32,7 +33,9 @@ export function useProfile() {
         email: data.userProfile.email ?? ""
       });
     } catch (err) {
-      if (err instanceof Error) {
+      if (err instanceof AxiosError && err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err instanceof Error) {
         setError(err.message || "Error fetching user profile");
       } else {
         setError("Error fetching user profile");
@@ -41,35 +44,50 @@ export function useProfile() {
       setLoading(false);
     }
   };
-
   const handleUpdateProfile = async (values: UpdateProfileValues) => {
     setLoading(true);
     setError(null);
     try {
-      await updateProfile(values);
-      await fetchProfile();
+      const response = await updateProfile(values);
+      
+      // Only refetch profile if the response doesn't contain user data
+      // If response has user data, the ProfileForm will update the user directly
+      if (!response.user && !response.token) {
+        await fetchProfile();
+      }
+      
+      return response;
     } catch (err) {
-      if (err instanceof Error) {
+      if (err instanceof AxiosError && err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err instanceof Error) {
         setError(err.message || "Error updating profile");
       } else {
-        setError("Error updating profil");
+        setError("Error updating profile");
       }
+      throw err;
     } finally {
       setLoading(false);
     }
   };
-
   const handleChangePassword = async (values: ChangePasswordValues) => {
     setLoading(true);
     setError(null);
     try {
       await changePassword(values);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || "Lỗi khi đổi mật khẩu");
+      let errorMessage: string;
+      
+      if (err instanceof AxiosError && err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err instanceof Error) {
+        errorMessage = err.message || "Error changing password";
       } else {
-        setError("Lỗi khi đổi mật khẩu");
+        errorMessage = "Error changing password";
       }
+      
+      setError(errorMessage);
+      throw new Error(errorMessage); // Rethrow the error with a clearer message
     } finally {
       setLoading(false);
     }

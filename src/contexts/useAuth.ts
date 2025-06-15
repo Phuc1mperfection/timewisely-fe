@@ -11,5 +11,6 @@ export function useAuth() {
     register: (email: string, fullName: string, password: string) => Promise<User | undefined>;
     logout: () => Promise<void>;
     setUser?: (user: User | null) => void;
+    setToken?: (token: string) => void;
   };
 }

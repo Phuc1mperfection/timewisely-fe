@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import type { User } from "../interfaces/User";
 import {
   login as loginService,
@@ -20,9 +20,10 @@ interface AuthContextType {
   ) => Promise<User | undefined>;
   logout: () => Promise<void>;
   setUser?: (user: User | null) => void;
+  setToken?: (token: string) => void; // Thêm setToken vào đây
 }
 
-const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
   loading: true,
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
   register: async () => undefined,
   logout: async () => {},
   setUser: undefined,
+  setToken: undefined, // Khởi tạo setToken là undefined
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -137,6 +139,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Hàm cập nhật token mới (dùng cho đổi email)
+  const setToken = (token: string) => {
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -147,6 +156,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         register,
         logout,
         setUser,
+        setToken, // thêm vào context
       }}
     >
       {children}
@@ -154,8 +164,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
-
-export { AuthContext };
+// Remove useAuth and AuthContext export from this file.
+// Move them to a new file named useAuth.ts.
