@@ -82,7 +82,6 @@ const CalendarPage = () => {
               end: new Date(Date.now() + 3600000),
             });
           }}
-          className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           New Activity
