@@ -82,6 +82,15 @@
   --wisely-gray: #6b7280;
   --wisely-lightGray: #f3f4f6;
   --wisely-white: #fff;
+  --wisely-lightPurple: #a78bfa;
+  --wisely-lightMint: #34d399;
+  --wisely-lightPink: #f472b6;
+  --wisely-lightYellow: #fcd34d;
+  --wisely-lightGray: #e5e7eb;
+  --wisely-darkPurple: #7c3aed;
+  --wisely-darkMint: #059669;
+  --wisely-darkPink: #db2777;
+  --wisely-darkYellow: #ca8a04;
 }
 
 .dark {
@@ -319,7 +328,7 @@
 
 /* Slot Selection */
 .modern-calendar .rbc-slot-selection {
-  @apply bg-gradient-to-br from-purple-200 to-teal-200 border-2 border-purple-300 rounded-lg;
+  @apply bg-gradient-to-br from-blue-900 to-teal-200 border-2 border-purple-300 rounded-lg;
 }
 
 /* Agenda View */
