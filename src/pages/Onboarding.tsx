@@ -213,10 +213,10 @@ const Onboarding = () => {
       <div className="w-full max-w-2xl">
         <Card className="animate-fade-in bg-white shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-wisely-dark">
+            <CardTitle className="text-[var(--wisely-dark)]">
               Let's personalize your TimeWisely experience
             </CardTitle>
-            <CardDescription className="text-wisely-gray">
+            <CardDescription className="text-[var(--wisely-gray)]">
               Help us understand your preferences so we can suggest the perfect
               activities for you.
             </CardDescription>
@@ -245,7 +245,7 @@ const Onboarding = () => {
                 variant="outline"
                 onClick={() => setStep(step - 1)}
                 disabled={step === 1}
-                className="border-gray-300 text-wisely-gray hover:bg-gray-50"
+                className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50"
               >
                 Previous
               </Button>
