@@ -26,7 +26,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="container max-w-5xl mx-auto py-6 space-y-6">
+      <div className="flex-1 p-6 space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 md:w-fit">
@@ -40,7 +40,7 @@ const Profile = () => {
           <SecuritySettings />
         </TabsContent>
       </Tabs>
-    </div>
+    </div>  
   );
 };
 
