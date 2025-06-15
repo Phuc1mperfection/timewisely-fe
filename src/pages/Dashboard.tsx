@@ -77,7 +77,7 @@ export function DashboardContent() {
             <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">
               Dashboard
             </h1>
-            <p className="text-wisely-gray">
+            <p className="text-[var(--wisely-gray)]">
               Welcome back! Here's your productivity overview.
             </p>
           </div>
@@ -88,7 +88,6 @@ export function DashboardContent() {
                 end: new Date(Date.now() + 3600000),
               });
             }}
-            className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
           >
             <Plus className="w-4 h-4 mr-2" />
             New Activity
@@ -104,13 +103,13 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
                 Today's Schedule
               </CardTitle>
-              <Clock className="h-4 w-4 text-wisely-purple" />
+              <Clock className="h-4 w-4 text-[var(--wisely-purple)]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-[var(--wisely-dark)]">
                 3 events
               </div>
-              <p className="text-xs text-wisely-gray">2 hours of free time</p>
+              <p className="text-xs text-[var(--wisely-gray)]">2 hours of free time</p>
             </CardContent>
           </Card>
 
@@ -119,13 +118,13 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
                 AI Suggestions
               </CardTitle>
-              <Sparkles className="h-4 w-4 text-wisely-mint" />
+              <Sparkles className="h-4 w-4 text-[var(--wisely-mint)]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-[var(--wisely-dark)]">
                 5 new
               </div>
-              <p className="text-xs text-wisely-gray">
+              <p className="text-xs text-[var(--wisely-gray)]">
                 Based on your preferences
               </p>
             </CardContent>
@@ -136,13 +135,13 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
                 Goals Progress
               </CardTitle>
-              <Target className="h-4 w-4 text-wisely-pink" />
+              <Target className="h-4 w-4 text-[var(--wisely-pink)]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-[var(--wisely-dark)]">
                 78%
               </div>
-              <p className="text-xs text-wisely-gray">This week's completion</p>
+              <p className="text-xs text-[var(--wisely-gray)]">This week's completion</p>
             </CardContent>
           </Card>
         </div>
@@ -155,7 +154,7 @@ export function DashboardContent() {
               <CardTitle className="text-[var(--wisely-dark)]">
                 Calendar
               </CardTitle>
-              <CardDescription className="text-wisely-gray">
+              <CardDescription className="text-[var(--wisely-gray)]">
                 Click on any time slot to create an activity, or click existing
                 activities to edit them.
               </CardDescription>
