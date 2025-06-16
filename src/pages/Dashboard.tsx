@@ -74,7 +74,7 @@ export function DashboardContent() {
       <div className="flex-1 p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">
+            <h1 className="text-3xl font-bold dark:text-white text-gray-900">
               Dashboard
             </h1>
             <p className="text-[var(--wisely-gray)]">
@@ -98,30 +98,30 @@ export function DashboardContent() {
       <div className="flex-1 p-6 space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-white shadow-sm">
+          <Card className=" shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
+              <CardTitle className="text-sm font-medium ">
                 Today's Schedule
               </CardTitle>
               <Clock className="h-4 w-4 text-[var(--wisely-purple)]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[var(--wisely-dark)]">
+              <div className="text-2xl font-bold ">
                 3 events
               </div>
               <p className="text-xs text-[var(--wisely-gray)]">2 hours of free time</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm">
+          <Card className=" shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
+              <CardTitle className="text-sm font-medium ">
                 AI Suggestions
               </CardTitle>
               <Sparkles className="h-4 w-4 text-[var(--wisely-mint)]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[var(--wisely-dark)]">
+              <div className="text-2xl font-bold ">
                 5 new
               </div>
               <p className="text-xs text-[var(--wisely-gray)]">
@@ -130,15 +130,15 @@ export function DashboardContent() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-sm">
+          <Card className=" shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-[var(--wisely-dark)]">
+              <CardTitle className="text-sm font-medium ">
                 Goals Progress
               </CardTitle>
               <Target className="h-4 w-4 text-[var(--wisely-pink)]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-[var(--wisely-dark)]">
+              <div className="text-2xl font-bold ">
                 78%
               </div>
               <p className="text-xs text-[var(--wisely-gray)]">This week's completion</p>
@@ -151,7 +151,7 @@ export function DashboardContent() {
           {/* Calendar */}
           <Card className="lg:col-span-3 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-[var(--wisely-dark)]">
+              <CardTitle className="">
                 Calendar
               </CardTitle>
               <CardDescription className="text-[var(--wisely-gray)]">

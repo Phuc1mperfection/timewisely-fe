@@ -94,37 +94,37 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --background: #181825;
+  --foreground: #fafaff;
+  --card: #2e2e4d;
+  --card-foreground: #fafaff;
+  --popover: #2e2e4d;
+  --popover-foreground: #fafaff;
+  --primary: #e0e7ff;
+  --primary-foreground: #2e2e4d;
+  --secondary: #3b3b5c;
+  --secondary-foreground: #fafaff;
+  --muted: #3b3b5c;
+  --muted-foreground: #b4b4d6;
+  --accent: #3b3b5c;
+  --accent-foreground: #fafaff;
+  --destructive: #c96d4a;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #6c6ca8;
+  --chart-1: #4d4dff;
+  --chart-2: #4fd1c5;
+  --chart-3: #fcd34d;
+  --chart-4: #7c3aed;
+  --chart-5: #eab308;
+  --sidebar: #2e2e4d;
+  --sidebar-foreground: #fafaff;
+  --sidebar-primary: #4d4dff;
+  --sidebar-primary-foreground: #fafaff;
+  --sidebar-accent: #3b3b5c;
+  --sidebar-accent-foreground: #fafaff;
+  --sidebar-border: #ffffff1a;
+  --sidebar-ring: #6c6ca8;
 }
 
 :root {
@@ -200,11 +200,12 @@
     border-color: var(--border);
     outline-color: var(--ring);
   }
+  
+}
 
-  body {
-    color: var(--foreground);
-    font-family: var(--font-display), sans-serif;
-  }
+body {
+  color: var(--foreground);
+  font-family: var(--font-display), sans-serif;
 }
 
 @layer base {
@@ -423,4 +424,54 @@
 
 .modern-calendar .rbc-event.event-social {
   background: linear-gradient(135deg, #c7d2fe 0%, #6366f1 100%);
+}
+
+/* Enhanced component-specific dark mode styles */
+[data-theme="dark"] [data-theme-dropdown-content] {
+  background-color: var(--card);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] [data-theme-dropdown-item]:hover {
+  background-color: var(--dark-hover-effect, rgba(255, 255, 255, 0.07));
+}
+
+[data-theme="dark"] [data-theme-dropdown-item]:focus {
+  background-color: var(--dark-active-effect, rgba(255, 255, 255, 0.1));
+}
+
+/* Enhanced button styles for dark mode */
+[data-theme="dark"] [data-slot="button"] {
+  transition: all 0.2s ease-in-out;
+}
+
+[data-theme="dark"] [data-slot="button"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] [data-slot="button"]:active {
+  transform: translateY(0);
+}
+
+/* Input and form fields in dark mode */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: var(--input);
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px var(--ring, rgba(140, 140, 250, 0.2));
+}
+
+/* Focus ring for accessibility in dark mode */
+[data-theme="dark"] :focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
