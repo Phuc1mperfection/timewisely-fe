@@ -77,9 +77,9 @@ export function DashboardContent() {
             <h1 className="text-3xl font-bold dark:text-white text-gray-900">
               Dashboard
             </h1>
-            <p className="text-[var(--wisely-gray)]">
+            <CardDescription>
               Welcome back! Here's your productivity overview.
-            </p>
+            </CardDescription>
           </div>
           <Button
             onClick={() => {

@@ -60,7 +60,7 @@ export function AppSidebar() {
         <div className="flex items-center space-x-2">
           <img src={Logo} alt="TimeWisely Logo" className="w-8 h-8" />
           {/* You can replace the logo with an SVG or any other image */}
-          <span className="text-xl font-bold text-[var(--wisely-gray)] dark:text-amber-100">TimeWisely</span>
+          <span className="text-xl font-bold text-[var(--wisely-gray)] dark:text-white">TimeWisely</span>
         </div>
       </SidebarHeader>
       <SidebarContent>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import type { Event } from "react-big-calendar";
+import { Card } from "../ui/card";
 
 type YearViewProps = {
   date: Date;
@@ -175,7 +176,7 @@ class YearView extends React.Component<YearViewProps> {
     }
 
     return (
-      <div className="w-full h-full flex flex-col p-3 bg-gray-50 overflow-y-auto">
+      <Card >
         {rows.map((row, idx) => (
           <div
             key={idx}
@@ -184,7 +185,7 @@ class YearView extends React.Component<YearViewProps> {
             {row}
           </div>
         ))}
-      </div>
+      </Card>
     );
   }
 }

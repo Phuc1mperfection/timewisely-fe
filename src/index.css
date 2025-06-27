@@ -224,9 +224,7 @@ body {
 }
 
 /* Toolbar Styling */
-.modern-calendar .rbc-toolbar {
-  @apply mb-6 p-4 bg-gradient-to-r from-purple-50 to-teal-50 rounded-xl border-0;
-}
+
 
 .modern-calendar .rbc-toolbar button {
   @apply bg-white border-0 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-purple-100 hover:text-purple-700 shadow-sm;
@@ -261,10 +259,6 @@ body {
 
 .modern-calendar .rbc-off-range-bg {
   @apply bg-gray-50/50;
-}
-
-.modern-calendar .rbc-today {
-  @apply bg-gradient-to-br from-purple-100 to-teal-100;
 }
 
 .modern-calendar .rbc-date-cell.rbc-selected {
@@ -475,4 +469,43 @@ body {
 [data-theme="dark"] :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+
+
+/* Modern Calendar Today Highlight */
+.light .modern-calendar .rbc-today {
+  @apply bg-gradient-to-br from-purple-100 to-teal-100;
+}
+.dark .modern-calendar .rbc-today {
+  @apply bg-gradient-to-br from-purple-900/90 to-slate-900;
+  color: #fff;
+}
+
+
+/* Dark mode for calendar grid lines and slots */
+.dark .modern-calendar .rbc-month-view,
+.dark .modern-calendar .rbc-time-view,
+.dark .modern-calendar .rbc-time-header,
+.dark .modern-calendar .rbc-time-content,
+.dark .modern-calendar .rbc-time-slot,
+.dark .modern-calendar .rbc-timeslot-group,
+.dark .modern-calendar .rbc-header,
+.dark .modern-calendar .rbc-agenda-table,
+.dark .modern-calendar .rbc-agenda-table tbody > tr > td {
+  border-color: #39395a !important;
+  background-color: transparent;
+}
+.dark .modern-calendar .rbc-time-slot {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 95%,
+  );
+}
+
+/* Hide half-hour divider line in time slots for both light and dark mode */
+.modern-calendar .rbc-time-slot:not(:first-child) {
+  border-top: none !important;
+  background-image: none !important;
 }

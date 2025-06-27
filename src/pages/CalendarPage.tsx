@@ -5,9 +5,6 @@ import { useState } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -68,12 +65,12 @@ const CalendarPage = () => {
       />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--wisely-dark)]">
+          {/* <h1 className="text-3xl font-bold ">
             Calendar
           </h1>
-          <p className="text-[var(--wisely-gray)]">
+          <CardDescription>
             Manage your schedule and activities - drag to reschedule!
-          </p>
+          </CardDescription> */}
         </div>
         <Button
           onClick={() => {
@@ -88,16 +85,7 @@ const CalendarPage = () => {
         </Button>
       </div>
 
-      <Card className="bg-white shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-[var(--wisely-dark)]">
-            Your Schedule
-          </CardTitle>
-          <CardDescription className="text-[var(--wisely-gray)]">
-            Click on any time slot to create an activity, click existing
-            activities to edit them, or drag activities to reschedule.
-          </CardDescription>
-        </CardHeader>
+      <Card>
         <CardContent>
           <div className="h-[900px]">
             <ScheduleCalendar
