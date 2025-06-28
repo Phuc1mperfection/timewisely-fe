@@ -156,16 +156,16 @@ export function EventModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
-      <DialogContent className="sm:max-w-[700px] bg-white">
+      <DialogContent className="sm:max-w-[700px] ">
         <DialogHeader>
-          <DialogTitle className="text-[var(--wisely-dark)]">
+          <DialogTitle >
             {event ? "Edit Activity" : "Create New Activity"}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           {/* Thời gian bắt đầu/kết thúc */}
           <div className="space-y-2">
-            <Label className="text-[var(--wisely-dark)]">Time</Label>
+            <Label>Time</Label>
             <div className="flex space-x-2 items-center">
               {/* Start Date Picker */}
               <Popover>
@@ -177,7 +177,7 @@ export function EventModal({
                       "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    <CalendarIcon className="mr-2 h-4 w-4 " />
                     {start ? format(start, "PPP") : <span>Pick start</span>}
                   </Button>
                 </PopoverTrigger>
@@ -201,7 +201,7 @@ export function EventModal({
                       setStart(new Date(d));
                     }
                   }}
-                  className="w-30 min-w-0"
+                  className="w-30 min-w-0 "
                 />
               )}
               <span className="self-center">-</span>
@@ -212,7 +212,7 @@ export function EventModal({
                     variant="outline"
                     data-empty={!end}
                     className={cn(
-                      "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal"
+                      "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal "
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -230,7 +230,7 @@ export function EventModal({
               {!allDay && (
                 <Input
                   type="time"
-                  value={end ? format(end, "HH:mm") : ""}
+                  defaultValue={end ? format(end, "HH:mm") : ""}
                   onChange={(e) => {
                     if (end && e.target.value) {
                       const [h, m] = e.target.value.split(":");
@@ -244,14 +244,14 @@ export function EventModal({
               )}
             </div>
             {allDay && (
-              <div className="text-xs text-[var(--wisely-gray)]">
+              <div className="text-xs ">
                 All day: chỉ chọn ngày, không chọn giờ phút.
               </div>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-[var(--wisely-dark)]">
+            <Label htmlFor="title">
               Event Title
             </Label>
             <Input
@@ -264,7 +264,7 @@ export function EventModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-[var(--wisely-dark)]">
+            <Label htmlFor="description">
               Description (Optional)
             </Label>
             <Textarea
@@ -278,7 +278,7 @@ export function EventModal({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-[var(--wisely-dark)]">Color</Label>
+            <Label>Color</Label>
             <div className="flex items-center space-x-2">
               {colorOptions.map((option) => (
                 <button
@@ -339,13 +339,13 @@ export function EventModal({
               checked={allDay}
               onCheckedChange={(v) => setAllDay(!!v)}
             />
-            <Label htmlFor="allDay" className="text-[var(--wisely-dark)]">
+            <Label htmlFor="allDay">
               All day
             </Label>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location" className="text-[var(--wisely-dark)]">
+            <Label htmlFor="location">
               Location
             </Label>
             <Input
@@ -357,7 +357,7 @@ export function EventModal({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="goalTag" className="text-[var(--wisely-dark)]">
+            <Label htmlFor="goalTag">
               Goal Tag
             </Label>
             <Input
@@ -374,7 +374,7 @@ export function EventModal({
               checked={completed}
               onCheckedChange={(v) => setCompleted(!!v)}
             />
-            <Label htmlFor="completed" className="text-[var(--wisely-dark)]">
+            <Label htmlFor="completed">
               Completed
             </Label>
           </div>

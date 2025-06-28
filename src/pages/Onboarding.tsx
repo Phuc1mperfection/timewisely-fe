@@ -52,21 +52,7 @@ const Onboarding = () => {
   useEffect(() => {
     fetchSurveyQuestions().then((data) => {
       setQuestions([
-        ...data,
-        {
-          key: "readingNow",
-          label: "Bạn có đang đọc sách không?",
-          type: "radio",
-          options: ["Có", "Không"],
-          required: false,
-        },
-        {
-          key: "bookName",
-          label: "Nếu có, tên sách là gì?",
-          type: "text",
-          required: false,
-          placeholder: "Nhập tên sách...",
-        },
+        ...data
       ]);
     });
   }, []);
@@ -213,10 +199,10 @@ const Onboarding = () => {
       <div className="w-full max-w-2xl">
         <Card className="animate-fade-in bg-white shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-[var(--wisely-dark)]">
+            <CardTitle >
               Let's personalize your TimeWisely experience
             </CardTitle>
-            <CardDescription className="text-[var(--wisely-gray)]">
+            <CardDescription>
               Help us understand your preferences so we can suggest the perfect
               activities for you.
             </CardDescription>
@@ -231,7 +217,7 @@ const Onboarding = () => {
                     className={`w-3 h-3 rounded-full ${
                       stepNumber <= step
                         ? "bg-[var(--wisely-purple)]"
-                        : "bg-gray-300"
+                        : "bg-gray-300 dark:bg-amber-900"
                     }`}
                   />
                 ))}

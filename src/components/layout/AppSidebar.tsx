@@ -55,17 +55,17 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="">
+    <Sidebar>
       <SidebarHeader className="p-6">
         <div className="flex items-center space-x-2">
           <img src={Logo} alt="TimeWisely Logo" className="w-8 h-8" />
           {/* You can replace the logo with an SVG or any other image */}
-          <span className="text-xl font-bold text-[var(--wisely-gray)] dark:text-white">TimeWisely</span>
+          <span className="text-xl font-bold  dark:text-white">TimeWisely</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[var(--wisely-gray)]">
+          <SidebarGroupLabel >
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -81,8 +81,8 @@ export function AppSidebar() {
                         className={
                           "flex items-center space-x-3 p-3 rounded-lg transition-colors group w-full text-left " +
                           (isActive
-                            ? " text-[var(--wisely-purple)] font-semibold"
-                            : "hover:bg-purple-500 group-hover:text-[var(--wisely-purple)] hover:cursor-pointer")
+                            ? " text-[var(--wisely-purple)] font-semibold "
+                            : "hover:bg-purple-500 hover:text-[var(--wisely-purple)] hover:cursor-pointer")
                         }
                         aria-current={isActive ? "page" : undefined}
                       >
@@ -91,14 +91,14 @@ export function AppSidebar() {
                             "w-5 h-5 " +
                             (isActive
                               ? "text-[var(--wisely-purple)]"
-                              : "text-[var(--wisely-gray)] group-hover:text-[var(--wisely-purple)]")
+                              : "text-[var(--wisely-gray)] hover:text-[var(--wisely-purple)]")
                           }
                         />
                         <span
                           className={
                             isActive
                               ? "text-[var(--wisely-purple)]"
-                              : "text-[var(--wisely-gray)] group-hover:text-[var(--wisely-purple)]"
+                              : "text-[var(--wisely-gray)] hover:text-[var(--wisely-purple)]"
                           }
                         >
                           {item.title}
@@ -116,7 +116,7 @@ export function AppSidebar() {
       <SidebarFooter >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton className="flex items-center space-x-3 p-3 bg-purple-100 hover:cursor-pointer hover:bg-purple-300">
+              <SidebarMenuButton className="bg-purple-100 hover:cursor-pointer hover:bg-purple-300">
                 <div className=" bg-wisely-purple rounded-full flex items-center justify-center">
                   {/* <span className="text-white text-sm font-medium">
                     {(
@@ -128,12 +128,12 @@ export function AppSidebar() {
                   </span> */}
                 </div>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-sm font-medium text-[var(--wisely-gray)] truncate">
+                  <p className="text-sm font-medium text-[var(--wisely-gray)] ">
                     {user?.fullName || user?.username || user?.email}
                   </p>
                 
                 </div>
-                <ChevronUp className="" />
+                <ChevronUp className="text-blue-950" />
 
               </SidebarMenuButton>
             </DropdownMenuTrigger>
