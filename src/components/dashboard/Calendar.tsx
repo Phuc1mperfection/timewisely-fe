@@ -36,6 +36,7 @@ interface ScheduleCalendarProps {
   onNavigate?: (date: Date) => void;
   onEventDelete?: (event: UserActivity) => void; // <-- Add this prop
   className?: string;
+  
 }
 
 export function ScheduleCalendar({
@@ -114,7 +115,7 @@ export function ScheduleCalendar({
             label={toolbarProps.label}
             onNavigate={toolbarProps.onNavigate}
             onView={toolbarProps.onView}
-            views={toolbarProps.views}
+            views={Object.keys(customViews)}
             view={toolbarProps.view}
           />
         ),

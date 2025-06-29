@@ -16,7 +16,7 @@ import {
   User,
   Home,
   Sparkles,
-  Target,
+CircleCheckBig,
   LayoutDashboard,
   ChevronUp,
 } from "lucide-react";
@@ -34,7 +34,8 @@ const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
-  { title: "Goals", url: "/dashboard/goals", icon: Target },
+  { title: "Activities", url: "/dashboard/activities", icon: CircleCheckBig },
+
   {
     title: "AI Suggestions",
     url: "/dashboard/ai-suggestions",
@@ -89,14 +90,14 @@ export function AppSidebar() {
                             "w-5 h-5 " +
                             (isActive
                               ? "text-[var(--wisely-purple)]"
-                              : "text-[var(--wisely-gray)] hover:text-[var(--wisely-purple)]")
+                              : "hover:text-[var(--wisely-purple)]")
                           }
                         />
                         <span
                           className={
                             isActive
                               ? "text-[var(--wisely-purple)]"
-                              : "text-[var(--wisely-gray)] hover:text-[var(--wisely-purple)]"
+                              : "hover:text-[var(--wisely-purple)]"
                           }
                         >
                           {item.title}

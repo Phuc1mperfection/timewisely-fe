@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   getActivities,
   createActivity,
@@ -60,20 +60,22 @@ export function useUserActivities() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchActivities = useCallback(async () => {
     setLoading(true);
-    getActivities()
-      .then((data) => {
-        setActivities(data.map(mapApiToUserActivity));
-        setError(null);
-        // console.log("Activities loaded successfully");
-      })
-      .catch(() => {
-        setError("Failed to load activities");
-        console.error("Error loading activities");
-      })
-      .finally(() => setLoading(false));
+    try {
+      const data = await getActivities();
+      setActivities(data.map(mapApiToUserActivity));
+      setError(null);
+    } catch {
+      setError("Failed to load activities");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedSlot(slotInfo);
@@ -128,18 +130,14 @@ export function useUserActivities() {
     try {
       if (selectedActivity) {
         await updateActivity(selectedActivity.id, mapUserActivityToApi({ ...selectedActivity, ...activityData }));
-        setActivities((prev) =>
-          prev.map((activity) =>
-            activity.id === selectedActivity.id ? { ...activity, ...activityData } : activity
-          )
-        );
+        await fetchActivities();
         setSuccess("Activity updated");
       } else if (selectedSlot) {
         const start = activityData.start || selectedSlot.start;
         const end = activityData.end || selectedSlot.end;
         const apiData = mapUserActivityToApi({ ...activityData, start, end });
-        const created = await createActivity(apiData);
-        setActivities((prev) => [...prev, mapApiToUserActivity(created)]);
+        await createActivity(apiData);
+        await fetchActivities();
         setSuccess("Activity created");
       }
       setIsActivityModalOpen(false);
@@ -201,5 +199,6 @@ export function useUserActivities() {
     success,
     setError,
     setSuccess,
+    fetchActivities,
   };
 }
