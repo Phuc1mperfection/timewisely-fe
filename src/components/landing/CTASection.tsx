@@ -1,49 +1,159 @@
+import React from "react";
+import { ArrowRight, Star, Users, Clock } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CTASection = ({ GlassCard }: { GlassCard: any }) => {
-  const navigate = useNavigate();
-  return (
-    <section className="container mx-auto px-6 py-16 relative z-10">
-      <GlassCard
-        className="bg-gradient-to-r from-[var(--wisely-purple)]/20 via-[var(--wisely-pink)]/20 to-[var(--wisely-mint)]/20 text-center p-12"
-        delay={2}
+interface SplitTextProps {
+  text: string;
+  className?: string;
+}
+
+const SplitText = ({ text, className = "" }: SplitTextProps) => (
+  <span className={className}>
+    {text.split("").map((char, index) => (
+      <motion.span
+        key={index}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 0.5,
+          delay: index * 0.03,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="inline-block"
       >
-        <motion.h2
-          className="text-4xl font-bold mb-4 text-[var(--wisely-dark)]"
+        {char === " " ? "\u00A0" : char}
+      </motion.span>
+    ))}
+  </span>
+);
+
+const CTASection: React.FC = () => {
+  return (
+    <section className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+          }}
+        />
+      </div>
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Social proof */}
+        <motion.div
+          className="flex justify-center items-center space-x-8 mb-12"
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2.2 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
         >
-          Ready to transform your time management?
-        </motion.h2>
-        <motion.p
-          className="text-lg mb-8 text-[var(--wisely-gray)] max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2.4 }}
-        >
-          Join thousands of users who have already optimized their schedules
-          with TimeWisely.
-        </motion.p>
+          <div className="flex items-center">
+            <Star className="h-5 w-5 text-yellow-500 mr-2" />
+            <span className="text-gray-600">4.9/5 rating</span>
+          </div>
+          <div className="flex items-center">
+            <Users className="h-5 w-5 text-purple-600 mr-2" />
+            <span className="text-gray-600">50K+ users</span>
+          </div>
+          <div className="flex items-center">
+            <Clock className="h-5 w-5 text-indigo-600 mr-2" />
+            <span className="text-gray-600">2M+ hours managed</span>
+          </div>
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2.6 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="reveal"
         >
-          <Button
-            size="lg"
-            onClick={() => navigate("/auth")}
-            className="bg-[var(--wisely-purple)] hover:bg-[var(--wisely-pink)] text-[var(--wisely-white)] px-8 py-4 text-lg font-semibold shadow-xl"
+          <h2 className="text-4xl lg:text-6xl font-bold mb-6">
+            <SplitText text="Ready to Transform" className="text-4xl lg:text-6xl font-bold" />
+            <span className="gradient-text block">Your Productivity?</span>
+          </h2>
+          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+            Join thousands of professionals who have already discovered the power
+            of intelligent time management with TimeWisely.
+          </p>
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
           >
-            Start Your Free Trial
-          </Button>
+            <motion.button
+              className="btn-primary px-10 py-5 rounded-full text-white font-semibold text-xl flex items-center group"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            >
+              Start Free Today
+              <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+            </motion.button>
+            <div className="flex items-center text-gray-500">
+              <span className="mr-2">No credit card required</span>
+              <div className="w-2 h-2 bg-green-500 rounded-full" />
+            </div>
+          </motion.div>
+          {/* Feature highlights */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: { staggerChildren: 0.15 },
+              },
+            }}
+          >
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Free Forever Plan</h3>
+              <p className="text-gray-600 text-sm">Core features always free</p>
+            </motion.div>
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Team Collaboration</h3>
+              <p className="text-gray-600 text-sm">Share schedules & sync goals</p>
+            </motion.div>
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Premium Support</h3>
+              <p className="text-gray-600 text-sm">24/7 help when you need it</p>
+            </motion.div>
+          </motion.div>
         </motion.div>
-      </GlassCard>
+      </div>
     </section>
   );
 };

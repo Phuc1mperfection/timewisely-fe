@@ -1,129 +1,120 @@
-import React from "react";
-import ClockFace from "@/assets/clock-face.svg";
-import ClockHourHand from "@/assets/clock-hour-hand.svg";
-import ClockMinuteHand from "@/assets/clock-minute-hand.svg";
-import ClockSecondHand from "@/assets/clock-second-hand.svg";
-import ClockCenterDot from "@/assets/clock-center-dot.svg";
+import React, { useEffect, useState } from "react";
 
-const AnalogClock = () => {
-  const now = new Date();
-  const [time, setTime] = React.useState(now);
+const AnalogClock: React.FC = () => {
+  const [time, setTime] = useState(new Date());
 
-  React.useEffect(() => {
-    const interval = setInterval(() => {
+  useEffect(() => {
+    const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
-    return () => clearInterval(interval);
+
+    return () => clearInterval(timer);
   }, []);
 
-  const sec = time.getSeconds();
-  const min = time.getMinutes();
-  const hour = time.getHours();
+  const getHourAngle = () => {
+    const hours = time.getHours() % 12;
+    const minutes = time.getMinutes();
+    return hours * 30 + minutes * 0.5;
+  };
 
-  const secAngle = sec * 6;
-  const minAngle = min * 6 + sec * 0.1;
-  const hourAngle = (hour % 12) * 30 + min * 0.5;
+  const getMinuteAngle = () => {
+    return time.getMinutes() * 6;
+  };
 
-  // Render hour marks
-  const hourMarks = Array.from({ length: 12 }).map((_, i) => {
-    const angle = i * 30 * (Math.PI / 180);
-    const r1 = 74,
-      r2 = 80,
-      cx = 80,
-      cy = 80;
-    const x1 = cx + r1 * Math.sin(angle);
-    const y1 = cy - r1 * Math.cos(angle);
-    const x2 = cx + r2 * Math.sin(angle);
-    const y2 = cy - r2 * Math.cos(angle);
-    return (
-      <line
+  const getSecondAngle = () => {
+    return time.getSeconds() * 6;
+  };
+
+  const generateHourMarks = () => {
+    return Array.from({ length: 12 }, (_, i) => (
+      <div
         key={i}
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        stroke="#fff"
-        strokeWidth={i % 3 === 0 ? 4 : 2}
+        className="absolute w-1 h-8 bg-gradient-to-b from-purple-400 to-indigo-600 rounded-full"
+        style={{
+          top: "10px",
+          left: "50%",
+          transformOrigin: "50% 140px",
+          transform: `translateX(-50%) rotate(${i * 30}deg)`,
+        }}
       />
-    );
-  });
+    ));
+  };
 
-  // Render hour numbers
-  const hourNumbers = Array.from({ length: 12 }).map((_, i) => {
-    const number = i === 0 ? 12 : i;
-    const angle = (i * 30 - 60) * (Math.PI / 180); // -60 to start at top
-    const r = 62; // radius for numbers
-    const cx = 80 + r * Math.cos(angle);
-    const cy = 80 + r * Math.sin(angle) + 6; // +6 to center vertically
-    return (
-      <text
-        key={number}
-        x={cx}
-        y={cy}
-        textAnchor="middle"
-        fontSize="12"
-        fontWeight="bold"
-        fill="#a78bcf"
-        fontFamily="inherit"
-        style={{ userSelect: "none" }}
-      >
-        {number}
-      </text>
-    );
-  });
+  const generateMinuteMarks = () => {
+    return Array.from({ length: 60 }, (_, i) => {
+      if (i % 5 !== 0) {
+        return (
+          <div
+            key={i}
+            className="absolute w-0.5 h-4 bg-gray-400 rounded-full opacity-60"
+            style={{
+              top: "20px",
+              left: "50%",
+              transformOrigin: "50% 130px",
+              transform: `translateX(-50%) rotate(${i * 6}deg)`,
+            }}
+          />
+        );
+      }
+      return null;
+    });
+  };
 
   return (
-    <svg
-      width="320"
-      height="320"
-      viewBox="0 0 160 160"
-      className="mx-auto mb-6 drop-shadow-xl"
-    >
-      <image href={ClockFace} x="0" y="0" width="160" height="160" />
-      {/* Hour marks */}
-      {hourMarks}
-      {/* Hour numbers */}
-      {hourNumbers}
-      {/* Hour hand */}
-      <image
-        href={ClockHourHand}
-        x="0"
-        y="0"
-        width="160"
-        height="160"
-        style={{
-          transform: `rotate(${hourAngle}deg)`,
-          transformOrigin: "80px 80px",
-        }}
-      />
-      {/* Minute hand */}
-      <image
-        href={ClockMinuteHand}
-        x="0"
-        y="0"
-        width="160"
-        height="160"
-        style={{
-          transform: `rotate(${minAngle}deg)`,
-          transformOrigin: "80px 80px"
-          ,
-        }}
-      />
-      {/* Second hand */}
-      <image
-        href={ClockSecondHand}
-        x="0"
-        y="0"
-        width="160"
-        height="160"
-        style={{
-          transform: `rotate(${secAngle}deg)`,
-          transformOrigin: "80px 80px",
-        }}
-      />
-      {/* Center dot */}
-      <image href={ClockCenterDot} x="0" y="0" width="160" height="160" />
-    </svg>
+    <div className="relative w-80 h-80 mx-auto">
+      {/* Clock outer ring */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/20 to-indigo-600/20  border-2 border-white/30 clock-face">
+        {/* Hour marks */}
+        {generateHourMarks()}
+        {/* Minute marks */}
+        {generateMinuteMarks()}
+
+        {/* Clock center */}
+        <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-30 shadow-lg" />
+
+        {/* Hour hand */}
+        <div
+          className="absolute top-1/2 left-1/2 w-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-full shadow-lg z-20 clock-hand"
+          style={{
+            height: "80px",
+            transform: `translate(-50%, -100%) rotate(${getHourAngle()}deg)`,
+            transformOrigin: "50% 100%",
+          }}
+        />
+
+        {/* Minute hand */}
+        <div
+          className="absolute top-1/2 left-1/2 w-0.5 bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-full shadow-lg z-20 clock-hand"
+          style={{
+            height: "110px",
+            transform: `translate(-50%, -100%) rotate(${getMinuteAngle()}deg)`,
+            transformOrigin: "50% 100%",
+          }}
+        />
+
+        {/* Second hand */}
+        <div
+          className="absolute top-1/2 left-1/2 w-0.5 bg-gradient-to-t from-red-500 to-pink-400 rounded-full shadow-lg z-20 clock-hand"
+          style={{
+            height: "120px",
+            transform: `translate(-50%, -100%) rotate(${getSecondAngle()}deg)`,
+            transformOrigin: "50% 100%",
+          }}
+        />
+
+        {/* Digital time display */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2  px-4 py-2 rounded-lg">
+          <span className="text-sm font-mono text-white/90">
+            {time.toLocaleTimeString()}
+          </span>
+        </div>
+      </div>
+
+      {/* Floating decorative elements */}
+      <div className="floating-shape absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-mint-400 to-mint-500 rounded-full opacity-60" />
+      <div className="floating-shape absolute -bottom-6 -left-6 w-6 h-6 bg-gradient-to-br from-pink-400 to-pink-500 rounded-lg opacity-60" />
+      <div className="floating-shape absolute top-10 -left-8 w-4 h-4 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full opacity-60" />
+    </div>
   );
 };
 

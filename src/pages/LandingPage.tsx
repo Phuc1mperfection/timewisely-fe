@@ -9,6 +9,7 @@ import HeroSection from "@/components/landing/HeroSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import CTASection from "@/components/landing/CTASection";
 import FooterSection from "@/components/layout/Footer";
+import PersonalizationSection from "@/components/landing/PersonalizeSection";
 const GlassCard = ({
   children,
   className = "",
@@ -90,11 +91,13 @@ const LandingPage = () => {
       <AnimatedBackground mousePosition={mousePosition} />
       {/* Hero Section */}
       
-      <HeroSection mousePosition={mousePosition} />
+      <HeroSection  />
       {/* Features Grid */}
       <FeaturesSection features={features} GlassCard={GlassCard} />
+      {/* Personalize Section */}
+      <PersonalizationSection />
       {/* CTA Section */}
-      <CTASection GlassCard={GlassCard} />
+      <CTASection  />
       {/* Footer */}
       <FooterSection />
     </div>

@@ -3,6 +3,9 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant light (&:is(:not(.dark) *));
 
+@theme  {
+  --font-display: "Satoshi", "sans-serif";
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -39,6 +42,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
 }
 :root {
   --radius: 0.625rem;
@@ -205,10 +209,7 @@
   
 }
 
-body {
-  color: var(--foreground);
-  font-family: var(--font-display), sans-serif;
-}
+
 
 @layer base {
   * {
@@ -508,4 +509,211 @@ body {
 .modern-calendar .rbc-time-slot:not(:first-child) {
   border-top: none !important;
   background-image: none !important;
+}
+
+/* Custom scrollbar styles */
+.modern-calendar::-webkit-scrollbar {
+  width: 8px;
+}
+.modern-calendar::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* Primary Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--wisely-purple), var(--wisely-indigo));
+  background-size: 200% 200%;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+}
+.clock-face {
+  animation: subtle-pulse 4s ease-in-out infinite;
+}
+
+.clock-hand {
+  transform-origin: 50% 85%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hour-hand {
+  animation: rotate-hour 43200s linear infinite; /* 12 hours */
+}
+
+.minute-hand {
+  animation: rotate-minute 3600s linear infinite; /* 60 minutes */
+}
+
+.second-hand {
+  animation: rotate-second 60s linear infinite; /* 60 seconds */
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+@keyframes rotate-hour {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-minute {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-second {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* TimeWisely Authentication Animations */
+
+
+
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.auth-gradient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--wisely-purple),
+    var(--wisely-dark),
+    var(--wisely-indigo),
+    var(--wisely-darkYellow),
+    var(--wisely-purple),
+    var(--wisely-dark)
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 9s ease infinite;
+}
+
+/* Glassmorphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--wisely-mint);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+}
+
+/* Background clock animation */
+.bg-clock {
+  position: absolute;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.clock-hand {
+  transform-origin: 50% 85%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading skeleton animations */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.1) 25%,
+    rgba(94, 234, 212, 0.2) 50%,
+    rgba(139, 92, 246, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+
+/* Social button hover effects */
+.social-btn {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.social-btn:hover::before {
+  left: 100%;
+}
+
+/* Floating particles */
+@keyframes float-particle {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
+.floating-particle {
+  animation: float-particle 6s ease-in-out infinite;
+}
+
+.floating-particle:nth-child(2) { animation-delay: 2s; }
+.floating-particle:nth-child(3) { animation-delay: 4s; }
+
+/* Form validation states */
+.input-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.input-success {
+  border-color: var(--wisely-mint);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bg-clock {
+    opacity: 0.05;
+    transform: scale(0.8);
+  }
 }

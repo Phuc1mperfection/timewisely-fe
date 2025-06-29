@@ -1,6 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAuth } from "../../contexts/useAuth";
 import {
   DropdownMenu,
@@ -9,34 +10,61 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
   return (
     <motion.header
-      className="container mx-auto px-6 py-6 relative z-10"
+      className="fixed top-0 left-0 right-0 z-50 bg-white/20 bg-opacity-10 backdrop-blur-md border border-white/10 border-opacity-20 border-b "
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <nav className=" bg-white/10 border border-white/20 rounded-2xl px-6 py-4 shadow-xl transition-transform duration-200">
-        <div className="flex items-center justify-between">
-          {/* Logo + Brand */}
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <button
-            className="flex items-center space-x-3 group bg-transparent border-none p-0 focus:outline-none group-hover:scale-110"
+            className="flex items-center space-x-2 group bg-transparent border-none p-0 focus:outline-none"
             onClick={() => navigate("/")}
             aria-label="Go to Home"
           >
-            <img
-              src={"/src/assets/icon.svg"}
-              alt="Logo"
-              className="w-10 h-10 transition-transform duration-200 "
-            />
-            <span className="text-2xl text-[var(--wisely-dark)] tracking-tight font-[Open_Sans] group-hover:text-[var(--wisely-purple)]  transition-transform duration-200 group-hover:scale-110 ">
+            <div className="p-1.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-100">
+              <img
+                src={"/src/assets/icon.svg"}
+                alt="Logo"
+                className="w-10 h-10 transition-transform duration-200 "
+              />
+            </div>
+            <span className="text-2xl text-[var(--wisely-dark)] tracking-tight font-[Open_Sans] group-hover:text-[var(--wisely-purple)] transition-transform duration-200 group-hover:scale-110 ">
               Time.Wisely
-            </span>
+            </span>{" "}
           </button>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <a
+              href="#features"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
+              Features
+            </a>
+            <a
+              href="#pricing"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
+              Pricing
+            </a>
+            <a
+              href="#about"
+              className="text-gray-700 hover:text-purple-600 transition-colors"
+            >
+              About
+            </a>
+            
+          </div>
+
           {/* User Dropdown hoặc Sign In */}
           {user ? (
             <DropdownMenu>
@@ -54,7 +82,10 @@ const Navbar = () => {
                   />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 text-[var(--wisely-dark)] bg-white/90  border border-white/20 rounded-lg shadow-lg">
+              <DropdownMenuContent
+                align="end"
+                className="w-48 text-[var(--wisely-dark)] bg-white/90  border border-white/20 rounded-lg shadow-lg"
+              >
                 <DropdownMenuItem
                   onClick={() => {
                     navigate("app/dashboard");
@@ -76,16 +107,66 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/auth")}
-                className="backdrop-blur-md bg-white/10 border-white/30 hover:bg-[var(--wisely-purple)] hover:text-white transition-all duration-300 px-6 py-2 font-semibold rounded-lg shadow-sm"
-              >
-                Sign In
-              </Button>
+               <button className="w-full btn-primary px-6 py-3 rounded-full text-white font-medium mt-4"
+                 onClick={() => {
+                  navigate("/auth");
+                }}>
+                Get Started
+                
+              </button>
             </motion.div>
           )}
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 right-0 glass-dark border-t border-white/10">
+            <div className="px-4 py-6 space-y-4">
+              <a
+                href="#features"
+                className="block text-white hover:text-purple-400 transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#pricing"
+                className="block text-white hover:text-purple-400 transition-colors"
+              >
+                Pricing
+              </a>
+              <a
+                href="#about"
+                className="block text-white hover:text-purple-400 transition-colors"
+              >
+                About
+              </a>
+              <button
+                className="w-full btn-primary px-6 py-3 rounded-full text-white font-medium mt-4"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate("/auth");
+                }}
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
     </motion.header>
   );
