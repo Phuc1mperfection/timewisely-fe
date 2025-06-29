@@ -21,18 +21,14 @@ export const PrivateRoute = ({
     );
 
   if (onlyGuest && isAuthenticated) {
-    return <Navigate to="/app/dashboard" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   if (!isAuthenticated && !onlyGuest) return <Navigate to="/auth" replace />;
 
-  // Nếu chưa hoàn thành survey, chỉ cho phép vào /app/onboarding
-  if (
-    user &&
-    !user.hasCompletedSurvey &&
-    location.pathname !== "/app/onboarding"
-  ) {
-    return <Navigate to="/app/onboarding" replace />;
+  // Nếu chưa hoàn thành survey, chỉ cho phép vào /onboarding
+  if (user && !user.hasCompletedSurvey && location.pathname !== "/onboarding") {
+    return <Navigate to="/onboarding" replace />;
   }
 
   return <>{children}</>;

@@ -38,7 +38,7 @@ function App() {
               />
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route
-                path="/app/onboarding"
+                path="/onboarding"
                 element={
                   <PrivateRoute>
                     <Onboarding />
@@ -46,7 +46,7 @@ function App() {
                 }
               />
               <Route
-                path="/app/dashboard"
+                path="/dashboard"
                 element={
                   <PrivateRoute>
                     <DashboardLayout children={undefined} />
@@ -61,18 +61,14 @@ function App() {
                 <Route path="settings" element={<div>Settings Page</div>} />
                 {/* ...thêm các page con khác tại đây */}
               </Route>
-              <Route
-                path="/dashboard"
-                element={<Navigate to="/app/dashboard" replace />}
-              />
-              {/* Redirect /app và /app/* về dashboard nếu không khớp route con */}
+              {/* Redirect các route cũ về route mới nếu cần */}
               <Route
                 path="/app"
-                element={<Navigate to="/app/dashboard" replace />}
+                element={<Navigate to="/dashboard" replace />}
               />
               <Route
                 path="/app/*"
-                element={<Navigate to="/app/dashboard" replace />}
+                element={<Navigate to="/dashboard" replace />}
               />
               {/* Thêm các route khác tại đây nếu cần */}
               <Route path="*" element={<NotFound />} />

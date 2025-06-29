@@ -99,7 +99,7 @@ const Onboarding = () => {
       );
     }
     success("Your preferences have been saved successfully!");
-    navigate("/app/dashboard");
+    navigate("/dashboard");
   };
 
   // Render form động dựa trên questions

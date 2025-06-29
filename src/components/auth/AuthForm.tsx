@@ -30,11 +30,11 @@ const AuthForm = () => {
       if (isLogin) {
         await login(email, password);
         success("Welcome back! You've successfully signed in to TimeWisely.");
-        navigate("/app", { replace: true });
+        navigate("/dashboard", { replace: true });
       } else {
         await register(email, name, password);
         success("Account created! Welcome to TimeWisely, let's get started.");
-        navigate("/app", { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     } catch (err) {
       console.error(err);
@@ -120,7 +120,7 @@ const AuthForm = () => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setEmail(e.target.value)
                   }
-                    className="text-[var(--wisely-dark)] dark:text-[var(--wisely-dark)]"
+                  className="text-[var(--wisely-dark)] dark:text-[var(--wisely-dark)]"
                   autoComplete="email"
                   required
                 />
