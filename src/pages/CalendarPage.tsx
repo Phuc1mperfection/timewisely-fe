@@ -1,16 +1,13 @@
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
-import { useUserActivities } from "@/hooks/useUserActivities";
+import { useActivities } from "@/hooks/useActivity";
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { EventModal } from "@/components/dashboard/EventModal";
+import { Card, CardContent } from "@/components/ui/card";
+import { NewActivityButton } from "@/components/activities/NewActivityButton";
+import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import type { View } from "react-big-calendar";
+import type { Activity } from "@/interfaces/Activity";
 
 const CalendarPage = () => {
   const {
@@ -30,16 +27,19 @@ const CalendarPage = () => {
     success,
     setError,
     setSuccess,
-    setSelectedActivity, // Import setSelectedActivity
-  } = useUserActivities();
+  } = useActivities();
   const [view, setView] = useState<View>("week");
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
   const [filterColor, setFilterColor] = useState<string | null>(null);
   const [filterAllDay, setFilterAllDay] = useState<null | boolean>(null);
 
+  // Helper: convert {startTime, endTime} to {start, end}
+  const slotToLegacy = (slot: { startTime: Date; endTime: Date } | null) =>
+    slot ? { start: slot.startTime, end: slot.endTime } : null;
+
   // Filtered activities
-  const filteredActivities = activities.filter((a) => {
+  const filteredActivities = activities.filter((a: Activity) => {
     if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
       return false;
     if (filterColor && a.color !== filterColor) return false;
@@ -55,56 +55,49 @@ const CalendarPage = () => {
         onResetError={() => setError(null)}
         onResetSuccess={() => setSuccess(null)}
       />
-      <ActivityFilterBar
-        search={search}
-        setSearch={setSearch}
-        filterColor={filterColor}
-        setFilterColor={setFilterColor}
-        filterAllDay={filterAllDay}
-        setFilterAllDay={setFilterAllDay}
-      />
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <ActivityFilterBar
+          search={search}
+          setSearch={setSearch}
+          filterColor={filterColor}
+          setFilterColor={setFilterColor}
+          filterAllDay={filterAllDay}
+          setFilterAllDay={setFilterAllDay}
+        />
         <div>
-          {/* <h1 className="text-3xl font-bold ">
-            Calendar
-          </h1>
-          <CardDescription>
-            Manage your schedule and activities - drag to reschedule!
-          </CardDescription> */}
+          <NewActivityButton
+            onOpenModal={() => {
+              handleSelectSlot({
+                startTime: new Date(),
+                endTime: new Date(Date.now() + 3600000),
+              });
+            }}
+          />
         </div>
-        <Button
-          onClick={() => {
-            handleSelectSlot({
-              start: new Date(),
-              end: new Date(Date.now() + 3600000),
-            });
-          }}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          New Activity
-        </Button>
       </div>
 
       <Card>
         <CardContent>
           <div className="h-[900px]">
             <ScheduleCalendar
-            className="modern-calendar"
+              className="modern-calendar"
               events={filteredActivities}
-              onSelectSlot={handleSelectSlot}
+              onSelectSlot={(slot) =>
+                handleSelectSlot({ startTime: slot.start, endTime: slot.end })
+              }
               onSelectEvent={handleSelectActivity}
               onEventDrop={(args) =>
                 handleActivityDrop({
                   activity: args.event,
-                  start: args.start,
-                  end: args.end,
+                  startTime: args.start,
+                  endTime: args.end,
                 })
               }
               onEventResize={(args) =>
                 handleActivityResize({
                   activity: args.event,
-                  start: args.start,
-                  end: args.end,
+                  startTime: args.start,
+                  endTime: args.end,
                 })
               }
               eventStyleGetter={activityStyleGetter}
@@ -112,23 +105,33 @@ const CalendarPage = () => {
               onView={setView}
               date={date}
               onNavigate={setDate}
-              onEventDelete={(event) => {
-                setSelectedActivity(event); // Use setSelectedActivity from useUserActivities
-                handleDeleteActivity();
+              onEventDelete={(activityId) => {
+                handleDeleteActivity(activityId);
               }}
-              
             />
           </div>
         </CardContent>
       </Card>
 
-      <EventModal
+      <ActivityDialog
         isOpen={isActivityModalOpen}
         onClose={() => setIsActivityModalOpen(false)}
-        event={selectedActivity}
-        timeSlot={selectedSlot}
+        event={
+          selectedActivity
+            ? {
+                ...selectedActivity,
+                start: selectedActivity.startTime,
+                end: selectedActivity.endTime,
+              }
+            : null
+        }
+        timeSlot={slotToLegacy(selectedSlot)}
         onSave={handleSaveActivity}
-        onDelete={handleDeleteActivity}
+        onDelete={() => {
+          if (selectedActivity) {
+            handleDeleteActivity(selectedActivity.id);
+          }
+        }}
       />
     </div>
   );

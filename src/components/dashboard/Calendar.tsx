@@ -4,17 +4,25 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import { CustomEventCard } from "@/components/dashboard/CustomEventCard";
-import EventWrapper from "@/components/dashboard/EventWrapper";
+import { CustomActivityCard } from "@/components/dashboard/CustomActivityCard";
+import ActivityPopover from "@/components/dashboard/ActivityPopover";
 import YearView from "./YearView";
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import { CustomToolbar } from "@/components/dashboard/CustomToolbar";
-import type { UserActivity } from "@/hooks/useUserActivities";
+import type { Activity } from "@/interfaces/Activity";
+import type { EventProps, ToolbarProps } from "react-big-calendar";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
-
+const formats = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dayFormat: (date: Date, culture: string | undefined, localizer: any) => {
+    const day = localizer.format(date, "DD", culture);
+    const weekday = localizer.format(date, "ddd", culture);
+    return `${day}\n${weekday}`;
+  },
+};
 interface ScheduleCalendarProps {
-  events: UserActivity[];
+  events: Activity[];
   onSelectSlot: (slotInfo: { start: Date; end: Date }) => void;
   onSelectEvent: (activity: object) => void;
   onEventDrop: (args: {
@@ -29,14 +37,12 @@ interface ScheduleCalendarProps {
   }) => void;
   eventStyleGetter: (activity: object) => { style: React.CSSProperties };
   views?: View[];
-  // Controlled view and date
   view?: View;
   onView?: (view: View) => void;
   date?: Date;
   onNavigate?: (date: Date) => void;
-  onEventDelete?: (event: UserActivity) => void; // <-- Add this prop
+onEventDelete?: (activityId: string) => void;
   className?: string;
-  
 }
 
 export function ScheduleCalendar({
@@ -53,7 +59,7 @@ export function ScheduleCalendar({
   onEventDelete,
   className = "",
 }: ScheduleCalendarProps) {
-  // Custom views object with YearView
+  // Memoize custom views
   const customViews = useMemo(
     () => ({
       month: true,
@@ -65,15 +71,52 @@ export function ScheduleCalendar({
     []
   );
 
+  // Memoize event component
+  const eventComponent = useCallback(
+    (props: EventProps<object>) => {
+      const activity = props.event as Activity;
+      const legacyEvent = {
+        ...activity,
+        start: activity.startTime,
+        end: activity.endTime,
+      };
+
+      return (
+        <ActivityPopover
+          onOpenEditDialog={() => onSelectEvent?.(activity)}
+        onDelete={() => {
+  onEventDelete?.(activity.id);
+}}
+        >
+          <CustomActivityCard activity={legacyEvent} />
+        </ActivityPopover>
+      );
+    },
+    [onSelectEvent, onEventDelete]
+  );
+
+  // Memoize toolbar component
+  const toolbarComponent = useCallback(
+    (toolbarProps: ToolbarProps) => (
+      <CustomToolbar
+        label={toolbarProps.label}
+        onNavigate={toolbarProps.onNavigate}
+        onView={toolbarProps.onView}
+        views={Object.keys(customViews)}
+        view={toolbarProps.view}
+      />
+    ),
+    [customViews]
+  );
+
   return (
     <DragAndDropCalendar
       className={className}
       localizer={localizer}
       events={events}
-      startAccessor={(activity) => (activity as UserActivity).start}
-      endAccessor={(activity) => (activity as UserActivity).end}
+      startAccessor={(activity) => (activity as Activity).startTime}
+      endAccessor={(activity) => (activity as Activity).endTime}
       onSelectSlot={onSelectSlot}
-      onSelectEvent={onSelectEvent}
       onEventDrop={onEventDrop}
       onEventResize={onEventResize}
       selectable
@@ -101,24 +144,11 @@ export function ScheduleCalendar({
         allDay: "All Day",
         date: "Date",
         time: "Time",
-        }}
+      }}
+      formats={formats}
       components={{
-        event: (props) => (
-          <EventWrapper
-            onDelete={() => onEventDelete?.(props.event as UserActivity)}
-          >
-            <CustomEventCard event={props.event as UserActivity} />
-          </EventWrapper>
-        ),
-        toolbar: (toolbarProps) => (
-          <CustomToolbar
-            label={toolbarProps.label}
-            onNavigate={toolbarProps.onNavigate}
-            onView={toolbarProps.onView}
-            views={Object.keys(customViews)}
-            view={toolbarProps.view}
-          />
-        ),
+        event: eventComponent,
+        toolbar: toolbarComponent,
       }}
     />
   );

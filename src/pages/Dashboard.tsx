@@ -8,14 +8,15 @@ import {
 } from "@/components/ui/card";
 import { Plus, Sparkles, Clock, Target } from "lucide-react";
 import { AISuggestions } from "@/components/dashboard/AISuggestions";
-import { EventModal } from "@/components/dashboard/EventModal";
+import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
-import { useUserActivities } from "@/hooks/useUserActivities";
+import { useActivities } from "@/hooks/useActivity";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { useState } from "react";
 import type { View } from "react-big-calendar";
 import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
+import type { Activity } from "@/interfaces/Activity";
 
 export function DashboardContent() {
   const {
@@ -35,7 +36,7 @@ export function DashboardContent() {
     success,
     setError,
     setSuccess,
-  } = useUserActivities();
+  } = useActivities();
   const [view, setView] = useState<View>("agenda");
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
@@ -43,13 +44,17 @@ export function DashboardContent() {
   const [filterAllDay, setFilterAllDay] = useState<null | boolean>(null);
 
   // Filtered activities
-  const filteredActivities = activities.filter((a) => {
+  const filteredActivities = activities.filter((a: Activity) => {
     if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
       return false;
     if (filterColor && a.color !== filterColor) return false;
     if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
     return true;
   });
+
+  // Helper: convert {startTime, endTime} to {start, end}
+  const slotToLegacy = (slot: { startTime: Date; endTime: Date } | null) =>
+    slot ? { start: slot.startTime, end: slot.endTime } : null;
 
   return (
     <main className="flex-1 flex flex-col">
@@ -84,8 +89,8 @@ export function DashboardContent() {
           <Button
             onClick={() => {
               handleSelectSlot({
-                start: new Date(),
-                end: new Date(Date.now() + 3600000),
+                startTime: new Date(),
+                endTime: new Date(Date.now() + 3600000),
               });
             }}
           >
@@ -106,10 +111,10 @@ export function DashboardContent() {
               <Clock className="h-4 w-4 text-[var(--wisely-purple)]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold ">
-                3 events
-              </div>
-              <p className="text-xs text-[var(--wisely-gray)]">2 hours of free time</p>
+              <div className="text-2xl font-bold ">3 events</div>
+              <p className="text-xs text-[var(--wisely-gray)]">
+                2 hours of free time
+              </p>
             </CardContent>
           </Card>
 
@@ -121,9 +126,7 @@ export function DashboardContent() {
               <Sparkles className="h-4 w-4 text-[var(--wisely-mint)]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold ">
-                5 new
-              </div>
+              <div className="text-2xl font-bold ">5 new</div>
               <p className="text-xs text-[var(--wisely-gray)]">
                 Based on your preferences
               </p>
@@ -138,10 +141,10 @@ export function DashboardContent() {
               <Target className="h-4 w-4 text-[var(--wisely-pink)]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold ">
-                78%
-              </div>
-              <p className="text-xs text-[var(--wisely-gray)]">This week's completion</p>
+              <div className="text-2xl font-bold ">78%</div>
+              <p className="text-xs text-[var(--wisely-gray)]">
+                This week's completion
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -151,9 +154,7 @@ export function DashboardContent() {
           {/* Calendar */}
           <Card className="lg:col-span-3 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="">
-                Calendar
-              </CardTitle>
+              <CardTitle className="">Calendar</CardTitle>
               <CardDescription className="text-[var(--wisely-gray)]">
                 Click on any time slot to create an activity, or click existing
                 activities to edit them.
@@ -162,22 +163,27 @@ export function DashboardContent() {
             <CardContent>
               <div className="h-96">
                 <ScheduleCalendar
-                 className="modern-calendar"
+                  className="modern-calendar"
                   events={filteredActivities}
-                  onSelectSlot={handleSelectSlot}
+                  onSelectSlot={(slot) =>
+                    handleSelectSlot({
+                      startTime: slot.start,
+                      endTime: slot.end,
+                    })
+                  }
                   onSelectEvent={handleSelectActivity}
                   onEventDrop={(args) =>
                     handleActivityDrop({
                       activity: args.event,
-                      start: args.start,
-                      end: args.end,
+                      startTime: args.start,
+                      endTime: args.end,
                     })
                   }
                   onEventResize={(args) =>
                     handleActivityResize({
                       activity: args.event,
-                      start: args.start,
-                      end: args.end,
+                      startTime: args.start,
+                      endTime: args.end,
                     })
                   }
                   eventStyleGetter={activityStyleGetter}
@@ -197,14 +203,25 @@ export function DashboardContent() {
       </div>
 
       {/* Activity Modal */}
-      <EventModal
+      <ActivityDialog
         isOpen={isActivityModalOpen}
         onClose={() => setIsActivityModalOpen(false)}
-        event={selectedActivity}
-        timeSlot={selectedSlot}
+        event={
+          selectedActivity
+            ? {
+                ...selectedActivity,
+                start: selectedActivity.startTime,
+                end: selectedActivity.endTime,
+              }
+            : null
+        }
+        timeSlot={slotToLegacy(selectedSlot)}
         onSave={handleSaveActivity}
-        onDelete={handleDeleteActivity}
-      />
+    onDelete={() => {
+          if (selectedActivity) {
+            handleDeleteActivity(selectedActivity.id);
+          }
+        }}      />
     </main>
   );
 }
