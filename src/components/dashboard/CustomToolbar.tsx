@@ -42,29 +42,32 @@ export function CustomToolbar({
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 w-full mb-4">
       <div className="flex items-center gap-2">
         <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onNavigate("TODAY")}
-            >
-              <CalendarDays className="w-4 h-4" />
-            </Button>
+          <TooltipTrigger asChild>
+            <span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate("TODAY")}
+              >
+                <CalendarDays className="w-4 h-4" />
+              </Button>
+            </span>
           </TooltipTrigger>
           <TooltipContent>
             <p>Today</p>
           </TooltipContent>
         </Tooltip>
         <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onNavigate("PREV")}
-            >
-              {" "}
-              <ChevronLeft className="w-4 h-4" />{" "}
-            </Button>
+          <TooltipTrigger asChild>
+            <span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate("PREV")}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+            </span>
           </TooltipTrigger>
           <TooltipContent>
             <p>Previous</p>
@@ -72,15 +75,16 @@ export function CustomToolbar({
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onNavigate("NEXT")}
-            >
-              {" "}
-              <ChevronRight className="w-4 h-4" />{" "}
-            </Button>
+          <TooltipTrigger asChild>
+            <span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => onNavigate("NEXT")}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </span>
           </TooltipTrigger>
           <TooltipContent>
             <p>Next</p>
