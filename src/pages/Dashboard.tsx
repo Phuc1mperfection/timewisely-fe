@@ -14,7 +14,6 @@ import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import { useActivities } from "@/hooks/useActivity";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { useState } from "react";
-import type { View } from "react-big-calendar";
 import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import type { Activity } from "@/interfaces/Activity";
 
@@ -37,7 +36,6 @@ export function DashboardContent() {
     setError,
     setSuccess,
   } = useActivities();
-  const [view, setView] = useState<View>("agenda");
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
   const [filterColor, setFilterColor] = useState<string | null>(null);
@@ -152,7 +150,7 @@ export function DashboardContent() {
         <DailyMotivationHub />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Calendar */}
-          <Card className="lg:col-span-3 bg-white shadow-sm">
+          <Card className="lg:col-span-3 ">
             <CardHeader>
               <CardTitle className="">Calendar</CardTitle>
               <CardDescription className="text-[var(--wisely-gray)]">
@@ -161,7 +159,7 @@ export function DashboardContent() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-96">
+              <div className="h-[500px]">
                 <ScheduleCalendar
                   className="modern-calendar"
                   events={filteredActivities}
@@ -187,9 +185,7 @@ export function DashboardContent() {
                     })
                   }
                   eventStyleGetter={activityStyleGetter}
-                  views={["month", "week", "day", "agenda"]}
-                  view={view}
-                  onView={setView}
+                  view="day"
                   date={date}
                   onNavigate={setDate}
                 />
@@ -210,18 +206,19 @@ export function DashboardContent() {
           selectedActivity
             ? {
                 ...selectedActivity,
-                start: selectedActivity.startTime,
-                end: selectedActivity.endTime,
+                startTime: selectedActivity.startTime,
+                endTime: selectedActivity.endTime,
               }
             : null
         }
         timeSlot={slotToLegacy(selectedSlot)}
         onSave={handleSaveActivity}
-    onDelete={() => {
+        onDelete={() => {
           if (selectedActivity) {
             handleDeleteActivity(selectedActivity.id);
           }
-        }}      />
+        }}
+      />
     </main>
   );
 }

@@ -20,9 +20,18 @@ export default function ActivityPopover({
   const [showDetail, setShowDetail] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Lấy activity từ children.props.activity
   const child = children as React.ReactElement<{ activity: Activity }>;
   const activity = child.props.activity;
+
+  const handleEdit = () => {
+    setShowDetail(false);
+    onOpenEditDialog?.();
+  };
+
+  const handleDelete = () => {
+    onDelete?.();
+    setShowDetail(false);
+  };
 
   return (
     <Popover open={showDetail} onOpenChange={setShowDetail}>
@@ -32,7 +41,7 @@ export default function ActivityPopover({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setShowDetail(true);
+            if (!showDetail) setShowDetail(true);
           }}
           style={{
             cursor: "pointer",
@@ -43,89 +52,87 @@ export default function ActivityPopover({
           {children}
         </div>
       </PopoverTrigger>
-      <PopoverContent
-        side="right"
-        align="start"
-        onInteractOutside={() => setShowDetail(false)}
-        className="z-50 w-72 relative"
-      >
-        {/* Close button (X icon) */}
-        <Button
-          size="icon"
-          variant="ghost"
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
-          onClick={() => setShowDetail(false)}
+
+      {showDetail && (
+        <PopoverContent
+          side="right"
+          align="start"
+          onInteractOutside={() => setShowDetail(false)}
+          className="z-50 w-64 relative"
         >
-          <X className="w-4 h-4" />
-        </Button>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+            onClick={() => setShowDetail(false)}
+          >
+            <X className="w-3 h-3" />
+          </Button>
 
-        <div className="space-y-2 text-sm pt-6">
-          <div className="flex justify-between items-center">
-            <span className="font-bold">{activity.title}</span>
-
-            <div className="flex items-center gap-2">
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => {
-                  setShowDetail(false);
-                  onOpenEditDialog?.();
-                }}
-              >
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => {
-                  onDelete?.();
-                  setShowDetail(false);
-                }}
-              >
-                <Trash2 className="w-4 h-4 text-red-500" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="text-xs text-gray-500">
-            {activity.startTime && activity.endTime && (
-              <>
-                {new Date(activity.startTime).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-                {" - "}
-                {new Date(activity.endTime).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </>
-            )}
-          </div>
-
-          {activity.description && <div>{activity.description}</div>}
-          {activity.location && (
-            <div className="text-xs">📍 {activity.location}</div>
-          )}
-          {activity.goalTag && (
-            <div className="text-xs">🎯 {activity.goalTag}</div>
-          )}
-          {typeof activity.completed === "boolean" && (
-            <div className="text-xs">
-              {activity.completed ? "✔ Completed" : "✗ Not completed"}
-            </div>
-          )}
-          {activity.color && (
-            <div className="flex items-center gap-2 text-xs">
-              <span
-                className="w-4 h-4 rounded-full border"
-                style={{ backgroundColor: activity.color }}
-              />
-              <span>{activity.color}</span>
-            </div>
-          )}
-        </div>
-      </PopoverContent>
+          <MemoizedPopoverContent activity={activity} onEdit={handleEdit} onDelete={handleDelete} />
+        </PopoverContent>
+      )}
     </Popover>
   );
 }
+
+const MemoizedPopoverContent = React.memo(function ({
+  activity,
+  onEdit,
+  onDelete,
+}: {
+  activity: Activity;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div className="space-y-2 text-sm pt-6">
+      <div className="flex justify-between items-center">
+        <span className="font-bold">{activity.title}</span>
+
+        <div className="flex items-center gap-2">
+          <Button size="icon" variant="ghost" onClick={onEdit}>
+            <MoreVertical className="w-3 h-3" />
+          </Button>
+          <Button size="icon" variant="ghost" onClick={onDelete}>
+            <Trash2 className="w-3 h-3 text-red-500" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="text-xs text-gray-500">
+        {activity.startTime && activity.endTime && (
+          <>
+            {new Date(activity.startTime).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+            {" - "}
+            {new Date(activity.endTime).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </>
+        )}
+      </div>
+
+      {activity.description && <div>{activity.description}</div>}
+      {activity.location && <div className="text-xs">📍 {activity.location}</div>}
+      {activity.goalTag && <div className="text-xs">🎯 {activity.goalTag}</div>}
+      {typeof activity.completed === "boolean" && (
+        <div className="text-xs">
+          {activity.completed ? "✔ Completed" : "✗ Not completed"}
+        </div>
+      )}
+      {activity.color && (
+        <div className="flex items-center gap-2 text-xs">
+          <span
+            className="w-4 h-4 rounded-full border"
+            style={{ backgroundColor: activity.color }}
+          />
+          <span>{activity.color}</span>
+        </div>
+      )}
+    </div>
+  );
+});

@@ -48,14 +48,14 @@ const CalendarPage = () => {
   });
 
   return (
-    <div className="p-6 space-y-6 relative">
-      <ActivityToastListener
+<div className="flex flex-col h-screen">
+        <ActivityToastListener
         error={error}
         success={success}
         onResetError={() => setError(null)}
         onResetSuccess={() => setSuccess(null)}
       />
-      <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="flex items-center justify-between p-2 ">
         <ActivityFilterBar
           search={search}
           setSearch={setSearch}
@@ -76,9 +76,13 @@ const CalendarPage = () => {
         </div>
       </div>
 
-      <Card>
-        <CardContent>
-          <div className="h-[900px]">
+      {/* Calendar container */}
+      <div className="flex-1 overflow-hidden ">
+      <div className="h-full overflow-auto ">
+
+      <Card className="h-full" >
+        <CardContent className="h-full overflow-auto ">
+
             <ScheduleCalendar
               className="modern-calendar"
               events={filteredActivities}
@@ -109,9 +113,10 @@ const CalendarPage = () => {
                 handleDeleteActivity(activityId);
               }}
             />
-          </div>
         </CardContent>
       </Card>
+      </div>
+      </div>
 
       <ActivityDialog
         isOpen={isActivityModalOpen}
@@ -120,8 +125,8 @@ const CalendarPage = () => {
           selectedActivity
             ? {
                 ...selectedActivity,
-                start: selectedActivity.startTime,
-                end: selectedActivity.endTime,
+                startTime: selectedActivity.startTime,
+                endTime: selectedActivity.endTime,
               }
             : null
         }

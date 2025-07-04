@@ -9,10 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2 } from "lucide-react";
+import { Trash2, MapPin, Goal, SquareMenu, Clock4 } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import type { Activity } from "@/interfaces/Activity";
 import {
   Popover,
   PopoverContent,
@@ -20,25 +21,12 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 
-interface CalendarEvent {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;
-  description?: string;
-  color?: string;
-  allDay?: boolean;
-  location?: string;
-  goalTag?: string;
-  completed?: boolean;
-}
-
 interface ActivityDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  event?: CalendarEvent | null;
+  event?: Activity | null;
   timeSlot?: { start: Date; end: Date } | null;
-  onSave: (eventData: Partial<CalendarEvent>) => void;
+  onSave: (eventData: Partial<Activity>) => void;
   onDelete: () => void;
 }
 
@@ -176,8 +164,8 @@ export function ActivityDialog({
       setDescription(event.description || "");
       setColor(event.color || "#8b5cf6");
       setAllDay(event.allDay || false);
-      setStart(event.start);
-      setEnd(event.end);
+      setStart(event.startTime);
+      setEnd(event.endTime);
       setLocation(event.location || "");
       setGoalTag(event.goalTag || "");
       setCompleted(event.completed || false);
@@ -243,8 +231,8 @@ export function ActivityDialog({
       description: description.trim(),
       color,
       allDay,
-      start,
-      end,
+      startTime: start,
+      endTime: end,
       location,
       goalTag,
       completed,
@@ -295,9 +283,27 @@ export function ActivityDialog({
             : "Create a new activity by filling in the details below."}
         </p>
         <div className="space-y-4">
+           <div className="space-y-2 gap-2 ">
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Add title"
+              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+            />
+               <div className="flex items-center space-x-2">
+            <Checkbox
+              id="allDay"
+              checked={allDay}
+              onCheckedChange={(v) => setAllDay(!!v)}
+            />
+            <Label htmlFor="allDay">All day</Label>
+          </div>
+         
+          </div>
           {/* Thời gian bắt đầu/kết thúc */}
-          <div className="space-y-2">
-            <Label>Time</Label>
+          <div className="flex items-center gap-2 ">
+            <Clock4></Clock4>
             <div className="flex space-x-2 items-center">
               <DateTimePicker
                 label="start"
@@ -316,32 +322,20 @@ export function ActivityDialog({
               />
             </div>
             {allDay && (
-              <div className="text-xs ">
-                All day: chỉ chọn ngày, không chọn giờ phút.
-              </div>
+              <div className="text-xs ">All day: just pick day, not time.</div>
             )}
           </div>
+       
 
-          <div className="space-y-2">
-            <Label htmlFor="title">Event Title</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter event title"
-              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description (Optional)</Label>
+          <div className="space-y-2 gap-2 flex justify-between items-center  ">
+            <SquareMenu></SquareMenu>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add event description"
+              placeholder="Add description"
               rows={3}
-              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+              className=" focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)] "
             />
           </div>
 
@@ -372,44 +366,27 @@ export function ActivityDialog({
               You can pick any color or use a preset.
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="allDay"
-              checked={allDay}
-              onCheckedChange={(v) => setAllDay(!!v)}
-            />
-            <Label htmlFor="allDay">All day</Label>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
+          <div className="space-y-2 gap-2 flex justify-between ">
+            <MapPin>Location</MapPin>
             <Input
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Enter location"
-              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+              className="focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)] "
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="goalTag">Goal Tag</Label>
+          <div className="space-y-2 gap-2 flex justify-between">
+            <Goal>Goal Tag</Goal>
             <Input
               id="goalTag"
               value={goalTag}
               onChange={(e) => setGoalTag(e.target.value)}
               placeholder="Enter goal tag"
-              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+              className="focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)] border-0"
             />
           </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="completed"
-              checked={completed}
-              onCheckedChange={(v) => setCompleted(!!v)}
-            />
-            <Label htmlFor="completed">Completed</Label>
-          </div>
-
           <div className="flex justify-between pt-4">
             {event && (
               <Button
@@ -439,53 +416,6 @@ export function ActivityDialog({
               </Button>
             </div>
           </div>
-
-          {/* Popover for right-click action (delete, change color) */}
-          {/* {event && (
-            <Popover
-              open={showActionPopover}
-              onOpenChange={setShowActionPopover}
-            >
-              <PopoverTrigger asChild>
-                <button
-                  ref={actionButtonRef}
-                  type="button"
-                  className="hidden" // You can trigger this programmatically
-                />
-              </PopoverTrigger>
-              <PopoverContent side="right" align="start" className="z-50 w-56">
-                <div className="space-y-2">
-                  <Button
-                    variant="destructive"
-                    onClick={onDelete}
-                    className="w-full text-left"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" /> Delete activity
-                  </Button>
-                  <div className="flex items-center gap-2 pt-2">
-                    <span className="text-xs">Change color:</span>
-                    {colorOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          setColor(option.value);
-                          setShowActionPopover(false);
-                        }}
-                        className={`w-6 h-6 rounded-full border-2 ${
-                          color === option.value
-                            ? "border-[var(--wisely-purple)]"
-                            : "border-gray-200"
-                        }`}
-                        style={{ backgroundColor: option.value }}
-                        title={option.label}
-                        type="button"
-                      />
-                    ))}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          )} */}
         </div>
       </DialogContent>
     </Dialog>
