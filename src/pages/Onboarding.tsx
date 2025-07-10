@@ -7,10 +7,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
+// No icon imports needed
 import { useToast } from "@/hooks/useToast";
 import {
   fetchSurveyQuestions,
@@ -18,231 +17,187 @@ import {
 } from "@/services/onboardingservices";
 import type { SurveyData } from "@/services/onboardingservices";
 import { useAuth } from "@/contexts/useAuth";
+import { SingleQuestion } from "@/components/survey/SingleQuestion";
 
-// Định nghĩa type cho SurveyQuestion
-interface SurveyQuestion {
-  key: string;
-  label: string;
-  type: "radio" | "checkbox" | "text";
-  options?: string[];
-  required?: boolean;
-  placeholder?: string;
-}
+// Sử dụng type từ onboardingservices.ts
+import type { SurveyQuestion } from "@/services/onboardingservices";
 
 const Onboarding = () => {
-  const [step, setStep] = useState(1);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState<SurveyQuestion[]>([]);
+  const [visibleQuestions, setVisibleQuestions] = useState<SurveyQuestion[]>(
+    []
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState<SurveyData & { [key: string]: any }>(
-    {
-      age: "",
-      gender: "",
-      hobbies: [],
-      isActive: "",
-      likesReading: "",
-      partyAnimal: "",
-      horoscope: "",
-    }
+    {}
   );
-  const [readingNow, setReadingNow] = useState("no");
+
   const navigate = useNavigate();
   const { success } = useToast();
   const { setUser } = useAuth();
 
+  // Fetch survey questions when the component mounts
   useEffect(() => {
     fetchSurveyQuestions().then((data) => {
-      setQuestions([
-        ...data
-      ]);
+      setQuestions(data);
+
+      // Initialize form data with empty values based on question types
+      const initialFormData: Record<string, string | string[]> = {};
+      data.forEach((q) => {
+        initialFormData[q.key] = q.type === "checkbox" ? [] : "";
+      });
+      setFormData(initialFormData);
+
+      // Filter questions based on initial conditions
+      updateVisibleQuestions(data, initialFormData);
     });
   }, []);
 
-  const handleChange = (key: string, value: string) => {
-    setFormData((prev: typeof formData) => ({ ...prev, [key]: value }));
-    if (key === "readingNow") setReadingNow(value);
-  };
+  // Update visible questions whenever form data changes
+  useEffect(() => {
+    if (questions.length > 0) {
+      updateVisibleQuestions(questions, formData);
+    }
+  }, [formData, questions]);
 
-  const handleCheckboxChange = (
-    key: string,
-    value: string,
-    checked: boolean
+  // Filter questions based on conditions
+  const updateVisibleQuestions = (
+    allQuestions: SurveyQuestion[],
+    data: Record<string, string | string[]>
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [key]: checked
-        ? [...(Array.isArray(prev[key]) ? prev[key] : []), value]
-        : (Array.isArray(prev[key]) ? prev[key] : []).filter(
-            (v: string) => v !== value
-          ),
-    }));
+    const filtered = allQuestions.filter((q) => {
+      // Skip questions with unsatisfied conditions
+      if (q.condition && q.condition.dependsOn && q.condition.showIfEquals) {
+        const dependencyValue = data[q.condition.dependsOn];
+        return dependencyValue === q.condition.showIfEquals;
+      }
+      return true; // Include questions without conditions
+    });
+
+    setVisibleQuestions(filtered);
   };
 
+  // Handle value changes for all question types
+  const handleQuestionChange = (key: string, value: string | string[]) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // Move to next question
   const handleNext = () => {
-    if (step < Math.ceil(questions.length / 2)) {
-      setStep(step + 1);
+    if (currentQuestionIndex < visibleQuestions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       handleSubmit();
     }
   };
 
-  const handleSubmit = async () => {
-    await completeOnboarding(formData as SurveyData);
-    // Sau khi hoàn thành onboarding, gọi lại getCurrentUser để lấy trạng thái mới
-    const userData = await import("@/services/authservices").then((m) =>
-      m.getCurrentUser()
-    );
-    setUser?.(userData); // cập nhật context user nếu có
-    if (userData.hasCompletedSurvey !== undefined) {
-      localStorage.setItem(
-        "hasCompletedSurvey",
-        String(userData.hasCompletedSurvey)
-      );
+  // Move to previous question
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
-    success("Your preferences have been saved successfully!");
-    navigate("/dashboard");
   };
 
-  // Render form động dựa trên questions
-  const renderStep = () => {
-    if (questions.length === 0) return null;
-    // Hiển thị 2 câu hỏi mỗi bước
-    const start = (step - 1) * 2;
-    const end = start + 2;
-    const stepQuestions = questions.slice(start, end);
-    return (
-      <div className="space-y-6">
-        {stepQuestions.map((q) => {
-          if (q.key === "bookName" && readingNow !== "Có") return null;
-          if (q.type === "radio") {
-            return (
-              <div key={q.key}>
-                <Label className="text-base font-medium">{q.label}</Label>
-                <RadioGroup
-                  key={q.key}
-                  name={q.key}
-                  value={
-                    typeof formData[q.key] === "string" ? formData[q.key] : ""
-                  }
-                  onValueChange={(value) => handleChange(q.key, value)}
-                >
-                  {q.options &&
-                    q.options.map((opt: string) => (
-                      <div
-                        key={`${q.key}-${encodeURIComponent(opt)}`}
-                        className="flex items-center space-x-2"
-                      >
-                        <RadioGroupItem
-                          value={opt}
-                          id={`${q.key}-${encodeURIComponent(opt)}`}
-                        />
-                        <Label htmlFor={`${q.key}-${encodeURIComponent(opt)}`}>
-                          {opt}
-                        </Label>
-                      </div>
-                    ))}
-                </RadioGroup>
-              </div>
-            );
-          }
-          if (q.type === "checkbox") {
-            return (
-              <div key={q.key}>
-                <Label className="text-base font-medium">{q.label}</Label>
-                <div className="grid grid-cols-2 gap-4 mt-3">
-                  {q.options &&
-                    q.options.map((opt: string) => (
-                      <div
-                        key={`${q.key}-${encodeURIComponent(opt)}`}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={`${q.key}-${encodeURIComponent(opt)}`}
-                          checked={
-                            Array.isArray(formData[q.key]) &&
-                            formData[q.key].includes(opt)
-                          }
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange(q.key, opt, !!checked)
-                          }
-                        />
-                        <Label htmlFor={`${q.key}-${encodeURIComponent(opt)}`}>
-                          {opt}
-                        </Label>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            );
-          }
-          if (q.type === "text") {
-            return (
-              <div key={q.key}>
-                <Label className="text-base font-medium">{q.label}</Label>
-                <input
-                  type="text"
-                  className="border rounded px-2 py-1 ml-2"
-                  placeholder={q.placeholder || ""}
-                  value={formData[q.key] || ""}
-                  onChange={(e) => handleChange(q.key, e.target.value)}
-                />
-              </div>
-            );
-          }
-          return null;
-        })}
-      </div>
-    );
+  // Handle form submission
+  const handleSubmit = async () => {
+    try {
+      await completeOnboarding(formData as SurveyData);
+
+      // Update user state after successful submission
+      const userData = await import("@/services/authservices").then((m) =>
+        m.getCurrentUser()
+      );
+      setUser?.(userData);
+
+      if (userData.hasCompletedSurvey !== undefined) {
+        localStorage.setItem(
+          "hasCompletedSurvey",
+          String(userData.hasCompletedSurvey)
+        );
+      }
+
+      success("Your preferences have been saved successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error submitting survey:", error);
+    }
   };
+
+  // No need for extra currentQuestion variable since we access by index directly
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 via-white to-emerald-500 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl">
         <Card className="animate-fade-in bg-white shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle >
-              Let's personalize your TimeWisely experience
-            </CardTitle>
+            <CardTitle>Let's personalize your TimeWisely experience</CardTitle>
             <CardDescription>
               Help us understand your preferences so we can suggest the perfect
               activities for you.
             </CardDescription>
-            <div className="flex justify-center mt-4">
-              <div className="flex space-x-2">
-                {Array.from(
-                  { length: Math.ceil(questions.length / 2) },
-                  (_, i) => i + 1
-                ).map((stepNumber) => (
-                  <div
-                    key={"step-" + stepNumber}
-                    className={`w-3 h-3 rounded-full ${
-                      stepNumber <= step
-                        ? "bg-[var(--wisely-purple)]"
-                        : "bg-gray-300 dark:bg-amber-900"
-                    }`}
-                  />
-                ))}
+            {visibleQuestions.length > 0 && (
+              <div className="flex justify-center mt-4">
+                <div className="flex space-x-2">
+                  {visibleQuestions.map((_, idx) => (
+                    <div
+                      key={`step-${idx}`}
+                      className={`w-3 h-3 rounded-full ${
+                        idx <= currentQuestionIndex
+                          ? "bg-[var(--wisely-purple)]"
+                          : "bg-gray-300 dark:bg-amber-900"
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </CardHeader>
-          <CardContent>
-            {renderStep()}
-            <div className="flex justify-between mt-8">
-              <Button
-                variant="outline"
-                onClick={() => setStep(step - 1)}
-                disabled={step === 1}
-                className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50"
-              >
-                Previous
-              </Button>
-              <Button
-                onClick={handleNext}
-                className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
-              >
-                {step === Math.ceil(questions.length / 2) ? "Finish" : "Next"}
-              </Button>
-            </div>
+
+          <CardContent className="pt-4 px-8">
+            {visibleQuestions.length > 0 &&
+            currentQuestionIndex < visibleQuestions.length ? (
+              <SingleQuestion
+                question={visibleQuestions[currentQuestionIndex]}
+                value={formData[visibleQuestions[currentQuestionIndex].key]}
+                onChange={(value) => {
+                  handleQuestionChange(
+                    visibleQuestions[currentQuestionIndex].key,
+                    value
+                  );
+                }}
+                onAutoAdvance={
+                  visibleQuestions[currentQuestionIndex].type === "radio" &&
+                  currentQuestionIndex < visibleQuestions.length - 1
+                    ? handleNext
+                    : undefined
+                }
+              />
+            ) : (
+              <div className="text-center py-8">
+                <p>Loading survey questions...</p>
+              </div>
+            )}
           </CardContent>
+
+          <CardFooter className="flex justify-between p-6">
+            <Button
+              variant="outline"
+              onClick={() => handlePrevious()}
+              disabled={currentQuestionIndex === 0}
+              className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50"
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={handleNext}
+              className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
+            >
+              {currentQuestionIndex === visibleQuestions.length - 1
+                ? "Finish"
+                : "Next"}
+            </Button>
+          </CardFooter>
         </Card>
       </div>
     </div>

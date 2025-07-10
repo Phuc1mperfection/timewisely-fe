@@ -99,7 +99,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md bg-white/10 glass rounded-2xl p-8 shadow-xl backdrop-blur-lg"
+      className="w-full max-w-md bg-white/10 glass rounded-2xl p-8 "
     >
       <AuthFormHeader isLogin={isLogin} />
       <SocialLogin isLoading={isLoading} onSocial={handleSocialLogin} />

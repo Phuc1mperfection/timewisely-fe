@@ -20,6 +20,9 @@ const formats = {
     const weekday = localizer.format(date, "ddd", culture);
     return `${day}\n${weekday}`;
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  timeGutterFormat: (date: Date, culture: string | undefined, localizer: any) =>
+    localizer.format(date, "h A", culture),
 };
 interface ScheduleCalendarProps {
   events: Activity[];
@@ -131,8 +134,8 @@ export function ScheduleCalendar({
       style={{ height: "100%" }}
       popup
       showMultiDayTimes
-      step={30}
-      timeslots={2}
+      step={15}
+      timeslots={4}
       messages={{
         month: "Month",
         week: "Week",
