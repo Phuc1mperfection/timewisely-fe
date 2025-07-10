@@ -455,10 +455,10 @@
   @apply bg-transparent border-0 font-sans;
 }
 /* Header Styling */
-.modern-calendar .rbc-header  {
-  @apply uppercase flex flex-col justify-center items-center text-center font-semibold py-4 px-3 text-sm  tracking-wide whitespace-pre-line leading-[1.4] border-0 ;
+.modern-calendar .rbc-month-view .rbc-header,
+.modern-calendar .rbc-time-view .rbc-header {
+  @apply uppercase flex flex-col justify-center items-center text-center font-semibold py-4 px-3 text-sm tracking-wide whitespace-pre-line leading-[1.4] border-0;
   color: var(--calendar-header-fg, #4b5563);
-  /* background: var(--calendar-header-bg, #f9fafb); */
 }
 /*custom scrollbar*/
 
