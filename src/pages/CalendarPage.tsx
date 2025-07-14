@@ -1,15 +1,104 @@
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/contexts/useAuth";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import CalendarView from "@/components/calendar/CalendarView";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useToast } from "@/hooks/useToast";
+
+// Import existing components
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import { useActivities } from "@/hooks/useActivity";
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { NewActivityButton } from "@/components/activities/NewActivityButton";
 import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import type { View } from "react-big-calendar";
 import type { Activity } from "@/interfaces/Activity";
 
-const CalendarPage = () => {
+const CalendarPage: React.FC = () => {
+  const { loading, getCurrentUser } = useAuth();
+  const [activeTab, setActiveTab] = useState("timewisely");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { success, error } = useToast();
+  const [oauthComplete, setOAuthComplete] = useState(false);
+
+  // Handle OAuth callback for Google Calendar
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    const oauthError = params.get("error");
+    const code = params.get("code"); // Google OAuth returns code
+
+    // Debug the OAuth params received
+
+    // Only process when there are OAuth related params to avoid infinite loops
+    if ((token || oauthError || code) && !oauthComplete) {
+      console.log("Processing OAuth callback");
+      setOAuthComplete(true); // Set flag to prevent repeated processing
+
+      // Clean the URL to prevent repeated processing on refresh
+      const cleanUrl = "/dashboard/calendar";
+      navigate(cleanUrl, { replace: true });
+
+      // Process the OAuth result
+      if (token) {
+        console.log("OAuth successful - token present");
+        localStorage.setItem("googleCalendarConnected", "true");
+        success("Successfully connected to Google Calendar");
+
+        // Refresh user data to get updated Google Calendar connection status
+        if (getCurrentUser) {
+          getCurrentUser()
+            .then(() => {
+              console.log(
+                "User data refreshed after Google Calendar connection"
+              );
+            })
+            .catch((error: unknown) => {
+              console.error("Failed to refresh user data:", error);
+            });
+        } else {
+          console.log("getCurrentUser function not available");
+        }
+      } else if (code) {
+        console.log("OAuth code received, waiting for backend to process");
+        success(
+          "Google authentication successful, setting up calendar access..."
+        );
+
+        // The code will be processed by the backend, we just need to wait
+        // for the user data to be updated
+        setTimeout(() => {
+          if (getCurrentUser) {
+            getCurrentUser()
+              .then(() => {
+                console.log("User data refreshed after Google authentication");
+              })
+              .catch((error: unknown) => {
+                console.error("Failed to refresh user data:", error);
+              });
+          } else {
+            console.log("getCurrentUser function not available");
+          }
+        }, 2000); // Give backend a moment to process the code
+      } else if (oauthError) {
+        console.error("OAuth error:", oauthError);
+        error(`Calendar connection failed: ${oauthError}`);
+      }
+    }
+  }, [
+    location.search,
+    navigate,
+    success,
+    error,
+    oauthComplete,
+    getCurrentUser,
+  ]);
+
   const {
     activities,
     isActivityModalOpen,
@@ -23,11 +112,12 @@ const CalendarPage = () => {
     handleSaveActivity,
     handleDeleteActivity,
     activityStyleGetter,
-    error,
-    success,
+    error: activityError,
+    success: activitySuccess,
     setError,
     setSuccess,
   } = useActivities();
+
   const [view, setView] = useState<View>("week");
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
@@ -47,76 +137,107 @@ const CalendarPage = () => {
     return true;
   });
 
+  if (loading) {
+    return <LoadingSpinner fullScreen />;
+  }
+
   return (
-<div className="flex flex-col h-screen">
-        <ActivityToastListener
-        error={error}
-        success={success}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col h-screen"
+    >
+      <ActivityToastListener
+        error={activityError}
+        success={activitySuccess}
         onResetError={() => setError(null)}
         onResetSuccess={() => setSuccess(null)}
       />
-      <div className="flex items-center justify-between p-2 ">
-        <ActivityFilterBar
-          search={search}
-          setSearch={setSearch}
-          filterColor={filterColor}
-          setFilterColor={setFilterColor}
-          filterAllDay={filterAllDay}
-          setFilterAllDay={setFilterAllDay}
-        />
-        <div>
-          <NewActivityButton
-            onOpenModal={() => {
-              handleSelectSlot({
-                startTime: new Date(),
-                endTime: new Date(Date.now() + 3600000),
-              });
-            }}
-          />
-        </div>
-      </div>
 
-      {/* Calendar container */}
-      <div className="flex-1 overflow-hidden ">
-      <div className="h-full overflow-auto ">
+      <Tabs
+        defaultValue="timewisely"
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
+        <div className="flex items-center justify-between p-2">
+          <div className="flex items-center">
+            <TabsList className="mr-4">
+              <TabsTrigger value="timewisely">TimeWisely Calendar</TabsTrigger>
+              <TabsTrigger value="google">Google Calendar</TabsTrigger>
+            </TabsList>
 
-      <Card className="h-full" >
-        <CardContent className="h-full overflow-auto ">
+            {activeTab === "timewisely" && (
+              <ActivityFilterBar
+                search={search}
+                setSearch={setSearch}
+                filterColor={filterColor}
+                setFilterColor={setFilterColor}
+                filterAllDay={filterAllDay}
+                setFilterAllDay={setFilterAllDay}
+              />
+            )}
+          </div>
 
-            <ScheduleCalendar
-              className="modern-calendar"
-              events={filteredActivities}
-              onSelectSlot={(slot) =>
-                handleSelectSlot({ startTime: slot.start, endTime: slot.end })
-              }
-              onSelectEvent={handleSelectActivity}
-              onEventDrop={(args) =>
-                handleActivityDrop({
-                  activity: args.event,
-                  startTime: args.start,
-                  endTime: args.end,
-                })
-              }
-              onEventResize={(args) =>
-                handleActivityResize({
-                  activity: args.event,
-                  startTime: args.start,
-                  endTime: args.end,
-                })
-              }
-              eventStyleGetter={activityStyleGetter}
-              view={view}
-              onView={setView}
-              date={date}
-              onNavigate={setDate}
-              onEventDelete={(activityId) => {
-                handleDeleteActivity(activityId);
+          {activeTab === "timewisely" && (
+            <NewActivityButton
+              onOpenModal={() => {
+                handleSelectSlot({
+                  startTime: new Date(),
+                  endTime: new Date(Date.now() + 3600000),
+                });
               }}
             />
-        </CardContent>
-      </Card>
-      </div>
-      </div>
+          )}
+        </div>
+
+        <div className="flex-1 overflow-hidden">
+          <TabsContent value="timewisely" className="h-full overflow-auto">
+            <Card className="h-full">
+              <CardContent className="h-full overflow-auto">
+                <ScheduleCalendar
+                  className="modern-calendar"
+                  events={filteredActivities}
+                  onSelectSlot={(slot) =>
+                    handleSelectSlot({
+                      startTime: slot.start,
+                      endTime: slot.end,
+                    })
+                  }
+                  onSelectEvent={handleSelectActivity}
+                  onEventDrop={(args) =>
+                    handleActivityDrop({
+                      activity: args.event,
+                      startTime: args.start,
+                      endTime: args.end,
+                    })
+                  }
+                  onEventResize={(args) =>
+                    handleActivityResize({
+                      activity: args.event,
+                      startTime: args.start,
+                      endTime: args.end,
+                    })
+                  }
+                  eventStyleGetter={activityStyleGetter}
+                  view={view}
+                  onView={setView}
+                  date={date}
+                  onNavigate={setDate}
+                  onEventDelete={(activityId) => {
+                    handleDeleteActivity(activityId);
+                  }}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="google" className="h-full overflow-auto p-6">
+            <CalendarView />
+          </TabsContent>
+        </div>
+      </Tabs>
 
       <ActivityDialog
         isOpen={isActivityModalOpen}
@@ -138,7 +259,7 @@ const CalendarPage = () => {
           }
         }}
       />
-    </div>
+    </motion.div>
   );
 };
 

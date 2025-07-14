@@ -25,7 +25,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     password: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { login, register } = useAuth();
+  const { login, register, loginWithGoogle } = useAuth();
   const { success, error } = useToast();
   const navigate = useNavigate();
 
@@ -74,13 +74,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSocialLogin = (provider: string) => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      if (provider === "google") {
+        loginWithGoogle();
+        // The redirect will happen automatically from the loginWithGoogle function
+      }
+    } catch (err) {
+      console.error(err);
+      error("Failed to initialize social login. Please try again.");
       setIsLoading(false);
-      onSuccess();
-    }, 1500);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
