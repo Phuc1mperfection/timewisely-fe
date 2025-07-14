@@ -19,10 +19,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Helper: kiểm tra token trong localStorage/cookie
   const hasAuthToken = () => {
-    // Tùy backend, có thể là localStorage hoặc cookie
-    return (
-      !!localStorage.getItem("token") || !!localStorage.getItem("refreshToken")
-    );
+    // Chỉ kiểm tra token chính
+    return !!localStorage.getItem("token");
   };
 
   useEffect(() => {
@@ -88,7 +86,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } catch (err) {
           console.error("OAuth login error:", err);
           localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
           navigate("/auth", {
             replace: true,
             state: {
@@ -155,7 +152,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       // Xóa token khỏi localStorage/cookie
       localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
       localStorage.removeItem("hasCompletedSurvey");
       // Cập nhật state user
       setUser(null);

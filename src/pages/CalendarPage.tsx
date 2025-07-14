@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/useAuth";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import CalendarView from "@/components/calendar/CalendarView";
+import GoogleCalendar from "@/components/calendar/GoogleCalendar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 
@@ -33,12 +33,17 @@ const CalendarPage: React.FC = () => {
     const oauthError = params.get("error");
     const code = params.get("code"); // Google OAuth returns code
 
-    // Debug the OAuth params received
+    // Kiểm tra localStorage để tránh hiện thông báo nhiều lần
+    const alreadyProcessed = localStorage.getItem("googleOAuthProcessed");
 
+    // Debug the OAuth params received
     // Only process when there are OAuth related params to avoid infinite loops
-    if ((token || oauthError || code) && !oauthComplete) {
+    if ((token || oauthError || code) && !oauthComplete && !alreadyProcessed) {
       console.log("Processing OAuth callback");
       setOAuthComplete(true); // Set flag to prevent repeated processing
+
+      // Lưu trạng thái đã xử lý để tránh hiển thị toast nhiều lần
+      localStorage.setItem("googleOAuthProcessed", "true");
 
       // Clean the URL to prevent repeated processing on refresh
       const cleanUrl = "/dashboard/calendar";
@@ -98,6 +103,19 @@ const CalendarPage: React.FC = () => {
     oauthComplete,
     getCurrentUser,
   ]);
+
+  // Add a reset function for Google OAuth processing flag when page loads
+  useEffect(() => {
+    // Chỉ reset flag khi người dùng chủ động truy cập trang calendar
+    // mà không phải từ callback OAuth
+    const params = new URLSearchParams(location.search);
+    const isOAuthCallback =
+      params.has("token") || params.has("code") || params.has("error");
+
+    if (!isOAuthCallback) {
+      localStorage.removeItem("googleOAuthProcessed");
+    }
+  }, [location.search]);
 
   const {
     activities,
@@ -234,7 +252,8 @@ const CalendarPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="google" className="h-full overflow-auto p-6">
-            <CalendarView />
+            <GoogleCalendar
+            />
           </TabsContent>
         </div>
       </Tabs>

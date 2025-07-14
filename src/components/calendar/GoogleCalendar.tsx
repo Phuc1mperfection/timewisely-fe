@@ -43,7 +43,7 @@ interface BackendEvent {
   status?: string;
 }
 
-const CalendarView: React.FC = () => {
+const GoogleCalendar: React.FC = () => {
   const [events, setEvents] = useState<TransformedEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -445,7 +445,7 @@ const CalendarView: React.FC = () => {
           onSelectSlot={handleSelectSlot}
           views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
           defaultView={Views.WEEK}
-          className="bg-white/5 rounded-xl p-4"
+className="modern-calendar"
           tooltipAccessor={(event) => {
             const title = event.title;
             const time = `${event.start.toLocaleTimeString()} - ${event.end.toLocaleTimeString()}`;
@@ -517,4 +517,4 @@ const CalendarView: React.FC = () => {
   );
 };
 
-export default CalendarView;
+export default GoogleCalendar;
