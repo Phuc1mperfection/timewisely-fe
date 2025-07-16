@@ -85,7 +85,7 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--wisely-purple)]/30 via-[var(--wisely-white)] to-[var(--wisely-mint)]/40 relative overflow-hidden">
+    <div className="">
       {/* Animated background elements */}
       <Navbar />
       <AnimatedBackground mousePosition={mousePosition} />

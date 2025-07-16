@@ -260,7 +260,7 @@
 
   50% {
     transform: scale(1.05);
-    opacity: 0.9;
+    opacity: 1.5;
   }
 }
 
@@ -295,8 +295,6 @@
 }
 
 /* TimeWisely Authentication Animations */
-
-
 
 /* Animated gradient background */
 @keyframes gradient-shift {
@@ -648,5 +646,8 @@
   color: #c084fc;
 }
 .dark .modern-calendar .rbc-time-slot{
+  @apply border-0
+}
+.light .modern-calendar .rbc-time-slot{
   @apply border-0
 }

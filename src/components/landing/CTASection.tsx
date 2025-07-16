@@ -32,12 +32,12 @@ const CTASection: React.FC = () => {
   return (
     <section className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
       {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-10">
         <div
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+              'url("/src/assets/clock-face-funny.svg")',
           }}
         />
       </div>
@@ -87,9 +87,7 @@ const CTASection: React.FC = () => {
           >
             <motion.button
               className="btn-primary px-10 py-5 rounded-full text-white font-semibold text-xl flex items-center group"
-              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 400 }}
             >
               Start Free Today
               <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />

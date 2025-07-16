@@ -9,13 +9,14 @@ import {
 import { Plus, Sparkles, Clock, Target } from "lucide-react";
 import { AISuggestions } from "@/components/dashboard/AISuggestions";
 import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
-import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import { useActivities } from "@/hooks/useActivity";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { useState } from "react";
 import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import type { Activity } from "@/interfaces/Activity";
+import { DailyMotivationHub1 } from "@/components/dashboard/DailyMotivationHub1";
+import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
 
 export function DashboardContent() {
   const {
@@ -147,7 +148,8 @@ export function DashboardContent() {
           </Card>
         </div>
         {/* Daily Motivation Hub */}
-        <DailyMotivationHub />
+        <DailyMotivationHub1/>
+        <DailyMotivationHub/>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Calendar */}
           <Card className="lg:col-span-3 ">

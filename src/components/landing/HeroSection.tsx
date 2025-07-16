@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ReactTyped } from "react-typed";
 import { ArrowRight, Sparkles } from "lucide-react";
 import AnalogClock from "./AnalogClock";
-
+import { FlipWords } from "@/components/ui/flip-words";
 const HeroSection = () => {
   const navigate = useNavigate();
+   const words = ["smarter", "faster", "better", "easier"];
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden  ">
       {/* Animated gradient background */}
@@ -34,30 +34,25 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-              className="text-5xl lg:text-7xl font-bold leading-tight mb-6"
+              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 text-gray-900"
             >
               Master Your
               <span className=" block mx-auto bg-gradient-to-r from-[var(--wisely-purple)] via-[var(--chart-2)] to-[var(--wisely-pink)] bg-clip-text text-transparent">
                 Time, Wisely
               </span>
             </motion.h1>
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4 }}
-              className="text-xl mb-8 min-w-xl  mx-auto bg-gradient-to-r from-[var(--wisely-purple)] via-[var(--chart-2)] to-[var(--wisely-pink)] bg-clip-text text-transparent"
+              className="text-xl mb-6 min-w-xl  bg-gradient-to-r from-[var(--wisely-purple)] via-[var(--chart-2)] to-[var(--wisely-pink)] bg-clip-text text-transparent"
             >
-              <ReactTyped
-                strings={[
-                  "Transform your productivity with intelligent time management.",
-                  "Pomodoro timers, smart scheduling, and AI-powered insights to help you achieve your goals.",
-                ]}
-                typeSpeed={40}
-                backSpeed={20}
-                backDelay={2000}
-                loop
-              />
-            </motion.p>
+            Achieve your goals with
+          <span className="inline-block ">
+            <FlipWords words={words} />
+          </span>
+          tools.
+            </motion.div>
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
@@ -66,7 +61,7 @@ const HeroSection = () => {
             >
               <Button
                 size="lg"
-                className="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center justify-center group"
+                className=" px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center justify-center group"
                 onClick={() => navigate("/auth")}
               >
                 Start Your Journey

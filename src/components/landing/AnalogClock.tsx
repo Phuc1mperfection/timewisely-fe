@@ -104,7 +104,7 @@ const AnalogClock: React.FC = () => {
 
         {/* Digital time display */}
         <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2  px-4 py-2 rounded-lg">
-          <span className="text-sm font-mono text-white/90">
+          <span className="text-sm font-mono text-white">
             {time.toLocaleTimeString()}
           </span>
         </div>
