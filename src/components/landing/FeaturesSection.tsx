@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FeaturesSection = ({ features, GlassCard }: { features: any[]; GlassCard: any }) => (
-  <section className="container mx-auto px-6 py-16 relative z-10">
+  <section id="features" className="container mx-auto px-6 py-16 relative z-10">
     <motion.div
       className="text-center mb-12"
       initial={{ opacity: 0, y: 20 }}

@@ -30,14 +30,16 @@ const SplitText = ({ text, className = "" }: SplitTextProps) => (
 
 const CTASection: React.FC = () => {
   return (
-    <section className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+    <section
+      id="pricing"
+      className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
+    >
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage:
-              'url("/src/assets/clock-face-funny.svg")',
+            backgroundImage: 'url("/src/assets/clock-face-funny.svg")',
           }}
         />
       </div>
@@ -71,12 +73,15 @@ const CTASection: React.FC = () => {
           className="reveal"
         >
           <h2 className="text-4xl lg:text-6xl font-bold mb-6">
-            <SplitText text="Ready to Transform" className="text-4xl lg:text-6xl font-bold" />
+            <SplitText
+              text="Ready to Transform"
+              className="text-4xl lg:text-6xl font-bold"
+            />
             <span className="gradient-text block">Your Productivity?</span>
           </h2>
           <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            Join thousands of professionals who have already discovered the power
-            of intelligent time management with TimeWisely.
+            Join thousands of professionals who have already discovered the
+            power of intelligent time management with TimeWisely.
           </p>
           <motion.div
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
@@ -120,7 +125,9 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Free Forever Plan</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Free Forever Plan
+              </h3>
               <p className="text-gray-600 text-sm">Core features always free</p>
             </motion.div>
             <motion.div
@@ -133,8 +140,12 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Team Collaboration</h3>
-              <p className="text-gray-600 text-sm">Share schedules & sync goals</p>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Team Collaboration
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Share schedules & sync goals
+              </p>
             </motion.div>
             <motion.div
               className="text-center"
@@ -146,8 +157,12 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Premium Support</h3>
-              <p className="text-gray-600 text-sm">24/7 help when you need it</p>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Premium Support
+              </h3>
+              <p className="text-gray-600 text-sm">
+                24/7 help when you need it
+              </p>
             </motion.div>
           </motion.div>
         </motion.div>

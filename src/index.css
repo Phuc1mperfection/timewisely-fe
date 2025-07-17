@@ -226,9 +226,7 @@
   cursor: pointer;
 }
 
-.clock-face {
-  animation: subtle-pulse 4s ease-in-out infinite;
-}
+
 
 .clock-hand {
   transform-origin: 50% 85%;
