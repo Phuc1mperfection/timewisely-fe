@@ -1,6 +1,6 @@
 import React from "react";
 import { Mail, Github } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import SocialButton from "./SocialButton";
 
 interface SocialLoginProps {

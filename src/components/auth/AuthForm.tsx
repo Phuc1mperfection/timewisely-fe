@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react"; 
 import { Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useToast } from "@/hooks/useToast";

@@ -1,6 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
-
+import { motion } from "motion/react"; 
 interface AuthToggleProps {
   isLogin: boolean;
   onToggle: () => void;

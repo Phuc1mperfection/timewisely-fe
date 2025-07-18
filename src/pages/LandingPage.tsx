@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
