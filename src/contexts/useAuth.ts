@@ -1,16 +1,7 @@
 import { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import type { User } from "@/interfaces/User";
+import { AuthContext } from "./AuthContextTypes";
+import type { AuthContextType } from "./AuthContextTypes";
 
-export function useAuth() {
-  return useContext(AuthContext) as {
-    user: User | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    login: (email: string, password: string) => Promise<User | undefined>;
-    register: (email: string, fullName: string, password: string) => Promise<User | undefined>;
-    logout: () => Promise<void>;
-    setUser?: (user: User | null) => void;
-    setToken?: (token: string) => void;
-  };
+export function useAuth(): AuthContextType {
+  return useContext(AuthContext);
 }

@@ -1,12 +1,12 @@
 import React from "react";
-import { motion } from "motion/react";
-import { DivideIcon as LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface SocialButtonProps {
-  icon: typeof LucideIcon;
+  icon: React.ComponentType<{ className?: string }>;
   provider: string;
   onClick: () => void;
   disabled?: boolean;
+  className?: string;
 }
 
 const SocialButton: React.FC<SocialButtonProps> = ({
@@ -14,10 +14,11 @@ const SocialButton: React.FC<SocialButtonProps> = ({
   provider,
   onClick,
   disabled = false,
+  className = "",
 }) => {
   return (
     <motion.button
-      className="social-btn glass-input w-full py-3 px-4 rounded-xl text-white font-medium flex items-center justify-center space-x-2 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+      className={`social-btn glass-input w-full py-3 px-4 rounded-xl text-white font-medium flex items-center justify-center space-x-2 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       onClick={onClick}
       disabled={disabled}
       whileHover={{ scale: disabled ? 1 : 1.02 }}

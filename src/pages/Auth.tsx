@@ -1,16 +1,43 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Clock } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AuthForm from "@/components/auth/AuthForm";
 import AuthLogo from '@/components/auth/AuthLogo';
 import HomeNavigation from '@/components/auth/HomeNavigation';
-
-
+import { useToast } from '@/hooks/useToast';
 
 type AuthState = 'auth' | 'onboarding' | 'complete';
 
 const AuthPage: React.FC = () => {
   const [authState, setAuthState] = useState<AuthState>('auth');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { error } = useToast();
+
+  // Check for OAuth errors or state
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const oauthError = params.get('error');
+    
+    if (oauthError) {
+      console.error("OAuth error from URL:", oauthError);
+      const errorMessage = decodeURIComponent(oauthError).split(';')[0];
+      error(`Login failed: ${errorMessage || 'Authentication error'}`);
+      
+      // Clean up the URL
+      navigate('/auth', { replace: true });
+    }
+    
+    // Check for error in location state (from redirects)
+    const locationState = location.state as { oauthError?: string } | null;
+    if (locationState?.oauthError) {
+      error(locationState.oauthError);
+      
+      // Clean up the state
+      navigate('/auth', { replace: true, state: {} });
+    }
+  }, [location, navigate, error]);
 
   const handleAuthSuccess = () => {
     // Could redirect to dashboard or show success message
