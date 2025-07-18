@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowRight, Star, Users, Clock } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 interface SplitTextProps {
   text: string;
@@ -35,11 +35,11 @@ const CTASection: React.FC = () => {
       className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
     >
       {/* Background pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-30">
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: 'url("/src/assets/clock-face-funny.svg")',
+            backgroundImage: 'url("/src/assets/patternpad-2025-07-17-15-33-01.svg")',
           }}
         />
       </div>
@@ -72,7 +72,7 @@ const CTASection: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="reveal"
         >
-          <h2 className="text-4xl lg:text-6xl font-bold mb-6">
+          <h2 className="text-4xl lg:text-6xl font-bold mb-6 text-gray-900">
             <SplitText
               text="Ready to Transform"
               className="text-4xl lg:text-6xl font-bold"

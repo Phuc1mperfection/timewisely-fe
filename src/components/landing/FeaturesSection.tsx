@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const FeaturesSection = ({ features, GlassCard }: { features: any[]; GlassCard: any }) => (
-  <section id="features" className="container mx-auto px-6 py-16 relative z-10">
+  <section id="features" className=" mx-auto px-6 py-16 relative z-10  bg-white" >
     <motion.div
       className="text-center mb-12"
       initial={{ opacity: 0, y: 20 }}
@@ -21,14 +21,14 @@ const FeaturesSection = ({ features, GlassCard }: { features: any[]; GlassCard: 
       {features.map((feature, index) => (
         <GlassCard
           key={index}
-          className="p-8 hover:bg-[var(--wisely-pink)]/20 transition-all duration-300 group"
+          className="p-8 hover:bg-[var(--wisely-pink)]/20 transition-all duration-300 "
           delay={1.4 + index * 0.1}
         >
           <motion.div
             className="flex items-center mb-6"
             whileHover={{ scale: 1.05 }}
           >
-            <div className="p-3 bg-gradient-to-r from-[var(--wisely-purple)] to-[var(--wisely-mint)] rounded-xl mr-4 group-hover:shadow-lg transition-shadow">
+            <div className="p-3 bg-gradient-to-r from-[var(--wisely-purple)] to-[var(--wisely-mint)] rounded-xl mr-4 ">
               <feature.icon className="w-6 h-6 text-[var(--wisely-white)]" />
             </div>
             <h3 className="text-xl font-semibold text-[var(--wisely-dark)]">
@@ -42,7 +42,6 @@ const FeaturesSection = ({ features, GlassCard }: { features: any[]; GlassCard: 
       ))}
     </div>
 
-    {/* Feature showcase with framer-motion */}
     <motion.div
       className="mt-20 reveal"
       initial={{ opacity: 0, y: 40 }}
@@ -92,15 +91,15 @@ const FeaturesSection = ({ features, GlassCard }: { features: any[]; GlassCard: 
             <div className=" p-6 rounded-2xl border border-white/20">
               <div className="space-y-4">
                 <motion.div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-lg" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.7 }}>
-                  <span className="font-medium">Deep Work Session</span>
+                  <span className="font-medium text-purple-600">Deep Work Session</span>
                   <span className="text-sm text-purple-600 font-medium">25 min</span>
                 </motion.div>
                 <motion.div className="flex items-center justify-between p-3 bg-gradient-to-r from-teal-500/10 to-cyan-500/10 rounded-lg" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.8 }}>
-                  <span className="font-medium">Creative Break</span>
+                  <span className="font-medium text-teal-600">Creative Break</span>
                   <span className="text-sm text-teal-600 font-medium">5 min</span>
                 </motion.div>
                 <motion.div className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-500/10 to-rose-500/10 rounded-lg" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.9 }}>
-                  <span className="font-medium">Team Meeting</span>
+                  <span className="font-medium text-pink-600 ">Team Meeting</span>
                   <span className="text-sm text-pink-600 font-medium">30 min</span>
                 </motion.div>
               </div>

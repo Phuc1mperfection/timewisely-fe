@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -10,6 +8,8 @@ import FeaturesSection from "@/components/landing/FeaturesSection";
 import CTASection from "@/components/landing/CTASection";
 import FooterSection from "@/components/layout/Footer";
 import PersonalizationSection from "@/components/landing/PersonalizeSection";
+import ScrollAnimationSection from "@/components/landing/ScrollAnimationSection";
+import HowItWorksSection from "@/components/landing/HowItWorksSection";
 const GlassCard = ({
   children,
   className = "",
@@ -89,15 +89,28 @@ const LandingPage = () => {
       {/* Animated background elements */}
       <Navbar />
       <AnimatedBackground mousePosition={mousePosition} />
+
       {/* Hero Section */}
-      
-      <HeroSection  />
+      <HeroSection />
+
       {/* Features Grid */}
       <FeaturesSection features={features} GlassCard={GlassCard} />
+
+      {/* How It Works Section */}
+      <HowItWorksSection />
+
+      {/* Scroll Animation Section */}
+      <ScrollAnimationSection
+        title="Time is your most valuable asset"
+        subtitle="Our powerful tools help you make the most of every minute"
+      />
+
       {/* Personalize Section */}
       <PersonalizationSection />
+
       {/* CTA Section */}
-      <CTASection  />
+      <CTASection />
+
       {/* Footer */}
       <FooterSection />
     </div>

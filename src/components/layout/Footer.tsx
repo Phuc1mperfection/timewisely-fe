@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Mail, ArrowRight } from "lucide-react";
 
 const FooterSection = () => (
-  <footer className="relative z-10 bg-gradient-to-b from-transparent to-[var(--wisely-lightGray)]/10 dark:to-[var(--wisely-dark)]/30">
+  <footer className="relative z-10 bg-white  text-[var(--wisely-gray)] dark:bg-white">
     <div className="container mx-auto px-6 pt-16 pb-8">
       {/* Top Footer Section */}
       <motion.div
