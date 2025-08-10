@@ -44,7 +44,7 @@ export const ActivityFilterBar: React.FC<ActivityFilterBarProps> = ({
         )}
         style={{
           background:
-            "linear-gradient(90deg,#8b5cf6,#5eead4,#f9a8d4,#fde68a,#1e1e2f,#6b7280)",
+            "linear-gradient(90deg,#8b5cf6,#5eead4,#f9a8d4,#fde699,#1e1e2f,#6b7280)",
         }}
         onClick={() => setFilterColor(null)}
         title="All colors"

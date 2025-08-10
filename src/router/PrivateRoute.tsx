@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContextTypes";
+import { useToast } from "@/hooks/useToast";
 
 export const PrivateRoute = ({
   children,
@@ -12,6 +13,18 @@ export const PrivateRoute = ({
 }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
   const location = useLocation();
+  const { error: showError } = useToast();
+
+  // Handle OAuth errors
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+
+    if (error) {
+      console.error("OAuth error:", error);
+      showError(`Authentication failed: ${error.split(";")[0]}`);
+    }
+  }, [location, showError]);
 
   if (loading)
     return (
@@ -21,18 +34,14 @@ export const PrivateRoute = ({
     );
 
   if (onlyGuest && isAuthenticated) {
-    return <Navigate to="/app/dashboard" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   if (!isAuthenticated && !onlyGuest) return <Navigate to="/auth" replace />;
 
-  // Nếu chưa hoàn thành survey, chỉ cho phép vào /app/onboarding
-  if (
-    user &&
-    !user.hasCompletedSurvey &&
-    location.pathname !== "/app/onboarding"
-  ) {
-    return <Navigate to="/app/onboarding" replace />;
+  // Nếu chưa hoàn thành survey, chỉ cho phép vào /onboarding
+  if (user && !user.hasCompletedSurvey && location.pathname !== "/onboarding") {
+    return <Navigate to="/onboarding" replace />;
   }
 
   return <>{children}</>;

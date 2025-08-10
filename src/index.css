@@ -3,11 +3,19 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant light (&:is(:not(.dark) *));
 
+@theme {
+  --font-display: "Satoshi", "sans-serif";
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --breakpoint-3xl: 120rem;
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  --radix-accordion-content-height: 300px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -39,7 +47,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
 }
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -74,6 +84,8 @@
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
   --wisely-purple: #8b5cf6;
+  --wisely-blue: #4f46e5;
+  --wisely-indigo: #6366f1;
   --wisely-white: #ffffff;
   --wisely-mint: #5eead4;
   --wisely-pink: #f9a8d4;
@@ -94,49 +106,38 @@
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --background: #181825;
+  --foreground: #fafaff;
+  --card: #2e2e4d;
+  --card-foreground: #fafaff;
+  --popover: #2e2e4d;
+  --popover-foreground: #fafaff;
+  --primary: #e0e7ff;
+  --primary-foreground: #2e2e4d;
+  --secondary: #3b3b5c;
+  --secondary-foreground: #fafaff;
+  --muted: #3b3b5c;
+  --muted-foreground: #b4b4d6;
+  --accent: #3b3b5c;
+  --accent-foreground: #fafaff;
+  --destructive: #c96d4a;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #6c6ca8;
+  --chart-1: #4d4dff;
+  --chart-2: #4fd1c5;
+  --chart-3: #fcd34d;
+  --chart-4: #7c3aed;
+  --chart-5: #eab308;
+  --sidebar: #2e2e4d;
+  --sidebar-foreground: #fafaff;
+  --sidebar-primary: #4d4dff;
+  --sidebar-primary-foreground: #fafaff;
+  --sidebar-accent: #3b3b5c;
+  --sidebar-accent-foreground: #fafaff;
+  --sidebar-border: #ffffff1a;
+  --sidebar-ring: #6c6ca8;
 }
-
-:root {
-  --breakpoint-3xl: 120rem;
-  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
-  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-lg: var(--radius);
-  --radix-accordion-content-height: 300px;
-}
-
 @keyframes accordion-down {
   from {
     height: 0;
@@ -201,151 +202,405 @@
     outline-color: var(--ring);
   }
 
-  body {
-    color: var(--foreground);
-    font-family: var(--font-display), sans-serif;
-  }
 }
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+/* Primary Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--wisely-purple), var(--wisely-indigo));
+  background-size: 200% 200%;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+}
+
+
+
+.clock-hand {
+  transform-origin: 50% 85%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hour-hand {
+  animation: rotate-hour 43200s linear infinite;
+  /* 12 hours */
+}
+
+.minute-hand {
+  animation: rotate-minute 3600s linear infinite;
+  /* 60 minutes */
+}
+
+.second-hand {
+  animation: rotate-second 60s linear infinite;
+  /* 60 seconds */
+}
+
+@keyframes subtle-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 1.5;
+  }
+}
+
+@keyframes rotate-hour {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate-minute {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate-second {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* TimeWisely Authentication Animations */
+
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.auth-gradient-bg {
+  background: linear-gradient(135deg,
+      var(--wisely-purple),
+      var(--wisely-dark),
+      var(--wisely-indigo),
+      var(--wisely-darkYellow),
+      var(--wisely-purple),
+      var(--wisely-dark));
+  background-size: 400% 400%;
+  animation: gradient-shift 9s ease infinite;
+}
+
+/* Glassmorphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--wisely-mint);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+}
+
+/* Background clock animation */
+.bg-clock {
+  position: absolute;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.clock-hand {
+  transform-origin: 50% 85%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading skeleton animations */
+@keyframes skeleton-pulse {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      rgba(139, 92, 246, 0.1) 25%,
+      rgba(94, 234, 212, 0.2) 50%,
+      rgba(139, 92, 246, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+
+/* Social button hover effects */
+.social-btn {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
+  transition: left 0.5s ease;
+}
+
+.social-btn:hover::before {
+  left: 100%;
+}
+
+/* Floating particles */
+@keyframes float-particle {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
+.floating-particle {
+  animation: float-particle 6s ease-in-out infinite;
+}
+
+.floating-particle:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.floating-particle:nth-child(3) {
+  animation-delay: 4s;
+}
+
+/* Form validation states */
+.input-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.input-success {
+  border-color: var(--wisely-mint);
+  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bg-clock {
+    opacity: 0.05;
+    transform: scale(0.8);
   }
 }
 /* Modern Calendar Styles - TimeWisely Theme */
 .modern-calendar.rbc-calendar {
   @apply bg-transparent border-0 font-sans;
 }
-
-/* Toolbar Styling */
-.modern-calendar .rbc-toolbar {
-  @apply mb-6 p-4 bg-gradient-to-r from-purple-50 to-teal-50 rounded-xl border-0;
-}
-
-.modern-calendar .rbc-toolbar button {
-  @apply bg-white border-0 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-purple-100 hover:text-purple-700 shadow-sm;
-}
-
-.modern-calendar .rbc-toolbar button:active,
-.modern-calendar .rbc-toolbar button.rbc-active {
-  @apply bg-purple-500 text-white shadow-md;
-}
-
-.modern-calendar .rbc-toolbar-label {
-  @apply text-xl font-bold text-gray-800 mx-4;
-}
-
 /* Header Styling */
-.modern-calendar .rbc-header {
-  @apply bg-gradient-to-r from-gray-50 to-purple-50 text-gray-700 font-semibold py-4 px-3 border-0 border-b border-gray-200 text-sm uppercase tracking-wide;
+.modern-calendar .rbc-month-view .rbc-header,
+.modern-calendar .rbc-time-view .rbc-header {
+  @apply uppercase flex flex-col justify-center items-center text-center font-semibold py-4 px-3 text-sm tracking-wide whitespace-pre-line leading-[1.4] border-0;
+  color: var(--calendar-header-fg, #4b5563);
+}
+/*custom scrollbar*/
+
+/* .light .modern-calendar .rbc-header {
+  --calendar-header-fg: #4b5563;
+  --calendar-header-bg: linear-gradient(to right, #f9fafb, #f3e8ff);
+} */
+
+.dark .modern-calendar .rbc-header {
+  /* --calendar-header-fg: #e0e7ff;
+  --calendar-header-bg: #232347; */
+  @apply text-[#e0e7ff];
 }
 
 /* Month View */
 .modern-calendar .rbc-month-view {
-  @apply border-0 rounded-lg overflow-hidden;
+  @apply border-0 rounded-lg overflow-hidden ;
+  background: var(--calendar-month-bg, #fff);
 }
 
+.light .modern-calendar .rbc-month-view {
+  --calendar-month-bg: #fff;
+}
+
+.dark .modern-calendar .rbc-month-view {
+  --calendar-month-bg: #232347;
+}
+
+.light .modern-calendar .rbc-off-range-bg {
+  background: #f3e8ff !important ;
+  color: #fff !important;
+}
+
+.dark .modern-calendar .rbc-off-range-bg {
+  background: #191933 !important;
+}
 .modern-calendar .rbc-date-cell {
-  @apply text-gray-600 p-3 hover:bg-purple-50  duration-150 cursor-pointer;
+  @apply text-gray-600 p-3 cursor-pointer ;
+  color: var(--calendar-date-fg, #4b5563);
 }
 
-.modern-calendar .rbc-date-cell > a {
+.light .modern-calendar .rbc-date-cell {
+  --calendar-date-fg: #4b5563;
+}
+
+.dark .modern-calendar .rbc-date-cell {
+  --calendar-date-fg: #e0e7ff;
+}
+
+.modern-calendar .rbc-date-cell>a {
   @apply font-medium;
-}
-
-.modern-calendar .rbc-off-range-bg {
-  @apply bg-gray-50/50;
-}
-
-.modern-calendar .rbc-today {
-  @apply bg-gradient-to-br from-purple-100 to-teal-100;
-}
-
-.modern-calendar .rbc-date-cell.rbc-selected {
-  @apply bg-purple-200;
 }
 
 /* Week/Day View */
 .modern-calendar .rbc-time-view {
-  @apply border-0;
+  @apply border-0 ;
+  /* background: var(--calendar-time-bg, #fff); */
 }
 
-.modern-calendar .rbc-time-header {
-  @apply border-b border-gray-200 bg-gradient-to-r from-gray-50 to-purple-50;
+/* .light .modern-calendar .rbc-time-view {
+  --calendar-time-bg: #fff;
 }
 
-.modern-calendar .rbc-time-content {
-  @apply border-0;
-}
+.dark .modern-calendar .rbc-time-view {
+  --calendar-time-bg: #232347;
+} */
 
-.modern-calendar .rbc-time-slot {
-  @apply border-gray-100 hover:bg-purple-50 transition-all duration-150;
-}
-
-.modern-calendar .rbc-timeslot-group {
-  @apply border-gray-100;
-}
 
 .modern-calendar .rbc-time-gutter {
   @apply bg-gray-50/50;
+  color: var(--calendar-gutter-fg, #6b7280);
+  background: var(--calendar-gutter-bg, #f9fafb);
+}
+
+.light .modern-calendar .rbc-time-gutter {
+  --calendar-gutter-fg: #6b7280;
+  --calendar-gutter-bg: #f9fafb;
+}
+
+.dark .modern-calendar .rbc-time-gutter {
+  --calendar-gutter-fg: #e0e7ff;
+  --calendar-gutter-bg: #232347;
 }
 
 .modern-calendar .rbc-time-header-gutter {
-  @apply bg-gradient-to-r from-gray-50 to-purple-50;
+  @apply bg-gray-50;
+}
+
+.dark .modern-calendar .rbc-time-header-gutter {
+  background: #232347 !important;
 }
 
 /* Current Time Indicator */
 .modern-calendar .rbc-current-time-indicator {
-  @apply bg-gradient-to-r from-purple-500 to-teal-500 h-0.5 shadow-sm;
+  @apply bg-purple-500 h-0.5;
 }
 
 /* Events */
 .modern-calendar .rbc-event {
-  @apply border-0 rounded-xl px-3 py-1.5 text-white font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer;
-  background: linear-gradient(135deg, var(--event-color, #8b5cf6) 0%, var(--event-color, #8b5cf6) 100%);
-}
-
-.modern-calendar .rbc-event:hover {
-  @apply scale-101  shadow-xl;
-  transform: scale(1.02);
-  transition: all 0.2s ease-in-out;
+  @apply border-0  text-white font-medium text-sm cursor-pointer;
+  background: var(--calendar-event-bg, #000);
+  color: var(--calendar-event-fg, #fff);
 }
 
 .modern-calendar .rbc-event.rbc-selected {
-  @apply ring-2 ring-purple-300 ring-offset-2;
+  @apply ring-2 ring-purple-300 ring-offset-2 bg-amber-600;
 }
 
 .modern-calendar .rbc-event-label {
   @apply font-medium text-xs;
 }
 
-.modern-calendar .rbc-event-content {
-  @apply font-medium;
-}
-
 /* Slot Selection */
 .modern-calendar .rbc-slot-selection {
-  @apply bg-gradient-to-br from-blue-900 to-teal-200 border-2 border-purple-300 rounded-lg;
+  @apply border-2 border-purple-300 rounded-lg;
+  background: var(--calendar-slot-selection-bg, #e0e7ff);
+}
+
+.light .modern-calendar .rbc-slot-selection {
+  @apply bg-blue-600 font-semibold;
+}
+
+.dark .modern-calendar .rbc-slot-selection {
+  --calendar-slot-selection-bg: #232347;
 }
 
 /* Agenda View */
 .modern-calendar .rbc-agenda-view {
   @apply border-0 rounded-lg overflow-hidden bg-white;
+  background: var(--calendar-agenda-bg, #fff);
+}
+
+.light .modern-calendar .rbc-agenda-view {
+  --calendar-agenda-bg: #fff;
+}
+
+.dark .modern-calendar .rbc-agenda-view {
+  --calendar-agenda-bg: #232347;
 }
 
 .modern-calendar .rbc-agenda-table {
   @apply border-0;
 }
 
-.modern-calendar .rbc-agenda-table tbody > tr > td {
+.modern-calendar .rbc-agenda-table tbody>tr>td {
   @apply border-gray-100 py-3 px-4;
-}
-
-.modern-calendar .rbc-agenda-table tbody > tr:hover {
-  @apply bg-purple-50;
 }
 
 .modern-calendar .rbc-agenda-date-cell {
@@ -360,67 +615,37 @@
   @apply text-gray-100;
 }
 
-/* Popup */
-.modern-calendar .rbc-overlay {
-  @apply bg-white border-0 rounded-xl shadow-2xl p-4;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Today Highlight */
+.light .modern-calendar .rbc-today {
+  @apply bg-purple-500/10;
 }
 
-.modern-calendar .rbc-overlay-header {
-  @apply font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-2;
+.dark .modern-calendar .rbc-today {
+  @apply bg-purple-900/90;
+  color: #fff;
 }
 
+/* Dark mode for calendar grid lines and slots */
+.dark .modern-calendar .rbc-month-view,
+.dark .modern-calendar .rbc-time-view,
+.dark .modern-calendar .rbc-time-content,
+.dark .modern-calendar .rbc-timeslot-group,
+.dark .modern-calendar .rbc-agenda-table,
+.dark .modern-calendar .rbc-agenda-table tbody>tr>td {
+  border-color: #39395a !important;
+  background-color: transparent;
+}
 /* Show More Link */
-.modern-calendar .rbc-show-more {
-  @apply text-purple-600 font-medium hover:text-purple-800 transition-all duration-150;
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  z-index: 10 !important;
-}
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .modern-calendar .rbc-toolbar {
-    @apply flex-col space-y-2 p-3;
-  }
-  
-  .modern-calendar .rbc-toolbar button {
-    @apply px-3 py-1.5 text-sm;
-  }
-  
-  .modern-calendar .rbc-toolbar-label {
-    @apply text-lg mx-0;
-  }
+.light .modern-calendar .rbc-show-more {
+  color: #4f46e5;
 }
-
-/* Animation Classes */
-@keyframes eventPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+.dark .modern-calendar .rbc-show-more {
+  color: #c084fc;
 }
-
-.modern-calendar .rbc-event.event-pulse {
-  animation: eventPulse 2s infinite;
+.dark .modern-calendar .rbc-time-slot{
+  @apply border-0
 }
-
-/* Custom Event Colors with Gradients */
-.modern-calendar .rbc-event.event-work {
-  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-}
-
-.modern-calendar .rbc-event.event-personal {
-  background: linear-gradient(135deg, #5eead4 0%, #14b8a6 100%);
-}
-
-.modern-calendar .rbc-event.event-health {
-  background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%);
-}
-
-.modern-calendar .rbc-event.event-learning {
-  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
-}
-
-.modern-calendar .rbc-event.event-social {
-  background: linear-gradient(135deg, #c7d2fe 0%, #6366f1 100%);
+.light .modern-calendar .rbc-time-slot{
+  @apply border-0
 }

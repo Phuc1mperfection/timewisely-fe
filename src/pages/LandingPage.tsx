@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "motion/react";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -9,6 +7,8 @@ import HeroSection from "@/components/landing/HeroSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import CTASection from "@/components/landing/CTASection";
 import FooterSection from "@/components/layout/Footer";
+import PersonalizationSection from "@/components/landing/PersonalizeSection";
+import ScrollAnimationSection from "@/components/landing/ScrollAnimationSection";
 const GlassCard = ({
   children,
   className = "",
@@ -84,17 +84,31 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[var(--wisely-purple)]/30 via-[var(--wisely-white)] to-[var(--wisely-mint)]/40 relative overflow-hidden">
+    <div className="">
       {/* Animated background elements */}
       <Navbar />
       <AnimatedBackground mousePosition={mousePosition} />
+
       {/* Hero Section */}
-      
-      <HeroSection mousePosition={mousePosition} />
+      <HeroSection />
+
       {/* Features Grid */}
       <FeaturesSection features={features} GlassCard={GlassCard} />
+
+      {/* How It Works Section */}
+
+      {/* Scroll Animation Section */}
+      <ScrollAnimationSection
+        title="Time is your most valuable asset"
+        subtitle="Our powerful tools help you make the most of every minute"
+      />
+
+      {/* Personalize Section */}
+      <PersonalizationSection />
+
       {/* CTA Section */}
-      <CTASection GlassCard={GlassCard} />
+      <CTASection />
+
       {/* Footer */}
       <FooterSection />
     </div>

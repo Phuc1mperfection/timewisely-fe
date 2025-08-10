@@ -1,40 +1,66 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react"; 
+import { Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useToast } from "@/hooks/useToast";
-import AnimatedInput from "./AnimatedInput";
+import SocialLogin from "./SocialLogin";
+import AuthInput from "./AuthInput";
+import AuthFormHeader from "./AuthFormHeader";
+import AuthToggle from "./AuthToggle";
 import { useNavigate } from "react-router-dom";
+import LoadingSkeleton from "./LoadingSkeleton";
 
-const AuthForm = () => {
+interface AuthFormProps {
+  onSuccess: () => void;
+  onLaunchOnboarding: () => void;
+}
+
+const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, register } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { login, register, loginWithGoogle } = useAuth();
   const { success, error } = useToast();
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!isLogin && !formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (!isLogin && formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    if (!validateForm()) return;
+    setIsLoading(true);
     try {
       if (isLogin) {
-        await login(email, password);
+        await login(formData.email, formData.password);
         success("Welcome back! You've successfully signed in to TimeWisely.");
-        navigate("/app", { replace: true });
+        navigate("/dashboard", { replace: true });
       } else {
-        await register(email, name, password);
+        await register(formData.email, formData.name, formData.password);
         success("Account created! Welcome to TimeWisely, let's get started.");
-        navigate("/app", { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     } catch (err) {
       console.error(err);
@@ -44,164 +70,126 @@ const AuthForm = () => {
           : "Failed to create account. Please try again."
       );
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
+  const handleSocialLogin = (provider: string) => {
+    setIsLoading(true);
+    try {
+      if (provider === "google") {
+        loginWithGoogle();
+        // The redirect will happen automatically from the loginWithGoogle function
+      }
+    } catch (err) {
+      console.error(err);
+      error("Failed to initialize social login. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingSkeleton type="form" />;
+  }
+
   return (
-    <div className="w-full flex flex-col items-end md:items-end pr-0 md:pr-8 bg-gradient-to-br from-[var(--wisely-purple)]/10 via-[var(--wisely-white)]/90 to-[var(--wisely-pink)]/80 ">
-      <div className="w-full max-w-md bg-white/30 rounded-2xl p-6 md:p-8 ">
-        <CardHeader className="text-center pb-4">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <CardTitle className="text-[var(--wisely-dark)] text-2xl">
-              {isLogin ? "Welcome Back" : "Create Account"}
-            </CardTitle>
-            <CardDescription className="text-[var(--wisely-gray)] mt-2">
-              {isLogin
-                ? "Sign in to your TimeWisely account"
-                : "Join TimeWisely and start managing your time better"}
-            </CardDescription>
-          </motion.div>
-        </CardHeader>
-        <CardContent>
-          <AnimatePresence mode="wait">
-            <motion.form
-              key={isLogin ? "login" : "register"}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full max-w-md bg-white/10 glass rounded-2xl p-8 "
+    >
+      <AuthFormHeader isLogin={isLogin} />
+      <SocialLogin isLoading={isLoading} onSocial={handleSocialLogin} />
+      {/* Divider */}
+      <motion.div
+        className="relative mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-white/20" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-transparent text-white/60">
+            or continue with email
+          </span>
+        </div>
+      </motion.div>
+      {/* Form */}
+      <motion.form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+      >
+        <AnimatePresence mode="wait">
+          {!isLogin && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              onSubmit={handleSubmit}
-              className="space-y-4"
             >
-              {!isLogin && (
-                <motion.div
-                  className="space-y-2"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Label htmlFor="name" className="text-[var(--wisely-dark)]">
-                    Full Name
-                  </Label>
-                  <AnimatedInput
-                    id="name"
-                    type="text"
-                    placeholder="Enter your full name"
-                    value={name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setName(e.target.value)
-                    }
-                    className="text-[var(--wisely-dark)] dark:text-[var(--wisely-dark)]"
-                    required
-                    autoComplete="name"
-                  />
-                </motion.div>
-              )}
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                <Label htmlFor="email" className="text-[var(--wisely-dark)]">
-                  Email
-                </Label>
-                <AnimatedInput
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                  }
-                    className="text-[var(--wisely-dark)] dark:text-[var(--wisely-dark)]"
-                  autoComplete="email"
-                  required
-                />
-              </motion.div>
-              <motion.div
-                className="space-y-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-              >
-                <Label htmlFor="password" className="text-[var(--wisely-dark)]">
-                  Password
-                </Label>
-                <AnimatedInput
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPassword(e.target.value)
-                  }
-                  required
-                  autoComplete="current-password"
-                  className="text-[var(--wisely-dark)] dark:text-[var(--wisely-dark)]"
-                />
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.3 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  type="submit"
-                  className="w-full bg-[var(--wisely-purple)] hover:bg-purple-600 text-white   transition-all duration-300"
-                  disabled={isSubmitting}
-                >
-                  <motion.span
-                    animate={
-                      isSubmitting ? { opacity: [1, 0.5, 1] } : { opacity: 1 }
-                    }
-                    transition={{
-                      duration: 1,
-                      repeat: isSubmitting ? Infinity : 0,
-                    }}
-                  >
-                    {isSubmitting
-                      ? isLogin
-                        ? "Signing In..."
-                        : "Creating Account..."
-                      : isLogin
-                      ? "Sign In"
-                      : "Create Account"}
-                  </motion.span>
-                </Button>
-              </motion.div>
-            </motion.form>
-          </AnimatePresence>
-          <motion.div
-            className="mt-6 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <p className="text-sm text-[var(--wisely-gray)] pb-2">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-              <motion.button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="ml-1 text-[var(--wisely-purple)] hover:underline font-medium transition-all duration-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {isLogin ? "Sign up" : "Sign in"}
-              </motion.button>
-            </p>
-          </motion.div>
-        </CardContent>
-      </div>
-    </div>
+              <AuthInput
+                type="text"
+                name="name"
+                value={formData.name}
+                placeholder="Your name"
+                icon={
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/50" />
+                }
+                error={errors.name}
+                onChange={(v) => handleInputChange("name", v)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AuthInput
+          type="email"
+          name="email"
+          value={formData.email}
+          placeholder="your@email.com"
+          icon={
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/50" />
+          }
+          error={errors.email}
+          onChange={(v) => handleInputChange("email", v)}
+        />
+        <AuthInput
+          type="password"
+          name="password"
+          value={formData.password}
+          placeholder="Your secure password"
+          icon={
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/50" />
+          }
+          error={errors.password}
+          onChange={(v) => handleInputChange("password", v)}
+          showPassword={showPassword}
+          onTogglePassword={() => setShowPassword((s) => !s)}
+        />
+        <motion.button
+          type="submit"
+          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-mint-400 text-white font-semibold hover:from-purple-600 hover:to-mint-500 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-mint-400 focus:ring-opacity-50"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          disabled={isLoading}
+        >
+          {isLogin ? "Enter Your Time Sanctuary" : "Start Your Transformation"}
+        </motion.button>
+      </motion.form>
+      <AuthToggle isLogin={isLogin} onToggle={() => setIsLogin((l) => !l)} />
+    </motion.div>
   );
 };
 

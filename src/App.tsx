@@ -14,6 +14,9 @@ import { OverviewPage } from "@/pages/OverviewPage";
 import { DashboardContent } from "./pages/Dashboard";
 import { ThemeProvider } from "@/components/theme-provider";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+import ActivitiesPage from "./pages/ActivitiesPage";
+import PomodoroPage from "./pages/PomodoroPage";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +26,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>
-            <Toaster />
+            <Toaster position="top-center" richColors/>
             {/* You can place <ModeToggle /> in your layout or header for theme switching */}
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -37,7 +40,7 @@ function App() {
               />
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route
-                path="/app/onboarding"
+                path="/onboarding"
                 element={
                   <PrivateRoute>
                     <Onboarding />
@@ -45,7 +48,7 @@ function App() {
                 }
               />
               <Route
-                path="/app/dashboard"
+                path="/dashboard"
                 element={
                   <PrivateRoute>
                     <DashboardLayout children={undefined} />
@@ -55,26 +58,24 @@ function App() {
                 <Route index element={<DashboardContent />} />
                 <Route path="overview" element={<OverviewPage />} />
                 <Route path="calendar" element={<CalendarPage />} />
+                <Route path="activities" element={<ActivitiesPage /> }/>
+                <Route path="pomodoro" element={<PomodoroPage/>} />
                 <Route path="goals" element={<div>Goals Page</div>} />
-                <Route path="profile" element={<Profile/>} />
+                <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<div>Settings Page</div>} />
                 {/* ...thêm các page con khác tại đây */}
               </Route>
-              <Route
-                path="/dashboard"
-                element={<Navigate to="/app/dashboard" replace />}
-              />
-              {/* Redirect /app và /app/* về dashboard nếu không khớp route con */}
+              {/* Redirect các route cũ về route mới nếu cần */}
               <Route
                 path="/app"
-                element={<Navigate to="/app/dashboard" replace />}
+                element={<Navigate to="/dashboard" replace />}
               />
               <Route
                 path="/app/*"
-                element={<Navigate to="/app/dashboard" replace />}
+                element={<Navigate to="/dashboard" replace />}
               />
               {/* Thêm các route khác tại đây nếu cần */}
-              <Route path="*" element={<Auth />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
         </TooltipProvider>

@@ -65,7 +65,7 @@ export function OverviewPage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link to="/app/dashboard/calendar">
+          <Link to="/dashboard/calendar">
             <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <CalendarIcon className="h-8 w-8 text-[var(--wisely-purple)] mx-auto mb-2" />
@@ -77,7 +77,7 @@ export function OverviewPage() {
             </Card>
           </Link>
 
-          <Link to="/app/dashboard/motivation">
+          <Link to="/dashboard/motivation">
             <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <Sparkles className="h-8 w-8 text-[var(--wisely-mint)] mx-auto mb-2" />
@@ -89,7 +89,7 @@ export function OverviewPage() {
             </Card>
           </Link>
 
-          <Link to="/app/dashboard/goals">
+          <Link to="/dashboard/goals">
             <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <Target className="h-8 w-8 text-[var(--wisely-pink)] mx-auto mb-2" />
@@ -101,7 +101,7 @@ export function OverviewPage() {
             </Card>
           </Link>
 
-          <Link to="/app/dashboard/ai-suggestions">
+          <Link to="/dashboard/ai-suggestions">
             <Card className="bg-white border border-purple-300 shadow-sm  hover:shadow-md transition-shadow cursor-pointer">
               <CardHeader className="text-center">
                 <Sparkles className="h-8 w-8 text-[var(--wisely-purple)] mx-auto mb-2" />
