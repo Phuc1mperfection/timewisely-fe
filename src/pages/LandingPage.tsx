@@ -9,7 +9,6 @@ import CTASection from "@/components/landing/CTASection";
 import FooterSection from "@/components/layout/Footer";
 import PersonalizationSection from "@/components/landing/PersonalizeSection";
 import ScrollAnimationSection from "@/components/landing/ScrollAnimationSection";
-import HowItWorksSection from "@/components/landing/HowItWorksSection";
 const GlassCard = ({
   children,
   className = "",
@@ -97,7 +96,6 @@ const LandingPage = () => {
       <FeaturesSection features={features} GlassCard={GlassCard} />
 
       {/* How It Works Section */}
-      <HowItWorksSection />
 
       {/* Scroll Animation Section */}
       <ScrollAnimationSection

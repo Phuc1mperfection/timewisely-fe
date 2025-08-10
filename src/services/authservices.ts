@@ -12,7 +12,7 @@ export const register = async (email: string, fullName: string, password: string
 };
 
 export const getCurrentUser = async (): Promise<User> => {
-  const res = await apiClient.get('/auth/me');
+  const res = await apiClient.get('/auth/user');
   return res.data;
 };
 
