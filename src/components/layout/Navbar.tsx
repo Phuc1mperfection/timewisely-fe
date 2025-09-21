@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // Updated to framer-motion
 import { useAuth } from "../../contexts/useAuth";
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggleButton } from "../ui/ThemeToggleButton";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,14 +18,20 @@ const Navbar: React.FC = () => {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 bg-white/20 bg-opacity-10 backdrop-blur-md border border-white/10 border-opacity-20 border-b "
+      className="
+        fixed top-14 left-1/2 transform -translate-x-1/2 
+        z-50 backdrop-blur-md rounded-full shadow-lg border
+        bg-white/60 text-gray-900 border-gray-300
+        dark:bg-black/60 dark:text-white dark:border-zinc-800
+        w-full max-w-xl px-4 sm:px-6 lg:px-8
+      "
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+      <nav className="flex items-center justify-between h-16 py-2">
+        {/* Logo */}
+        <div className="flex-shrink-0">
           <button
             className="flex items-center space-x-2 group bg-transparent border-none p-0 focus:outline-none"
             onClick={() => navigate("/")}
@@ -32,50 +39,55 @@ const Navbar: React.FC = () => {
           >
             <div className="p-1.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-100">
               <img
-                src={"/src/assets/icon.svg"}
+                src="/src/assets/icon.svg"
                 alt="Logo"
-                className="w-10 h-10 transition-transform duration-200 "
+                className="w-9 h-9 transition-transform duration-200"
               />
             </div>
-            <span className="text-2xl text-[var(--wisely-dark)] tracking-tight font-[Open_Sans] group-hover:text-[var(--wisely-purple)] transition-transform duration-200 group-hover:scale-110 ">
+            {/* <span className="text-2xl text-white tracking-tight font-[Open_Sans]">
               Time.Wisely
-            </span>{" "}
+            </span> */}
           </button>
+        </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a
-              href="#features"
-              className="text-gray-700 hover:text-purple-600 transition-colors"
-            >
-              Features
-            </a>
-            <a
-              href="#pricing"
-              className="text-gray-700 hover:text-purple-600 transition-colors"
-            >
-              Pricing
-            </a>
-            <a
-              href="#about"
-              className="text-gray-700 hover:text-purple-600 transition-colors"
-            >
-              About
-            </a>
-            
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center justify-center flex-1 space-x-6">
+          <a
+            href="#features"
+            className="hover:text-purple-600 transition-colors font-medium"
+          >
+            Features
+          </a>
+          <a
+            href="#about"
+            className="hover:text-purple-600 transition-colors font-medium"
+          >
+            About
+          </a>
+          <a
+            href="#pricing"
+            className="hover:text-purple-600 transition-colors font-medium"
+          >
+            Pricing
+          </a>
+        </div>
+
+        {/* User Dropdown or Sign In */}
+        <div className="flex-shrink-0 flex items-center space-x-2">
+          <div className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <ThemeToggleButton />
           </div>
 
-          {/* User Dropdown hoặc Sign In */}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-[var(--wisely-dark)] font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-purple)] "
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-purple)]"
                   aria-label="User menu"
                 >
                   Welcome back, {user.fullName || user.email}
                   <img
-                    src={"/src/assets/user-dropdown.svg"}
+                    src="/src/assets/user-dropdown.svg"
                     alt="Dropdown"
                     width={16}
                     height={16}
@@ -84,7 +96,7 @@ const Navbar: React.FC = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-48 text-[var(--wisely-dark)] bg-white/90  border border-white/20 rounded-lg shadow-lg"
+                className="w-48 text-white bg-white/90 border border-white/20 rounded-lg shadow-lg"
               >
                 <DropdownMenuItem
                   onClick={() => {
@@ -106,57 +118,63 @@ const Navbar: React.FC = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-               <button className="w-full btn-primary px-6 py-3 rounded-full text-white font-medium mt-4"
-                 onClick={() => {
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <button
+                className="btn-primary px-3 py-1.5 rounded-2xl text-white font-medium shadow-md"
+                onClick={() => {
                   navigate("/auth");
-                }}>
+                }}
+              >
                 Get Started
-                
               </button>
             </motion.div>
           )}
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 glass-dark border-t border-white/10">
-            <div className="px-4 py-6 space-y-4">
-              <a
-                href="#features"
-                className="block text-white hover:text-purple-400 transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#pricing"
-                className="block text-white hover:text-purple-400 transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#about"
-                className="block text-white hover:text-purple-400 transition-colors"
-              >
-                About
-              </a>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden ml-4">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation */}
+      {isMenuOpen && (
+        <div className="md:hidden absolute top-[4.5rem] left-4 right-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg">
+          <div className="px-6 py-6 space-y-5">
+            <a
+              href="#features"
+              className="block text-white hover:text-purple-400 transition-colors font-medium text-lg"
+            >
+              Features
+            </a>
+            <a
+              href="#pricing"
+              className="block text-white hover:text-purple-400 transition-colors font-medium text-lg"
+            >
+              Pricing
+            </a>
+            <a
+              href="#about"
+              className="block text-white hover:text-purple-400 transition-colors font-medium text-lg"
+            >
+              About
+            </a>
+            <div className="flex justify-center pt-2">
               <button
-                className="w-full btn-primary px-6 py-3 rounded-full text-white font-medium mt-4"
+                className="w-full max-w-xs mx-auto btn-primary px-6 py-3 rounded-xl text-white font-medium shadow-md"
                 onClick={() => {
                   setIsMenuOpen(false);
                   navigate("/auth");
@@ -166,8 +184,8 @@ const Navbar: React.FC = () => {
               </button>
             </div>
           </div>
-        )}
-      </nav>
+        </div>
+      )}
     </motion.header>
   );
 };
