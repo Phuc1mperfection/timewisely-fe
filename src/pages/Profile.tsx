@@ -7,6 +7,7 @@ import {
 import ProfileForm from "../components/profile/ProfileForm";
 import SecuritySettings from "../components/settings/SecuritySettings";
 import { useAuth } from "../contexts/useAuth";
+import SurveyResults from "@/components/profile/SurveyResult";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -29,15 +30,19 @@ const Profile = () => {
       <div className="flex-1 p-6 space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 md:w-fit">
+        <TabsList className="grid w-full grid-cols-3 ">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="survey">Survey Result</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <ProfileForm />
         </TabsContent>
         <TabsContent value="security">
           <SecuritySettings />
+        </TabsContent>
+        <TabsContent value="survey">
+          <SurveyResults />
         </TabsContent>
       </Tabs>
     </div>  
