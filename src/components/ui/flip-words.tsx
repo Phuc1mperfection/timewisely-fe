@@ -29,12 +29,7 @@ export const FlipWords = ({
   }, [isAnimating, duration, startAnimation]);
 
   return (
-    <span
-      className={cn(
-        "inline-block relative text-left px-2",
-        className,
-      )}
-    >
+    <span className={cn("inline-block relative text-left px-2", className)}>
       <span
         className={cn(
           "absolute opacity-0 transition-opacity duration-500",

@@ -174,7 +174,7 @@ export function EventModal({
                     variant="outline"
                     data-empty={!start}
                     className={cn(
-                      "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal"
+                      "data-[empty=true]:text-muted-foreground w-[190px] justify-start text-left font-normal"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4 " />
@@ -212,7 +212,7 @@ export function EventModal({
                     variant="outline"
                     data-empty={!end}
                     className={cn(
-                      "data-[empty=true]:text-muted-foreground w-[160px] justify-start text-left font-normal "
+                      "data-[empty=true]:text-muted-foreground w-[190px] justify-start text-left font-normal "
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
