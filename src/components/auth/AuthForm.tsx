@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react"; 
 import { Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useToast } from "@/hooks/useToast";
@@ -25,7 +25,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     password: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { login, register } = useAuth();
+  const { login, register, loginWithGoogle } = useAuth();
   const { success, error } = useToast();
   const navigate = useNavigate();
 
@@ -74,13 +74,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSocialLogin = (provider: string) => {
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      if (provider === "google") {
+        loginWithGoogle();
+        // The redirect will happen automatically from the loginWithGoogle function
+      }
+    } catch (err) {
+      console.error(err);
+      error("Failed to initialize social login. Please try again.");
       setIsLoading(false);
-      onSuccess();
-    }, 1500);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -99,7 +104,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md bg-white/10 glass rounded-2xl p-8 shadow-xl backdrop-blur-lg"
+      className="w-full max-w-md bg-white/10 glass rounded-2xl p-8 "
     >
       <AuthFormHeader isLogin={isLogin} />
       <SocialLogin isLoading={isLoading} onSocial={handleSocialLogin} />

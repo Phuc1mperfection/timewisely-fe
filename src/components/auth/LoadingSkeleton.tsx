@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react"; // Ensure you have motion/react installed
 
 interface LoadingSkeletonProps {
   type: "form" | "button" | "social";
