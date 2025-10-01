@@ -112,7 +112,7 @@ class YearView extends React.Component<YearViewProps> {
       const monthBlock = (
         <div
           key={i}
-          className="flex-1 max-w-[220px] mx-1 mb-3 p-2 bg-white border border-gray-200 rounded-lg shadow-sm"
+          className="flex-1 max-w-[220px] mx-1 mb-3 p-2 bg-white border border-gray-200 rounded-lg"
         >
           <div className="text-sm font-bold text-center text-purple-600 mb-1">
             {localizer.format(monthDate, "MMMM")}

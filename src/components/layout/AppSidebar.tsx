@@ -16,9 +16,10 @@ import {
   User,
   Home,
   Sparkles,
-CircleCheckBig,
+  CircleCheckBig,
   LayoutDashboard,
   ChevronUp,
+  Timer,
 } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,12 +36,8 @@ const menuItems = [
   { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
   { title: "Activities", url: "/dashboard/activities", icon: CircleCheckBig },
-
-  {
-    title: "AI Suggestions",
-    url: "/dashboard/ai-suggestions",
-    icon: Sparkles,
-  },
+  {title: "AI Suggestions", url: "/dashboard/ai-suggestions",icon: Sparkles},
+  { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
 ];

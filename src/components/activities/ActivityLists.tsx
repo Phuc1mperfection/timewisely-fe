@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { type Activity } from '@/hooks/useActivities';
 import { ActivityCard } from './ActivityCard';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react'; // Ensure you have motion/react installed
+import type { Activity } from '@/interfaces/Activity'; // Adjust the import path as necessary
 
 interface ActivityListProps {
   activities: Activity[];
