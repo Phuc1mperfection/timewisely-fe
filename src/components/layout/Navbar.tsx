@@ -16,6 +16,21 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  // Helper function to get display name
+  const getDisplayName = (currentUser: typeof user) => {
+    if (!currentUser) return "";
+    const name = currentUser.fullName || currentUser.email;
+    // If name is too long, show first name only or truncate email
+    if (name.length > 20) {
+      if (currentUser.fullName) {
+        return currentUser.fullName.split(" ")[0]; // Show first name only
+      } else {
+        return name.substring(0, 15) + "..."; // Truncate email
+      }
+    }
+    return name;
+  };
+
   return (
     <motion.header
       className="
@@ -23,7 +38,7 @@ const Navbar: React.FC = () => {
         z-50 backdrop-blur-md rounded-full shadow-lg border
         bg-white/60 text-gray-900 border-gray-300
         dark:bg-black/60 dark:text-white dark:border-zinc-800
-        w-full max-w-xl px-4 sm:px-6 lg:px-8
+        w-full max-w-2xl px-4 sm:px-6 lg:px-8
       "
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -82,15 +97,19 @@ const Navbar: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-purple)]"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-purple)] max-w-[200px] sm:max-w-[250px]"
                   aria-label="User menu"
                 >
-                  Welcome back, {user.fullName || user.email}
+                  <span className="truncate text-sm sm:text-base">
+                    <span className="hidden sm:inline">Welcome back, </span>
+                    {getDisplayName(user)}
+                  </span>
                   <img
                     src="/src/assets/user-dropdown.svg"
                     alt="Dropdown"
                     width={16}
                     height={16}
+                    className="flex-shrink-0"
                   />
                 </button>
               </DropdownMenuTrigger>
@@ -118,10 +137,7 @@ const Navbar: React.FC = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <button
                 className="btn-primary px-3 py-1.5 rounded-2xl text-white font-medium shadow-md"
                 onClick={() => {

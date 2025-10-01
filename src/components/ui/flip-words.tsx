@@ -1,4 +1,6 @@
+"use client";
 import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export const FlipWords = ({
@@ -13,6 +15,7 @@ export const FlipWords = ({
   const [currentWord, setCurrentWord] = useState(words[0]);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
+  // thanks for the fix Julian - https://github.com/Julian-AT
   const startAnimation = useCallback(() => {
     const word = words[words.indexOf(currentWord) + 1] || words[0];
     setCurrentWord(word);
@@ -20,33 +23,75 @@ export const FlipWords = ({
   }, [currentWord, words]);
 
   useEffect(() => {
-    if (!isAnimating) {
-      const timer = setTimeout(() => {
+    if (!isAnimating)
+      setTimeout(() => {
         startAnimation();
       }, duration);
-      return () => clearTimeout(timer);
-    }
   }, [isAnimating, duration, startAnimation]);
 
   return (
-    <span className={cn("inline-block relative text-left px-2", className)}>
-      <span
-        className={cn(
-          "absolute opacity-0 transition-opacity duration-500",
-          !isAnimating ? "opacity-100" : "opacity-0"
-        )}
-        onAnimationEnd={() => setIsAnimating(false)}
-      >
-        {currentWord}
-      </span>
-      <span
-        className={cn(
-          "opacity-0 transition-opacity duration-500",
-          isAnimating ? "opacity-100" : "opacity-0"
-        )}
-      >
-        {currentWord}
-      </span>
-    </span>
+    <AnimatePresence
+      onExitComplete={() => {
+        setIsAnimating(false);
+      }}
+    >
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 10,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      }}
+      exit={{
+        opacity: 0,
+        y: -40,
+        x: 40,
+        filter: "blur(8px)",
+        scale: 2,
+        position: "absolute",
+      }}
+      className={cn(
+        "z-10 inline-block relative text-left text-neutral-900 dark:text-neutral-100 px-2",
+        className
+      )}
+      key={currentWord}
+    >
+      {currentWord.split(" ").map((word, wordIndex) => (
+        <motion.span
+        key={word + wordIndex}
+        initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{
+          delay: wordIndex * 0.3,
+          duration: 0.3,
+        }}
+        className="inline-block whitespace-nowrap"
+        >
+        {word.split("").map((letter, letterIndex) => (
+          <motion.span
+            key={word + letterIndex}
+            initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{
+            delay: wordIndex * 0.3 + letterIndex * 0.05,
+            duration: 0.2,
+            }}
+            className="inline-block text-cyan-600 font-bold text-2xl "
+          >
+            {letter}
+          </motion.span>
+        ))}
+        <span className="inline-block">&nbsp;</span>
+        </motion.span>
+      ))}
+    </motion.div>
+    </AnimatePresence>
   );
 };

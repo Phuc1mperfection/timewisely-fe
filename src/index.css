@@ -3,14 +3,19 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant light (&:is(:not(.dark) *));
 
-@theme  {
+@theme {
   --font-display: "Satoshi", "sans-serif";
 }
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --breakpoint-3xl: 120rem;
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  --radix-accordion-content-height: 300px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -44,6 +49,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
 }
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -140,17 +146,6 @@
   --sidebar-border: #ffffff1a;
   --sidebar-ring: #6c6ca8;
 }
-
-:root {
-  --breakpoint-3xl: 120rem;
-  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
-  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-lg: var(--radius);
-  --radix-accordion-content-height: 300px;
-}
-
 @keyframes accordion-down {
   from {
     height: 0;
@@ -214,317 +209,16 @@
     border-color: var(--border);
     outline-color: var(--ring);
   }
-  
+
 }
-
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
-}
-/* Modern Calendar Styles - TimeWisely Theme */
-.modern-calendar.rbc-calendar {
-  @apply bg-transparent border-0 font-sans;
-}
-
-/* Toolbar Styling */
-
-
-.modern-calendar .rbc-toolbar button {
-  @apply bg-white border-0 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-purple-100 hover:text-purple-700 shadow-sm;
-}
-
-.modern-calendar .rbc-toolbar button:active,
-.modern-calendar .rbc-toolbar button.rbc-active {
-  @apply bg-purple-500 text-white shadow-md;
-}
-
-.modern-calendar .rbc-toolbar-label {
-  @apply text-xl font-bold text-gray-800 mx-4;
-}
-
-/* Header Styling */
-.modern-calendar .rbc-header {
-  @apply bg-gradient-to-r from-gray-50 to-purple-50 text-gray-700 font-semibold py-4 px-3 border-0 border-b border-gray-200 text-sm uppercase tracking-wide;
-}
-
-/* Month View */
-.modern-calendar .rbc-month-view {
-  @apply border-0 rounded-lg overflow-hidden;
-}
-
-.modern-calendar .rbc-date-cell {
-  @apply text-gray-600 p-3 hover:bg-purple-50  duration-150 cursor-pointer;
-}
-
-.modern-calendar .rbc-date-cell > a {
-  @apply font-medium;
-}
-
-.modern-calendar .rbc-off-range-bg {
-  @apply bg-gray-50/50;
-}
-
-.modern-calendar .rbc-date-cell.rbc-selected {
-  @apply bg-purple-200;
-}
-
-/* Week/Day View */
-.modern-calendar .rbc-time-view {
-  @apply border-0;
-}
-
-.modern-calendar .rbc-time-header {
-  @apply border-b border-gray-200 bg-gradient-to-r from-gray-50 to-purple-50;
-}
-
-.modern-calendar .rbc-time-content {
-  @apply border-0;
-}
-
-.modern-calendar .rbc-time-slot {
-  @apply border-gray-100 hover:bg-purple-50 transition-all duration-150;
-}
-
-.modern-calendar .rbc-timeslot-group {
-  @apply border-gray-100;
-}
-
-.modern-calendar .rbc-time-gutter {
-  @apply bg-gray-50/50;
-}
-
-.modern-calendar .rbc-time-header-gutter {
-  @apply bg-gradient-to-r from-gray-50 to-purple-50;
-}
-
-/* Current Time Indicator */
-.modern-calendar .rbc-current-time-indicator {
-  @apply bg-gradient-to-r from-purple-500 to-teal-500 h-0.5 shadow-sm;
-}
-
-/* Events */
-.modern-calendar .rbc-event {
-  @apply border-0 rounded-xl px-3 py-1.5 text-white font-medium text-sm shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer;
-}
-
-.modern-calendar .rbc-event:hover {
-  @apply scale-101  shadow-xl;
-  transform: scale(1.02);
-  transition: all 0.2s ease-in-out;
-}
-
-.modern-calendar .rbc-event.rbc-selected {
-  @apply ring-2 ring-purple-300 ring-offset-2;
-}
-
-.modern-calendar .rbc-event-label {
-  @apply font-medium text-xs;
-}
-
-.modern-calendar .rbc-event-content {
-  @apply font-medium;
-}
-
-/* Slot Selection */
-.modern-calendar .rbc-slot-selection {
-  @apply bg-gradient-to-br from-blue-900 to-teal-200 border-2 border-purple-300 rounded-lg;
-}
-
-/* Agenda View */
-.modern-calendar .rbc-agenda-view {
-  @apply border-0 rounded-lg overflow-hidden bg-white;
-}
-
-.modern-calendar .rbc-agenda-table {
-  @apply border-0;
-}
-
-.modern-calendar .rbc-agenda-table tbody > tr > td {
-  @apply border-gray-100 py-3 px-4;
-}
-
-.modern-calendar .rbc-agenda-table tbody > tr:hover {
-  @apply bg-purple-50;
-}
-
-.modern-calendar .rbc-agenda-date-cell {
-  @apply font-semibold text-purple-100;
-}
-
-.modern-calendar .rbc-agenda-time-cell {
-  @apply text-gray-100 font-medium;
-}
-
-.modern-calendar .rbc-agenda-event-cell {
-  @apply text-gray-100;
-}
-
-/* Popup */
-.modern-calendar .rbc-overlay {
-  @apply bg-white border-0 rounded-xl shadow-2xl p-4;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.modern-calendar .rbc-overlay-header {
-  @apply font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-2;
-}
-
-/* Show More Link */
-.modern-calendar .rbc-show-more {
-  @apply text-purple-600 font-medium hover:text-purple-800 transition-all duration-150;
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  z-index: 10 !important;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .modern-calendar .rbc-toolbar {
-    @apply flex-col space-y-2 p-3;
-  }
-  
-  .modern-calendar .rbc-toolbar button {
-    @apply px-3 py-1.5 text-sm;
-  }
-  
-  .modern-calendar .rbc-toolbar-label {
-    @apply text-lg mx-0;
-  }
-}
-
-/* Animation Classes */
-@keyframes eventPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.modern-calendar .rbc-event.event-pulse {
-  animation: eventPulse 2s infinite;
-}
-
-/* Custom Event Colors with Gradients */
-.modern-calendar .rbc-event.event-work {
-  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-}
-
-.modern-calendar .rbc-event.event-personal {
-  background: linear-gradient(135deg, #5eead4 0%, #14b8a6 100%);
-}
-
-.modern-calendar .rbc-event.event-health {
-  background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%);
-}
-
-.modern-calendar .rbc-event.event-learning {
-  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
-}
-
-.modern-calendar .rbc-event.event-social {
-  background: linear-gradient(135deg, #c7d2fe 0%, #6366f1 100%);
-}
-
-/* Enhanced component-specific dark mode styles */
-[data-theme="dark"] [data-theme-dropdown-content] {
-  background-color: var(--card);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme="dark"] [data-theme-dropdown-item]:hover {
-  background-color: var(--dark-hover-effect, rgba(255, 255, 255, 0.07));
-}
-
-[data-theme="dark"] [data-theme-dropdown-item]:focus {
-  background-color: var(--dark-active-effect, rgba(255, 255, 255, 0.1));
-}
-
-/* Enhanced button styles for dark mode */
-[data-theme="dark"] [data-slot="button"] {
-  transition: all 0.2s ease-in-out;
-}
-
-[data-theme="dark"] [data-slot="button"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="dark"] [data-slot="button"]:active {
-  transform: translateY(0);
-}
-
-/* Input and form fields in dark mode */
-[data-theme="dark"] input,
-[data-theme="dark"] textarea,
-[data-theme="dark"] select {
-  background-color: var(--input);
-  border-color: var(--border);
-  color: var(--foreground);
-}
-
-[data-theme="dark"] input:focus,
-[data-theme="dark"] textarea:focus,
-[data-theme="dark"] select:focus {
-  border-color: var(--ring);
-  box-shadow: 0 0 0 2px var(--ring, rgba(140, 140, 250, 0.2));
-}
-
-/* Focus ring for accessibility in dark mode */
-[data-theme="dark"] :focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
-
-
-/* Modern Calendar Today Highlight */
-.light .modern-calendar .rbc-today {
-  @apply bg-gradient-to-br from-purple-100 to-teal-100;
-}
-.dark .modern-calendar .rbc-today {
-  @apply bg-gradient-to-br from-purple-900/90 to-slate-900;
-  color: #fff;
-}
-
-
-/* Dark mode for calendar grid lines and slots */
-.dark .modern-calendar .rbc-month-view,
-.dark .modern-calendar .rbc-time-view,
-.dark .modern-calendar .rbc-time-header,
-.dark .modern-calendar .rbc-time-content,
-.dark .modern-calendar .rbc-time-slot,
-.dark .modern-calendar .rbc-timeslot-group,
-.dark .modern-calendar .rbc-header,
-.dark .modern-calendar .rbc-agenda-table,
-.dark .modern-calendar .rbc-agenda-table tbody > tr > td {
-  border-color: #39395a !important;
-  background-color: transparent;
-}
-.dark .modern-calendar .rbc-time-slot {
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 95%,
-  );
-}
-
-/* Hide half-hour divider line in time slots for both light and dark mode */
-.modern-calendar .rbc-time-slot:not(:first-child) {
-  border-top: none !important;
-  background-image: none !important;
-}
-
-/* Custom scrollbar styles */
-.modern-calendar::-webkit-scrollbar {
-  width: 8px;
-}
-.modern-calendar::-webkit-scrollbar-track {
-  background: transparent;
 }
 /* Primary Button Styles */
 .btn-primary {
@@ -542,9 +236,8 @@
   box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
   cursor: pointer;
 }
-.clock-face {
-  animation: subtle-pulse 4s ease-in-out infinite;
-}
+
+
 
 .clock-hand {
   transform-origin: 50% 85%;
@@ -552,64 +245,89 @@
 }
 
 .hour-hand {
-  animation: rotate-hour 43200s linear infinite; /* 12 hours */
+  animation: rotate-hour 43200s linear infinite;
+  /* 12 hours */
 }
 
 .minute-hand {
-  animation: rotate-minute 3600s linear infinite; /* 60 minutes */
+  animation: rotate-minute 3600s linear infinite;
+  /* 60 minutes */
 }
 
 .second-hand {
-  animation: rotate-second 60s linear infinite; /* 60 seconds */
+  animation: rotate-second 60s linear infinite;
+  /* 60 seconds */
 }
 
 @keyframes subtle-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.9; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 1.5;
+  }
 }
 
 @keyframes rotate-hour {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes rotate-minute {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes rotate-second {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-/* Animated gradient background */
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* TimeWisely Authentication Animations */
 
-
-
 /* Animated gradient background */
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .auth-gradient-bg {
-  background: linear-gradient(
-    135deg,
-    var(--wisely-purple),
-    var(--wisely-dark),
-    var(--wisely-indigo),
-    var(--wisely-darkYellow),
-    var(--wisely-purple),
-    var(--wisely-dark)
-  );
+  background: linear-gradient(135deg,
+      var(--wisely-purple),
+      var(--wisely-dark),
+      var(--wisely-indigo),
+      var(--wisely-darkYellow),
+      var(--wisely-purple),
+      var(--wisely-dark));
   background-size: 400% 400%;
   animation: gradient-shift 9s ease infinite;
 }
@@ -649,17 +367,22 @@
 
 /* Loading skeleton animations */
 @keyframes skeleton-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(139, 92, 246, 0.1) 25%,
-    rgba(94, 234, 212, 0.2) 50%,
-    rgba(139, 92, 246, 0.1) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(139, 92, 246, 0.1) 25%,
+      rgba(94, 234, 212, 0.2) 50%,
+      rgba(139, 92, 246, 0.1) 75%);
   background-size: 200% 100%;
   animation: skeleton-pulse 2s ease-in-out infinite;
 }
@@ -678,12 +401,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -693,11 +414,14 @@
 
 /* Floating particles */
 @keyframes float-particle {
-  0%, 100% { 
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
     opacity: 0.3;
   }
-  50% { 
+
+  50% {
     transform: translateY(-20px) rotate(180deg);
     opacity: 0.8;
   }
@@ -707,8 +431,13 @@
   animation: float-particle 6s ease-in-out infinite;
 }
 
-.floating-particle:nth-child(2) { animation-delay: 2s; }
-.floating-particle:nth-child(3) { animation-delay: 4s; }
+.floating-particle:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.floating-particle:nth-child(3) {
+  animation-delay: 4s;
+}
 
 /* Form validation states */
 .input-error {
@@ -727,4 +456,207 @@
     opacity: 0.05;
     transform: scale(0.8);
   }
+}
+/* Modern Calendar Styles - TimeWisely Theme */
+.modern-calendar.rbc-calendar {
+  @apply bg-transparent border-0 font-sans;
+}
+/* Header Styling */
+.modern-calendar .rbc-month-view .rbc-header,
+.modern-calendar .rbc-time-view .rbc-header {
+  @apply uppercase flex flex-col justify-center items-center text-center font-semibold py-4 px-3 text-sm tracking-wide whitespace-pre-line leading-[1.4] border-0;
+  color: var(--calendar-header-fg, #4b5563);
+}
+/*custom scrollbar*/
+
+/* .light .modern-calendar .rbc-header {
+  --calendar-header-fg: #4b5563;
+  --calendar-header-bg: linear-gradient(to right, #f9fafb, #f3e8ff);
+} */
+
+.dark .modern-calendar .rbc-header {
+  /* --calendar-header-fg: #e0e7ff;
+  --calendar-header-bg: #232347; */
+  @apply text-[#e0e7ff];
+}
+
+/* Month View */
+.modern-calendar .rbc-month-view {
+  @apply border-0 rounded-lg overflow-hidden ;
+  background: var(--calendar-month-bg, #fff);
+}
+
+.light .modern-calendar .rbc-month-view {
+  --calendar-month-bg: #fff;
+}
+
+.dark .modern-calendar .rbc-month-view {
+  --calendar-month-bg: #232347;
+}
+
+.light .modern-calendar .rbc-off-range-bg {
+  background: #f3e8ff !important ;
+  color: #fff !important;
+}
+
+.dark .modern-calendar .rbc-off-range-bg {
+  background: #191933 !important;
+}
+.modern-calendar .rbc-date-cell {
+  @apply text-gray-600 p-3 cursor-pointer ;
+  color: var(--calendar-date-fg, #4b5563);
+}
+
+.light .modern-calendar .rbc-date-cell {
+  --calendar-date-fg: #4b5563;
+}
+
+.dark .modern-calendar .rbc-date-cell {
+  --calendar-date-fg: #e0e7ff;
+}
+
+.modern-calendar .rbc-date-cell>a {
+  @apply font-medium;
+}
+
+/* Week/Day View */
+.modern-calendar .rbc-time-view {
+  @apply border-0 ;
+  /* background: var(--calendar-time-bg, #fff); */
+}
+
+/* .light .modern-calendar .rbc-time-view {
+  --calendar-time-bg: #fff;
+}
+
+.dark .modern-calendar .rbc-time-view {
+  --calendar-time-bg: #232347;
+} */
+
+
+.modern-calendar .rbc-time-gutter {
+  @apply bg-gray-50/50;
+  color: var(--calendar-gutter-fg, #6b7280);
+  background: var(--calendar-gutter-bg, #f9fafb);
+}
+
+.light .modern-calendar .rbc-time-gutter {
+  --calendar-gutter-fg: #6b7280;
+  --calendar-gutter-bg: #f9fafb;
+}
+
+.dark .modern-calendar .rbc-time-gutter {
+  --calendar-gutter-fg: #e0e7ff;
+  --calendar-gutter-bg: #232347;
+}
+
+.modern-calendar .rbc-time-header-gutter {
+  @apply bg-gray-50;
+}
+
+.dark .modern-calendar .rbc-time-header-gutter {
+  background: #232347 !important;
+}
+
+/* Current Time Indicator */
+.modern-calendar .rbc-current-time-indicator {
+  @apply bg-purple-500 h-0.5;
+}
+
+/* Events */
+.modern-calendar .rbc-event {
+  @apply border-0  text-white font-medium text-sm cursor-pointer;
+  background: var(--calendar-event-bg, #000);
+  color: var(--calendar-event-fg, #fff);
+}
+
+.modern-calendar .rbc-event.rbc-selected {
+  @apply ring-2 ring-purple-300 ring-offset-2 bg-amber-600;
+}
+
+.modern-calendar .rbc-event-label {
+  @apply font-medium text-xs;
+}
+
+/* Slot Selection */
+.modern-calendar .rbc-slot-selection {
+  @apply border-2 border-purple-300 rounded-lg;
+  background: var(--calendar-slot-selection-bg, #e0e7ff);
+}
+
+.light .modern-calendar .rbc-slot-selection {
+  @apply bg-blue-600 font-semibold;
+}
+
+.dark .modern-calendar .rbc-slot-selection {
+  --calendar-slot-selection-bg: #232347;
+}
+
+/* Agenda View */
+.modern-calendar .rbc-agenda-view {
+  @apply border-0 rounded-lg overflow-hidden bg-white;
+  background: var(--calendar-agenda-bg, #fff);
+}
+
+.light .modern-calendar .rbc-agenda-view {
+  --calendar-agenda-bg: #fff;
+}
+
+.dark .modern-calendar .rbc-agenda-view {
+  --calendar-agenda-bg: #232347;
+}
+
+.modern-calendar .rbc-agenda-table {
+  @apply border-0;
+}
+
+.modern-calendar .rbc-agenda-table tbody>tr>td {
+  @apply border-gray-100 py-3 px-4;
+}
+
+.modern-calendar .rbc-agenda-date-cell {
+  @apply font-semibold text-purple-100;
+}
+
+.modern-calendar .rbc-agenda-time-cell {
+  @apply text-gray-100 font-medium;
+}
+
+.modern-calendar .rbc-agenda-event-cell {
+  @apply text-gray-100;
+}
+
+/* Today Highlight */
+.light .modern-calendar .rbc-today {
+  @apply bg-purple-500/10;
+}
+
+.dark .modern-calendar .rbc-today {
+  @apply bg-purple-900/90;
+  color: #fff;
+}
+
+/* Dark mode for calendar grid lines and slots */
+.dark .modern-calendar .rbc-month-view,
+.dark .modern-calendar .rbc-time-view,
+.dark .modern-calendar .rbc-time-content,
+.dark .modern-calendar .rbc-timeslot-group,
+.dark .modern-calendar .rbc-agenda-table,
+.dark .modern-calendar .rbc-agenda-table tbody>tr>td {
+  border-color: #39395a !important;
+  background-color: transparent;
+}
+/* Show More Link */
+
+.light .modern-calendar .rbc-show-more {
+  color: #4f46e5;
+}
+.dark .modern-calendar .rbc-show-more {
+  color: #c084fc;
+}
+.dark .modern-calendar .rbc-time-slot{
+  @apply border-0
+}
+.light .modern-calendar .rbc-time-slot{
+  @apply border-0
 }
