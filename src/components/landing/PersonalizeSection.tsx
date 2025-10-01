@@ -1,9 +1,12 @@
-import React from 'react';
-import { UserCheck, Sparkles, ArrowRight } from 'lucide-react';
+import React from "react";
+import { UserCheck, Sparkles, ArrowRight } from "lucide-react";
 
 const PersonalizationSection: React.FC = () => {
   return (
-    <section className="py-24 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 relative overflow-hidden">
+    <section
+      id="about"
+      className="py-24 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 relative overflow-hidden"
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0">
         <div className="floating-shape absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-xl" />
@@ -16,7 +19,9 @@ const PersonalizationSection: React.FC = () => {
           <div className="text-white">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-6">
               <Sparkles className="h-4 w-4 mr-2" />
-              <span className="text-sm font-medium">Personalized Experience</span>
+              <span className="text-sm font-medium">
+                Personalized Experience
+              </span>
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
@@ -27,23 +32,29 @@ const PersonalizationSection: React.FC = () => {
             </h2>
 
             <p className="text-xl text-white/90 mb-8 leading-relaxed">
-              Take our comprehensive onboarding survey to unlock a completely 
-              personalized productivity experience. Our AI learns your preferences, 
-              work style, and goals to create the perfect workflow.
+              Take our comprehensive onboarding survey to unlock a completely
+              personalized productivity experience. Our AI learns your
+              preferences, work style, and goals to create the perfect workflow.
             </p>
 
             <div className="space-y-4 mb-8">
               <div className="flex items-center">
                 <UserCheck className="h-6 w-6 text-green-300 mr-4" />
-                <span className="text-white/90">Personalized task prioritization</span>
+                <span className="text-white/90">
+                  Personalized task prioritization
+                </span>
               </div>
               <div className="flex items-center">
                 <UserCheck className="h-6 w-6 text-green-300 mr-4" />
-                <span className="text-white/90">Custom productivity insights</span>
+                <span className="text-white/90">
+                  Custom productivity insights
+                </span>
               </div>
               <div className="flex items-center">
                 <UserCheck className="h-6 w-6 text-green-300 mr-4" />
-                <span className="text-white/90">Adaptive scheduling recommendations</span>
+                <span className="text-white/90">
+                  Adaptive scheduling recommendations
+                </span>
               </div>
             </div>
 
@@ -57,19 +68,39 @@ const PersonalizationSection: React.FC = () => {
           <div className="relative">
             <div className=" p-8 rounded-3xl border border-white/20">
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-white mb-2">Onboarding Survey</h3>
-                <p className="text-white/70 text-sm">Help us understand your productivity style</p>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Onboarding Survey
+                </h3>
+                <p className="text-white/70 text-sm">
+                  Help us understand your productivity style
+                </p>
               </div>
 
               <div className="space-y-6">
                 {/* Question 1 */}
                 <div>
-                  <p className="text-white mb-3 font-medium">What's your biggest productivity challenge?</p>
+                  <p className="text-white mb-3 font-medium">
+                    What's your biggest productivity challenge?
+                  </p>
                   <div className="space-y-2">
-                    {['Staying focused', 'Managing priorities', 'Time estimation', 'Procrastination'].map((option, index) => (
-                      <label key={index} className="flex items-center cursor-pointer group">
-                        <input type="radio" name="challenge" className="mr-3 accent-purple-500" />
-                        <span className="text-white/80 group-hover:text-white transition-colors">{option}</span>
+                    {[
+                      "Staying focused",
+                      "Managing priorities",
+                      "Time estimation",
+                      "Procrastination",
+                    ].map((option, index) => (
+                      <label
+                        key={index}
+                        className="flex items-center cursor-pointer group"
+                      >
+                        <input
+                          type="radio"
+                          name="challenge"
+                          className="mr-3 accent-purple-500"
+                        />
+                        <span className="text-white/80 group-hover:text-white transition-colors">
+                          {option}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -77,9 +108,16 @@ const PersonalizationSection: React.FC = () => {
 
                 {/* Question 2 */}
                 <div>
-                  <p className="text-white mb-3 font-medium">When are you most productive?</p>
+                  <p className="text-white mb-3 font-medium">
+                    When are you most productive?
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {['Early morning', 'Late morning', 'Afternoon', 'Evening'].map((time, index) => (
+                    {[
+                      "Early morning",
+                      "Late morning",
+                      "Afternoon",
+                      "Evening",
+                    ].map((time, index) => (
                       <button
                         key={index}
                         className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white/80 hover:text-white text-sm"

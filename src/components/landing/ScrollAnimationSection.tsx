@@ -1,41 +1,70 @@
-import React from "react";
-import { motion } from "motion/react";
+import React, { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useVelocity,
+} from "motion/react"; 
+import backgroundImg from "@/assets/productive-background.jpg";
+interface ScrollAnimationSectionProps {
+  title: string;
+  subtitle?: string;
+  backgroundImage?: string;
+}
 
-const ScrollAnimationSection: React.FC = () => {
+const ScrollAnimationSection: React.FC<ScrollAnimationSectionProps> = ({
+  title,
+  backgroundImage = backgroundImg, // dùng path từ public/
+}) => {
+  const containerRef = useRef(null);
+
+  const { scrollYProgress, scrollY } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"], // Kích hoạt hiệu ứng sớm
+  });
+
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, {
+    damping: 50,
+    stiffness: 500,
+  });
+
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const textPosition = useTransform(scrollYProgress, [0, 1], ["50%", "-100%"]);
+  const skewFactor = useTransform(smoothVelocity, [-1000, 1000], [15, -15]);
+
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="py-20 px-4"
-    >
-      <div className="container mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-wisely-dark dark:text-white">
-          Scroll Triggered Animation
-        </h2>
-        <p className="text-lg text-wisely-gray dark:text-gray-300 mb-8">
-          This section appears with smooth animations when you scroll to it.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[1, 2, 3].map((item) => (
-            <motion.div
-              key={item}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: item * 0.1 }}
-              viewport={{ once: true }}
-              className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg"
-            >
-              <h3 className="text-xl font-semibold mb-4">Feature {item}</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Description of feature {item} with animated entrance.
-              </p>
-            </motion.div>
-          ))}
-        </div>
+    <section ref={containerRef} className="relative h-[300vh] w-full">
+      {/* Sticky inner content */}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <motion.div
+          className="absolute w-full h-full"
+          style={{ scale: imageScale }}
+        >
+          <img
+            src={backgroundImage}
+            alt="Background"
+            className="object-cover"
+          />
+        </motion.div>
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+
+        {/* Text content */}
+        <motion.h1
+          className="relative z-10 uppercase text-white text-[10vw] font-bold text-nowrap"
+          style={{
+            x: textPosition,
+            skew: skewFactor,
+          }}
+        >
+          {title}
+        </motion.h1>
       </div>
-    </motion.section>
+    </section>
   );
 };
 
