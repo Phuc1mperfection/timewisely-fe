@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContextTypes";
+import { useToast } from "@/hooks/useToast";
 
 export const PrivateRoute = ({
   children,
@@ -12,6 +13,18 @@ export const PrivateRoute = ({
 }) => {
   const { isAuthenticated, loading, user } = useContext(AuthContext);
   const location = useLocation();
+  const { error: showError } = useToast();
+
+  // Handle OAuth errors
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+
+    if (error) {
+      console.error("OAuth error:", error);
+      showError(`Authentication failed: ${error.split(";")[0]}`);
+    }
+  }, [location, showError]);
 
   if (loading)
     return (
