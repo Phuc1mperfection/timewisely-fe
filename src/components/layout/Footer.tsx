@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Mail, ArrowRight } from "lucide-react";
 
 const FooterSection = () => (
-  <footer className="relative z-10 bg-white  text-[var(--wisely-gray)] dark:bg-white">
+  <footer className="relative z-10 bg-white  text-foreground dark:bg-black">
     <div className="container mx-auto px-6 pt-16 pb-8">
       {/* Top Footer Section */}
       <motion.div

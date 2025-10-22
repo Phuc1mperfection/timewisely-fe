@@ -1,51 +1,53 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "motion/react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
-import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import HeroSection from "@/components/landing/HeroSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
-import CTASection from "@/components/landing/CTASection";
+// import CTASection from "@/components/landing/CTASection";
+import { Preloader } from "@/components/Preloader";
 import FooterSection from "@/components/layout/Footer";
 import PersonalizationSection from "@/components/landing/PersonalizeSection";
 import ScrollAnimationSection from "@/components/landing/ScrollAnimationSection";
-const GlassCard = ({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { StorylineSection } from "@/components/landing/StorylineSection";
 
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay }}
-      className={` bg-white/10 border border-white/20 rounded-2xl shadow-xl ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 const LandingPage = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handlePreloaderComplete = () => {
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const updateMousePosition = (ev: MouseEvent) => {
-      setMousePosition({ x: ev.clientX, y: ev.clientY });
-    };
-    window.addEventListener("mousemove", updateMousePosition);
-    return () => {
-      window.removeEventListener("mousemove", updateMousePosition);
-    };
-  }, []);
+    if (!isLoading) {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Scroll-triggered section reveals
+      gsap.utils.toArray(".section-reveal").forEach((section: any) => {
+        gsap.fromTo(
+          section,
+          { opacity: 0, y: 100 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              end: "bottom 20%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
+    return <Preloader onComplete={handlePreloaderComplete} />;
+  }
 
   const features = [
     {
@@ -87,27 +89,27 @@ const LandingPage = () => {
     <div className="">
       {/* Animated background elements */}
       <Navbar />
-      <AnimatedBackground mousePosition={mousePosition} />
 
       {/* Hero Section */}
       <HeroSection />
-
-      {/* Features Grid */}
-      <FeaturesSection features={features} GlassCard={GlassCard} />
-
-      {/* How It Works Section */}
 
       {/* Scroll Animation Section */}
       <ScrollAnimationSection
         title="Time is your most valuable asset"
         subtitle="Our powerful tools help you make the most of every minute"
       />
+      {/* Features Grid */}
+      <FeaturesSection features={features} />
 
+      {/* How It Works Section */}
+
+      {/* Storyline Section */}
+      <StorylineSection />
       {/* Personalize Section */}
       <PersonalizationSection />
 
       {/* CTA Section */}
-      <CTASection />
+      {/* <CTASection /> */}
 
       {/* Footer */}
       <FooterSection />

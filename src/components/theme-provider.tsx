@@ -14,13 +14,16 @@ export function ThemeProvider({
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+    }
+    return defaultTheme;
+  });
 
   const [isDark, setIsDark] = useState<boolean>(false);
 
-  // Apply theme to DOM and update isDark state
+  // Apply theme to DOM + sync isDark
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
@@ -35,7 +38,7 @@ export function ThemeProvider({
     root.classList.add(currentTheme);
     setIsDark(currentTheme === "dark");
 
-    // Listen for system theme changes when in system mode
+    // Handle system theme changes
     if (theme === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       const handleChange = () => {
@@ -50,27 +53,33 @@ export function ThemeProvider({
     }
   }, [theme]);
 
-  // Theme toggle shorthand
+  // Toggle theme
   const toggleTheme = useCallback(() => {
     setTheme((prevTheme) => {
-      if (prevTheme === "light") return "dark";
-      if (prevTheme === "dark") return "light";
-      // If system, toggle based on current appearance
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "light"
-        : "dark";
+      let next: Theme;
+      if (prevTheme === "light") next = "dark";
+      else if (prevTheme === "dark") next = "light";
+      else {
+        // If system, toggle against current appearance
+        next = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "light"
+          : "dark";
+      }
+      localStorage.setItem(storageKey, next); // 🔥 nhớ lưu lại
+      return next;
     });
-  }, []);
+  }, [storageKey]);
 
   const value = {
     theme,
     isDark,
     toggleTheme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
+    setTheme: (newTheme: Theme) => {
+      localStorage.setItem(storageKey, newTheme);
+      setTheme(newTheme);
     },
   };
+
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
       {children}

@@ -66,7 +66,7 @@ const AnalogClock: React.FC = () => {
       <CardBody className="relative w-80 h-80 mx-auto rounded-full ">
         <CardItem
           translateZ={50}
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border-2 border-white "
+          className="absolute inset-0 rounded-full shadow-[0_0_40px_rgba(139,92,246,0.5)]"
         >
           {/* Hour marks */}
           {generateHourMarks()}
@@ -131,13 +131,16 @@ const AnalogClock: React.FC = () => {
 
           {/* Digital time display */}
           <CardItem
-            translateZ={70}
-            rotateX={5}
-            as="div"
-            className="absolute bottom-20 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500/30 to-indigo-600/30  border border-white/10"
+            translateZ={80}
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 px-5 py-2 rounded-lg 
+             bg-black/30 backdrop-blur-sm border border-white/20 shadow-md"
           >
-            <span className="text-sm font-mono text-white">
-              {time.toLocaleTimeString()}
+            <span className="text-base font-mono text-white tracking-wide">
+              {time.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
             </span>
           </CardItem>
         </CardItem>
@@ -146,21 +149,21 @@ const AnalogClock: React.FC = () => {
         <CardItem
           translateZ={80}
           translateX={-20}
-          className="floating-shape absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-500 rounded-full opacity-60 "
+          className="floating-shape blur-xl absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-500 rounded-full opacity-60 "
         >
           <div />
         </CardItem>
         <CardItem
           translateZ={90}
           translateX={20}
-          className="floating-shape absolute -bottom-6 -left-6 w-6 h-6 bg-gradient-to-br from-pink-400 to-pink-500 rounded-lg opacity-60"
+          className="floating-shape blur-xl absolute -bottom-6 -left-6 w-6 h-6 bg-gradient-to-br from-pink-400 to-pink-500 rounded-lg opacity-60"
         >
           <div />
         </CardItem>
         <CardItem
           translateZ={70}
           translateX={-15}
-          className="floating-shape absolute top-10 -left-8 w-4 h-4 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full opacity-60"
+          className="floating-shape blur-xl absolute top-10 -left-8 w-4 h-4 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full opacity-60 "
         >
           <div />
         </CardItem>

@@ -32,12 +32,12 @@ const CTASection: React.FC = () => {
   return (
     <section
       id="pricing"
-      className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden"
+      className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden dark:bg-[#000] dark:from-[#000] dark:to-[#000]"
     >
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-30">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 dark:hidden"
           style={{
             backgroundImage: 'url("/src/assets/patternpad-2025-07-17-15-33-01.svg")',
           }}
@@ -54,15 +54,15 @@ const CTASection: React.FC = () => {
         >
           <div className="flex items-center">
             <Star className="h-5 w-5 text-yellow-500 mr-2" />
-            <span className="text-gray-600">4.9/5 rating</span>
+            <span className="text-gray-600 dark:text-gray-100">4.9/5 rating</span>
           </div>
           <div className="flex items-center">
             <Users className="h-5 w-5 text-purple-600 mr-2" />
-            <span className="text-gray-600">50K+ users</span>
+            <span className="text-gray-600 dark:text-gray-100">50K+ users</span>
           </div>
           <div className="flex items-center">
             <Clock className="h-5 w-5 text-indigo-600 mr-2" />
-            <span className="text-gray-600">2M+ hours managed</span>
+            <span className="text-gray-600 dark:text-gray-100">2M+ hours managed</span>
           </div>
         </motion.div>
         <motion.div
@@ -72,7 +72,7 @@ const CTASection: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="reveal"
         >
-          <h2 className="text-4xl lg:text-6xl font-bold mb-6 text-gray-900">
+          <h2 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground">
             <SplitText
               text="Ready to Transform"
               className="text-4xl lg:text-6xl font-bold"
@@ -125,7 +125,7 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-semibold  mb-2">
                 Free Forever Plan
               </h3>
               <p className="text-gray-600 text-sm">Core features always free</p>
@@ -140,7 +140,7 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-semibold mb-2">
                 Team Collaboration
               </h3>
               <p className="text-gray-600 text-sm">
@@ -157,7 +157,7 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-semibold  mb-2">
                 Premium Support
               </h3>
               <p className="text-gray-600 text-sm">

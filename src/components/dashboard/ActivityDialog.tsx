@@ -271,7 +271,7 @@ export function ActivityDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
-      <DialogContent className="sm:max-w-[700px] " aria-describedby={descId}>
+      <DialogContent className="sm:max-w-[800px] " aria-describedby={descId}>
         <DialogHeader>
           <DialogTitle>
             {event ? "Edit Activity" : "Create New Activity"}
