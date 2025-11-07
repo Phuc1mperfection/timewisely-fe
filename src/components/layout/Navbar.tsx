@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggleButton } from "../ui/ThemeToggleButton";
+import UserDropdownSvg from "@/assets/user-dropdown.svg?url";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -105,7 +106,7 @@ const Navbar: React.FC = () => {
                     {getDisplayName(user)}
                   </span>
                   <img
-                    src="/src/assets/user-dropdown.svg"
+                    src={UserDropdownSvg}
                     alt="Dropdown"
                     width={16}
                     height={16}
