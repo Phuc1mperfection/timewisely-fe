@@ -48,6 +48,7 @@ export interface UserSettings {
   autoStartBreaks: boolean;
   autoStartPomodoros: boolean;
   soundEnabled: boolean;
+  completedFocusCount: number; // Track consecutive completed focus sessions
 }
 
 export interface UpdateUserSettingsRequest {
@@ -209,6 +210,16 @@ export const getNextSessionSuggestion =
     return response.data;
   };
 
+/**
+ * Reset focus count to start a new cycle
+ */
+export const resetFocusCount = async (): Promise<UserSettings> => {
+  const response = await apiClient.patch<UserSettings>(
+    "/pomodoro/settings/reset-focus-count"
+  );
+  return response.data;
+};
+
 // ========== Export all ==========
 export default {
   startPomodoroSession,
@@ -222,4 +233,5 @@ export default {
   getUserSettings,
   updateUserSettings,
   getNextSessionSuggestion,
+  resetFocusCount,
 };

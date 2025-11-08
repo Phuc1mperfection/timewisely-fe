@@ -41,8 +41,7 @@ interface TaskSelectionCardProps {
   isCreatingTask: boolean;
   settings: UserSettings | null;
   isLoading: boolean;
-  isRunning: boolean; // Session is running
-  currentSessionTaskId: number | undefined; // Task ID of running session
+  currentSessionTaskId: number | undefined; // Task ID of active session (running or paused)
   onStart: () => void;
   onCreateTask: () => void;
   onCancelAddTask: () => void;
@@ -77,7 +76,6 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
   isCreatingTask,
   settings,
   isLoading,
-  isRunning,
   currentSessionTaskId,
   onStart,
   onCreateTask,
@@ -96,10 +94,10 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
   const [editName, setEditName] = useState("");
   const [editEstimate, setEditEstimate] = useState(1);
 
-  // Handle task selection with confirmation if session is running
+  // Handle task selection with confirmation if session exists (running or paused)
   const handleTaskSelection = (taskId: number) => {
-    // If session is running and user is switching to a different task
-    if (isRunning && currentSessionTaskId && currentSessionTaskId !== taskId) {
+    // If there's an active session (running or paused) and user is switching to a different task
+    if (currentSessionTaskId && currentSessionTaskId !== taskId) {
       const confirmed = confirm(
         "The timer will be reset. Do you want to switch task?"
       );
@@ -109,7 +107,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
         setCustomTask("");
       }
     } else {
-      // No session running or same task, just select
+      // No active session or same task, just select
       setSelectedTaskId(taskId);
       setCustomTask("");
     }
@@ -284,7 +282,6 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                         onClick={onClearCompletedTasks}
                         className="text-muted-foreground"
                       >
-                        <Trash2 className="h-4 w-4 mr-1" />
                         Hide completed
                       </Button>
                     )}
