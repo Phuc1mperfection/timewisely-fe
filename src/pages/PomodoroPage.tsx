@@ -170,7 +170,7 @@ const PomodoroPage: React.FC = () => {
     // Otherwise, use settings based on selected tab
     if (!settings) return 0;
 
-    // For FOCUS sessions, check if selected task is a micro-task
+    // For FOCUS sessions, check if selected task is a micro-task (for preview only)
     if (selectedSessionType === "FOCUS" && selectedTaskId) {
       const selectedTask = tasks.find((t) => t.id === selectedTaskId);
       if (
@@ -178,6 +178,7 @@ const PomodoroPage: React.FC = () => {
         selectedTask.estimatedPomodoros &&
         selectedTask.estimatedPomodoros < 1
       ) {
+        // Preview micro-task duration (same calculation as backend)
         const customDuration = Math.round(
           selectedTask.estimatedPomodoros * settings.focusDuration
         );
@@ -229,16 +230,6 @@ const PomodoroPage: React.FC = () => {
   const handleCreateTask = async () => {
     if (!newTaskName.trim()) {
       error("Please enter a task name");
-      return;
-    }
-
-    if (newTaskEstPomodoros < 0.1) {
-      error("Estimated pomodoros must be at least 0.1");
-      return;
-    }
-
-    if (newTaskEstPomodoros > 20) {
-      error("Estimated pomodoros cannot exceed 20");
       return;
     }
 
@@ -386,28 +377,10 @@ const PomodoroPage: React.FC = () => {
       return;
     }
 
-    // Calculate custom duration for micro-tasks (< 1 pomodoro)
-    let customDuration: number | undefined = undefined;
-    if (selectedTaskId) {
-      const selectedTask = tasks.find((t) => t.id === selectedTaskId);
-      if (
-        selectedTask &&
-        selectedTask.estimatedPomodoros &&
-        selectedTask.estimatedPomodoros < 1
-      ) {
-        // Micro-task: calculate proportional duration
-        const focusDuration = settings?.focusDuration || 25;
-        customDuration = Math.round(
-          selectedTask.estimatedPomodoros * focusDuration
-        );
-        info(`Starting micro-task session: ${customDuration} minutes ⏱️`);
-      }
-    }
-
+    // Backend will auto-calculate duration for micro-tasks
     const request: StartPomodoroRequest = {
       taskId: selectedTaskId,
       sessionType: "FOCUS",
-      duration: customDuration,
     };
 
     await startSession(request);

@@ -13,14 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { TaskEditDialog } from "./TaskEditDialog";
 import type { Task } from "@/services/taskServices";
 import type { UserSettings } from "@/services/pomodoroServices";
 
@@ -91,8 +84,6 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
 }) => {
   // State for edit dialog
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editEstimate, setEditEstimate] = useState(1);
 
   // Handle task selection with confirmation if session exists (running or paused)
   const handleTaskSelection = (taskId: number) => {
@@ -297,7 +288,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                 </div>
 
                 {tasks.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2">
+                  <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto pr-2">
                     {sortedTasks.map((task) => {
                       const estimatedPomodoros = task.estimatedPomodoros || 1;
                       const completedPomodoros = task.completedPomodoros || 0;
@@ -309,7 +300,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                           key={task.id}
                           className={`flex items-start gap-2 p-3 rounded-md border transition-colors ${
                             selectedTaskId === task.id
-                              ? "bg-primary text-primary-foreground border-primary"
+                              ? "bg-primary-60 text-primary border-primary"
                               : task.isCompleted
                               ? "bg-muted/50 border-muted"
                               : "bg-background border-input hover:bg-accent"
@@ -393,8 +384,6 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setEditingTask(task);
-                                  setEditName(task.name);
-                                  setEditEstimate(task.estimatedPomodoros || 1);
                                 }}
                               >
                                 <Pencil className="h-4 w-4 mr-2" />
@@ -467,110 +456,13 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
       </CardContent>
 
       {/* Edit Task Dialog */}
-      <Dialog open={!!editingTask} onOpenChange={() => setEditingTask(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Task</DialogTitle>
-            <DialogDescription>
-              Update task name and estimated pomodoros. Actual completed
-              pomodoros cannot be modified.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-task-name">Task Name</Label>
-              <Input
-                id="edit-task-name"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Enter task name"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-estimated">Estimated Pomodoros</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="edit-estimated"
-                  type="number"
-                  min="0.1"
-                  max="20"
-                  step="0.1"
-                  value={editEstimate}
-                  onChange={(e) => {
-                    const value = parseFloat(e.target.value);
-                    if (isNaN(value)) {
-                      // Nếu gõ linh tinh (NaN) hoặc xóa hết, reset về 0.1
-                      setEditEstimate(0.1);
-                      return;
-                    }
-
-                    // Chỉ giới hạn min/max khi đang gõ, không làm tròn
-                    setEditEstimate(Math.min(Math.max(value, 0.1), 20));
-                  }}
-                  onBlur={(e) => {
-                    // Đây là lúc áp dụng logic làm tròn theo triết lý Pomodoro
-                    const value = parseFloat(e.target.value);
-                    let finalValue;
-
-                    if (isNaN(value) || value < 0.1) {
-                      finalValue = 0.1;
-                    } else if (value < 1) {
-                      // YÊU CẦU 1: Dưới 1, là số thập phân (0.1-0.9) cho micro-tasks
-                      finalValue = Math.round(value * 10) / 10;
-                    } else {
-                      // YÊU CẦU 2: Từ 1 trở lên, phải là số nguyên (real tasks)
-                      finalValue = Math.round(value);
-                    }
-
-                    // Đảm bảo không vượt quá max sau khi làm tròn
-                    setEditEstimate(Math.min(finalValue, 20));
-                  }}
-                  className="w-24"
-                />
-                <span className="text-sm text-muted-foreground">
-                  (≈{" "}
-                  {Math.round(editEstimate * (settings?.focusDuration || 25))}{" "}
-                  min)
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Micro-tasks: 0.1-0.9 • Real tasks: whole numbers only
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-completed">
-                Actual Pomodoros (Completed)
-              </Label>
-              <Input
-                id="edit-completed"
-                value={editingTask?.completedPomodoros || 0}
-                disabled
-                className="bg-muted"
-              />
-              <p className="text-xs text-muted-foreground">
-                This value is automatically tracked and cannot be edited
-                manually.
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditingTask(null)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                if (editingTask && editName.trim()) {
-                  onEditTask(editingTask.id, editName.trim(), editEstimate);
-                  setEditingTask(null);
-                }
-              }}
-              disabled={!editName.trim()}
-            >
-              Save Changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <TaskEditDialog
+        task={editingTask}
+        isOpen={!!editingTask}
+        onClose={() => setEditingTask(null)}
+        onSave={onEditTask}
+        settings={settings}
+      />
     </Card>
   );
 };
