@@ -30,7 +30,7 @@ const AnalogClock: React.FC = () => {
     return Array.from({ length: 12 }, (_, i) => (
       <div
         key={i}
-        className="absolute w-1 h-8 bg-gradient-to-b from-purple-400 to-indigo-600 rounded-full"
+        className="absolute w-1 h-8 bg-gradient-to-b from-yellow-400 to-orange-700 rounded-full"
         style={{
           top: "10px",
           left: "50%",
@@ -76,7 +76,7 @@ const AnalogClock: React.FC = () => {
           {/* Clock center */}
           <CardItem
             translateZ={60}
-            className="absolute top-1/2 left-1/2 w-4 h-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-30 shadow-lg"
+            className="absolute top-1/2 left-1/2 w-4 h-4 bg-gradient-to-br from-yellow-500 to-orange-700 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-30 shadow-lg"
           >
             <div />
           </CardItem>
@@ -87,7 +87,7 @@ const AnalogClock: React.FC = () => {
             className="absolute top-1/2 left-1/2 pointer-events-none"
           >
             <div
-              className="w-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-full shadow-lg z-20 clock-hand"
+              className="w-1 bg-gradient-to-t from-yellow-600 to-yellow-400 rounded-full shadow-lg z-20 clock-hand"
               style={{
                 height: "80px",
                 transform: `translate(-50%, -100%) rotate(${getHourAngle()}deg)`,
@@ -103,7 +103,7 @@ const AnalogClock: React.FC = () => {
             className="absolute top-1/2 left-1/2 pointer-events-none"
           >
             <div
-              className="w-0.5 bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-full shadow-lg z-20 clock-hand"
+              className="w-0.5 bg-gradient-to-t from-orange-700 to-orange-500 rounded-full shadow-lg z-20 clock-hand"
               style={{
                 height: "110px",
                 transform: `translate(-50%, -100%) rotate(${getMinuteAngle()}deg)`,
@@ -119,7 +119,7 @@ const AnalogClock: React.FC = () => {
             className="absolute top-1/2 left-1/2 pointer-events-none"
           >
             <div
-              className="w-0.5 bg-gradient-to-t from-red-500 to-pink-400 rounded-full shadow-lg z-20 clock-hand"
+              className="w-0.5 bg-gradient-to-t from-red-500 to-amber-300 rounded-full shadow-lg z-20 clock-hand"
               style={{
                 height: "120px",
                 transform: `translate(-50%, -100%) rotate(${getSecondAngle()}deg)`,
@@ -149,21 +149,21 @@ const AnalogClock: React.FC = () => {
         <CardItem
           translateZ={80}
           translateX={-20}
-          className="floating-shape blur-xl absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-500 rounded-full opacity-60 "
+          className="floating-shape blur-xl absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full opacity-60 "
         >
           <div />
         </CardItem>
         <CardItem
           translateZ={90}
           translateX={20}
-          className="floating-shape blur-xl absolute -bottom-6 -left-6 w-6 h-6 bg-gradient-to-br from-pink-400 to-pink-500 rounded-lg opacity-60"
+          className="floating-shape blur-xl absolute -bottom-6 -left-6 w-6 h-6 bg-gradient-to-br from-amber-300 to-amber-400 rounded-lg opacity-60"
         >
           <div />
         </CardItem>
         <CardItem
           translateZ={70}
           translateX={-15}
-          className="floating-shape blur-xl absolute top-10 -left-8 w-4 h-4 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full opacity-60 "
+          className="floating-shape blur-xl absolute top-10 -left-8 w-4 h-4 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full opacity-60 "
         >
           <div />
         </CardItem>

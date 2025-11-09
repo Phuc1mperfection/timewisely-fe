@@ -36,7 +36,7 @@ const menuItems = [
   { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
   { title: "Activities", url: "/dashboard/activities", icon: CircleCheckBig },
-  {title: "AI Suggestions", url: "/dashboard/ai-suggestions",icon: Sparkles},
+  { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
   { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
@@ -77,8 +77,8 @@ export function AppSidebar() {
                         className={
                           "flex items-center space-x-3 p-3 rounded-lg transition-colors group w-full text-left " +
                           (isActive
-                            ? " text-[var(--wisely-purple)] font-semibold "
-                            : "hover:bg-purple-500 hover:text-[var(--wisely-purple)] hover:cursor-pointer")
+                            ? " text-[var(--wisely-gold)] font-semibold "
+                            : "hover:bg-yellow-500 hover:text-[var(--wisely-gold)] hover:cursor-pointer")
                         }
                         aria-current={isActive ? "page" : undefined}
                       >
@@ -86,15 +86,15 @@ export function AppSidebar() {
                           className={
                             "w-5 h-5 " +
                             (isActive
-                              ? "text-[var(--wisely-purple)]"
-                              : "hover:text-[var(--wisely-purple)]")
+                              ? "text-[var(--wisely-gold)]"
+                              : "hover:text-[var(--wisely-gold)]")
                           }
                         />
                         <span
                           className={
                             isActive
-                              ? "text-[var(--wisely-purple)]"
-                              : "hover:text-[var(--wisely-purple)]"
+                              ? "text-[var(--wisely-gold)]"
+                              : "hover:text-[var(--wisely-gold)] dark:hover:text-[var(--wisely-white)]"
                           }
                         >
                           {item.title}
@@ -111,8 +111,8 @@ export function AppSidebar() {
       <SidebarFooter>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton className="bg-purple-100 hover:cursor-pointer hover:bg-purple-300">
-              <div className=" bg-wisely-purple rounded-full flex items-center justify-center">
+            <SidebarMenuButton className="bg-yellow-100 hover:cursor-pointer hover:bg-yellow-300">
+              <div className=" bg-wisely-gold rounded-full flex items-center justify-center">
                 {/* <span className="text-white text-sm font-medium">
                     {(
                       user?.fullName?.charAt(0) ||
@@ -127,7 +127,7 @@ export function AppSidebar() {
                   {user?.fullName || user?.username || user?.email}
                 </p>
               </div>
-              <ChevronUp className="text-blue-950" />
+              <ChevronUp className="text-orange-950" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="top" className="w-48">

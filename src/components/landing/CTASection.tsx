@@ -39,7 +39,8 @@ const CTASection: React.FC = () => {
         <div
           className="absolute inset-0 dark:hidden"
           style={{
-            backgroundImage: 'url("/src/assets/patternpad-2025-07-17-15-33-01.svg")',
+            backgroundImage:
+              'url("/src/assets/patternpad-2025-07-17-15-33-01.svg")',
           }}
         />
       </div>
@@ -54,15 +55,19 @@ const CTASection: React.FC = () => {
         >
           <div className="flex items-center">
             <Star className="h-5 w-5 text-yellow-500 mr-2" />
-            <span className="text-gray-600 dark:text-gray-100">4.9/5 rating</span>
+            <span className="text-gray-600 dark:text-gray-100">
+              4.9/5 rating
+            </span>
           </div>
           <div className="flex items-center">
-            <Users className="h-5 w-5 text-purple-600 mr-2" />
+            <Users className="h-5 w-5 text-yellow-600 mr-2" />
             <span className="text-gray-600 dark:text-gray-100">50K+ users</span>
           </div>
           <div className="flex items-center">
-            <Clock className="h-5 w-5 text-indigo-600 mr-2" />
-            <span className="text-gray-600 dark:text-gray-100">2M+ hours managed</span>
+            <Clock className="h-5 w-5 text-orange-700 mr-2" />
+            <span className="text-gray-600 dark:text-gray-100">
+              2M+ hours managed
+            </span>
           </div>
         </motion.div>
         <motion.div
@@ -122,12 +127,10 @@ const CTASection: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold  mb-2">
-                Free Forever Plan
-              </h3>
+              <h3 className="font-semibold  mb-2">Free Forever Plan</h3>
               <p className="text-gray-600 text-sm">Core features always free</p>
             </motion.div>
             <motion.div
@@ -140,9 +143,7 @@ const CTASection: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold mb-2">
-                Team Collaboration
-              </h3>
+              <h3 className="font-semibold mb-2">Team Collaboration</h3>
               <p className="text-gray-600 text-sm">
                 Share schedules & sync goals
               </p>
@@ -154,12 +155,10 @@ const CTASection: React.FC = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-amber-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-semibold  mb-2">
-                Premium Support
-              </h3>
+              <h3 className="font-semibold  mb-2">Premium Support</h3>
               <p className="text-gray-600 text-sm">
                 24/7 help when you need it
               </p>

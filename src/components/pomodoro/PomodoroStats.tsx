@@ -50,7 +50,7 @@ export const PomodoroStats: React.FC<PomodoroStatsProps> = ({
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Target className="h-5 w-5 text-blue-500" />
+            <Target className="h-5 w-5 text-orange-500" />
             Today's Goal
           </CardTitle>
         </CardHeader>
@@ -101,7 +101,7 @@ export const PomodoroStats: React.FC<PomodoroStatsProps> = ({
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <TrendingUp className="h-5 w-5 text-purple-500" />
+            <TrendingUp className="h-5 w-5 yellow-500" />
             Quick Stats
           </CardTitle>
         </CardHeader>

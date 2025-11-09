@@ -127,7 +127,7 @@ const Onboarding = () => {
   // No need for extra currentQuestion variable since we access by index directly
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-white to-emerald-500 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-500 via-white to-emerald-500 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl">
         <Card className="animate-fade-in bg-white shadow-lg">
           <CardHeader className="text-center">
@@ -144,7 +144,7 @@ const Onboarding = () => {
                       key={`step-${idx}`}
                       className={`w-3 h-3 rounded-full ${
                         idx <= currentQuestionIndex
-                          ? "bg-[var(--wisely-purple)]"
+                          ? "bg-[var(--wisely-gold)]"
                           : "bg-gray-300 dark:bg-amber-900"
                       }`}
                     />
@@ -191,7 +191,7 @@ const Onboarding = () => {
             </Button>
             <Button
               onClick={handleNext}
-              className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
+              className="bg-[var(--wisely-gold)] hover:bg-yellow-600 text-white"
             >
               {currentQuestionIndex === visibleQuestions.length - 1
                 ? "Finish"

@@ -29,10 +29,10 @@ const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
       initial={animationVariants.initial}
       animate={animationVariants.animate}
       transition={animationVariants.transition}
-      className="bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 hover:bg-[var(--wisely-pink)]/20 transition-all duration-300"
+      className="bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 hover:bg-[var(--wisely-sand)]/20 transition-all duration-300"
     >
       <motion.div className="flex items-center mb-6" whileHover={hoverVariants}>
-        <div className="p-3 bg-gradient-to-r from-[var(--wisely-purple)] to-[var(--wisely-mint)] rounded-xl mr-4 ">
+        <div className="p-3 bg-gradient-to-r from-[var(--wisely-gold)] to-[var(--wisely-champagne)] rounded-xl mr-4 ">
           <feature.icon className="w-6 h-6 text-[var(--wisely-white)]" />
         </div>
         <h3 className="text-xl font-semibold ">{feature.title}</h3>
@@ -79,10 +79,10 @@ const FeaturesSection = ({ features }: { features: any[] }) => {
     () => [
       {
         text: "Automatic task prioritization",
-        color: "bg-purple-500",
+        color: "bg-yellow-500",
         delay: 0.5,
       },
-      { text: "Energy-based scheduling", color: "bg-indigo-500", delay: 0.6 },
+      { text: "Energy-based scheduling", color: "bg-orange-600", delay: 0.6 },
       { text: "Smart break recommendations", color: "bg-teal-500", delay: 0.7 },
     ],
     []
@@ -94,8 +94,8 @@ const FeaturesSection = ({ features }: { features: any[] }) => {
       {
         title: "Deep Work Session",
         time: "25 min",
-        bgClass: "bg-gradient-to-r from-purple-500/10 to-indigo-500/10",
-        textClass: "text-purple-600",
+        bgClass: "bg-gradient-to-r from-yellow-500/10 to-orange-600/10",
+        textClass: "text-yellow-600",
         delay: 0.7,
       },
       {
@@ -108,8 +108,8 @@ const FeaturesSection = ({ features }: { features: any[] }) => {
       {
         title: "Team Meeting",
         time: "30 min",
-        bgClass: "bg-gradient-to-r from-pink-500/10 to-rose-500/10",
-        textClass: "text-pink-600",
+        bgClass: "bg-gradient-to-r from-amber-400/10 to-rose-500/10",
+        textClass: "yellow-600",
         delay: 0.9,
       },
     ],
@@ -215,7 +215,7 @@ const FeaturesSection = ({ features }: { features: any[] }) => {
             >
               <h3 className="text-3xl font-bold mb-6 text-[var(--wisely-dark)]">
                 Experience the Power of
-                <span className="text-[var(--wisely-purple)]">
+                <span className="text-[var(--wisely-gold)]">
                   {" "}
                   Intelligent Planning
                 </span>

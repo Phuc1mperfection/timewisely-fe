@@ -107,7 +107,7 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium ">
                 Today's Schedule
               </CardTitle>
-              <Clock className="h-4 w-4 text-[var(--wisely-purple)]" />
+              <Clock className="h-4 w-4 text-[var(--wisely-gold)]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold ">3 events</div>
@@ -122,7 +122,7 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium ">
                 AI Suggestions
               </CardTitle>
-              <Sparkles className="h-4 w-4 text-[var(--wisely-mint)]" />
+              <Sparkles className="h-4 w-4 text-[var(--wisely-champagne)]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold ">5 new</div>
@@ -137,7 +137,7 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium ">
                 Goals Progress
               </CardTitle>
-              <Target className="h-4 w-4 text-[var(--wisely-pink)]" />
+              <Target className="h-4 w-4 text-[var(--wisely-sand)]" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold ">78%</div>
@@ -148,8 +148,8 @@ export function DashboardContent() {
           </Card>
         </div>
         {/* Daily Motivation Hub */}
-        <DailyMotivationHub1/>
-        <DailyMotivationHub/>
+        <DailyMotivationHub1 />
+        <DailyMotivationHub />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Calendar */}
           <Card className="lg:col-span-3 ">
@@ -161,7 +161,7 @@ export function DashboardContent() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[500px]">
+              <div className="h-[700px]">
                 <ScheduleCalendar
                   className="modern-calendar"
                   events={filteredActivities}

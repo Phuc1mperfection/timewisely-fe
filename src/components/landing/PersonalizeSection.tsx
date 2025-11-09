@@ -5,7 +5,7 @@ const PersonalizationSection: React.FC = () => {
   return (
     <section
       id="about"
-      className="py-24 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 relative overflow-hidden"
+      className="py-24 bg-gradient-to-r from-yellow-600 via-orange-700 to-orange-600 relative overflow-hidden"
     >
       {/* Background decorative elements */}
       <div className="absolute inset-0">
@@ -26,7 +26,7 @@ const PersonalizationSection: React.FC = () => {
 
             <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
               Tailored Just for
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-200">
                 Your Success
               </span>
             </h2>
@@ -58,7 +58,7 @@ const PersonalizationSection: React.FC = () => {
               </div>
             </div>
 
-            <button className="bg-white text-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors flex items-center group">
+            <button className="bg-white text-yellow-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-colors flex items-center group">
               Start Personalization
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -96,7 +96,7 @@ const PersonalizationSection: React.FC = () => {
                         <input
                           type="radio"
                           name="challenge"
-                          className="mr-3 accent-purple-500"
+                          className="mr-3 accent-yellow-500"
                         />
                         <span className="text-white/80 group-hover:text-white transition-colors">
                           {option}
@@ -135,7 +135,7 @@ const PersonalizationSection: React.FC = () => {
                     <span>2 of 8</span>
                   </div>
                   <div className="w-full bg-white/20 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-yellow-400 to-pink-400 h-2 rounded-full w-1/4 transition-all duration-300" />
+                    <div className="bg-gradient-to-r from-yellow-400 to-amber-300 h-2 rounded-full w-1/4 transition-all duration-300" />
                   </div>
                 </div>
               </div>

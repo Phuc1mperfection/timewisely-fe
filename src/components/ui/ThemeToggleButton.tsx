@@ -15,7 +15,7 @@ export function ThemeToggleButton() {
       {isDark ? (
         <Sun className="w-5 h-5 text-yellow-500" />
       ) : (
-        <Moon className="w-5 h-5 text-blue-500" />
+        <Moon className="w-5 h-5 text-orange-500" />
       )}
     </Button>
   );

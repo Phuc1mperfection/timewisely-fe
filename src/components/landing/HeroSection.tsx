@@ -15,22 +15,22 @@ const HeroSection = () => {
       {/* Background */}
       <div className="absolute inset-0 -z-10">
         {/* Light mode gradient */}
-        <div className="bg-gradient-to-b from-pink-100 via-blue-100 to-white animate-gradient dark:hidden w-full h-full" />
+        <div className="bg-gradient-to-b from-amber-50 via-orange-100 to-white animate-gradient dark:hidden w-full h-full" />
 
         {/* Dark mode background */}
         <DarkVeil
-          hueShift={30}
-          noiseIntensity={0.05}
+          hueShift={204}
+          noiseIntensity={0}
           scanlineIntensity={0.1}
           scanlineFrequency={40.0}
-          warpAmount={0.02}
+          warpAmount={2.02}
           speed={0.5}
         />
 
         {/* Floating blobs */}
-      
+
         <motion.div
-          className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-pink-400/20 blur-3xl"
+          className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-amber-300/20 blur-3xl"
           animate={{ y: [0, 20, 0] }}
           transition={{ repeat: Infinity, duration: 10 }}
         />
@@ -44,10 +44,10 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 bg-gradient-to-l from-[var(--wisely-purple)] via-[var(--wisely-indigo)] to-[var(--wisely-pink)] bg-clip-text text-transparent"
+              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 bg-gradient-to-l from-[var(--wisely-gold)] via-[var(--wisely-yellow)] to-[var(--wisely-sand)] bg-clip-text text-transparent"
             >
               Master Your
-              <span className="block mx-auto bg-gradient-to-r from-[var(--wisely-purple)] via-[var(--chart-2)] to-[var(--wisely-pink)] bg-clip-text text-transparent">
+              <span className="block mx-auto bg-gradient-to-r from-[var(--wisely-gold)] via-[var(--chart-2)] to-[var(--wisely-sand)] bg-clip-text text-transparent">
                 Time, Wisely
               </span>
             </motion.h1>
@@ -68,7 +68,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6 }}
-              className="text-xl mb-6 bg-gradient-to-r from-[var(--wisely-purple)] via-[var(--chart-2)] to-[var(--wisely-pink)] bg-clip-text text-transparent"
+              className="text-xl mb-6 bg-gradient-to-r from-[var(--wisely-gold)] via-[var(--chart-2)] to-[var(--wisely-sand)] bg-clip-text text-transparent"
             >
               Achieve your goals with <FlipWords words={words} /> tools.
             </motion.div>
@@ -82,7 +82,7 @@ const HeroSection = () => {
             >
               <Button
                 size="lg"
-                className="px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center justify-center group shadow-lg shadow-purple-400/40 hover:shadow-purple-500/50 transition-all"
+                className="px-8 py-4 rounded-full text-white font-semibold text-lg flex items-center justify-center group shadow-lg shadow-yellow-400/40 hover:shadow-yellow-500/50 transition-all"
                 onClick={() => navigate("/auth")}
               >
                 Start Your Journey
@@ -92,7 +92,7 @@ const HeroSection = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="px-8 py-4 rounded-full border-2 border-purple-300 text-purple-700 dark:text-purple-200 font-semibold text-lg hover:bg-purple-50 dark:hover:bg-purple-800/20 transition-colors flex items-center gap-2"
+                className="px-8 py-4 rounded-full border-2 border-yellow-300 yellow-700 dark:yellow-200 font-semibold text-lg hover:bg-yellow-50 dark:hover:bg-yellow-800/20 transition-colors flex items-center gap-2"
               >
                 <PlayCircle className="h-5 w-5" /> Watch Demo
               </Button>
@@ -110,11 +110,11 @@ const HeroSection = () => {
                 Free to start
               </div>
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
+                <div className="w-2 h-2 bg-orange-500 rounded-full mr-2" />
                 No credit card
               </div>
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2" />
+                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2" />
                 AI-powered
               </div>
             </motion.div>
@@ -129,7 +129,7 @@ const HeroSection = () => {
           >
             <div className="relative">
               <AnalogClock />
-              <div className="absolute inset-0 rounded-full blur-3xl bg-blue-500/30 -z-10 w-40 mt-10" />
+              <div className="absolute inset-0 rounded-full blur-3xl bg-orange-500/30 -z-10 w-40 mt-10" />
             </div>
           </motion.div>
         </div>

@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
             onClick={() => navigate("/")}
             aria-label="Go to Home"
           >
-            <div className="p-1.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-100">
+            <div className="p-1.5 rounded-full bg-gradient-to-r from-orange-600 to-orange-100">
               <img
                 src="/src/assets/icon.svg"
                 alt="Logo"
@@ -70,19 +70,19 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex items-center justify-center flex-1 space-x-6">
           <a
             href="#features"
-            className="hover:text-purple-600 transition-colors font-medium"
+            className="hover:text-yellow-600 transition-colors font-medium"
           >
             Features
           </a>
           <a
             href="#about"
-            className="hover:text-purple-600 transition-colors font-medium"
+            className="hover:text-yellow-600 transition-colors font-medium"
           >
             About
           </a>
           <a
             href="#pricing"
-            className="hover:text-purple-600 transition-colors font-medium"
+            className="hover:text-yellow-600 transition-colors font-medium"
           >
             Pricing
           </a>
@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-purple)] max-w-[200px] sm:max-w-[250px]"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-gold)] max-w-[200px] sm:max-w-[250px]"
                   aria-label="User menu"
                 >
                   <span className="truncate text-sm sm:text-base">
@@ -122,7 +122,7 @@ const Navbar: React.FC = () => {
                   onClick={() => {
                     navigate("app/dashboard");
                   }}
-                  className="hover:bg-[var(--wisely-purple)]/10 hover:cursor-pointer text-md"
+                  className="hover:bg-[var(--wisely-gold)]/10 hover:cursor-pointer text-md"
                 >
                   Dashboard
                 </DropdownMenuItem>
@@ -131,7 +131,7 @@ const Navbar: React.FC = () => {
                     await logout();
                     navigate("/");
                   }}
-                  className="hover:bg-[var(--wisely-purple)]/10 hover:cursor-pointer text-md"
+                  className="hover:bg-[var(--wisely-gold)]/10 hover:cursor-pointer text-md"
                 >
                   Logout
                 </DropdownMenuItem>
@@ -173,19 +173,19 @@ const Navbar: React.FC = () => {
           <div className="px-6 py-6 space-y-5">
             <a
               href="#features"
-              className="block text-white hover:text-purple-400 transition-colors font-medium text-lg"
+              className="block text-white hover:yellow-400 transition-colors font-medium text-lg"
             >
               Features
             </a>
             <a
               href="#pricing"
-              className="block text-white hover:text-purple-400 transition-colors font-medium text-lg"
+              className="block text-white hover:yellow-400 transition-colors font-medium text-lg"
             >
               Pricing
             </a>
             <a
               href="#about"
-              className="block text-white hover:text-purple-400 transition-colors font-medium text-lg"
+              className="block text-white hover:yellow-400 transition-colors font-medium text-lg"
             >
               About
             </a>

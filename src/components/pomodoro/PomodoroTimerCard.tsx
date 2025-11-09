@@ -55,7 +55,7 @@ export const PomodoroTimerCard: React.FC<PomodoroTimerCardProps> = ({
       case "SHORT_BREAK":
         return "text-green-600";
       case "LONG_BREAK":
-        return "text-blue-600";
+        return "text-orange-600";
       default:
         return "text-muted-foreground";
     }

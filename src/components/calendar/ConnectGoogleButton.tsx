@@ -77,8 +77,8 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
         animate={{ opacity: 1, y: 0 }}
         className="text-center max-w-lg p-8 bg-white/5 backdrop-blur-md rounded-2xl shadow-xl"
       >
-        <div className="w-20 h-20 mx-auto mb-6 bg-purple-500/20 rounded-full flex items-center justify-center">
-          <Calendar className="w-10 h-10 text-purple-400" />
+        <div className="w-20 h-20 mx-auto mb-6 bg-yellow-500/20 rounded-full flex items-center justify-center">
+          <Calendar className="w-10 h-10 yellow-400" />
         </div>
 
         <h2 className="text-2xl font-bold text-white mb-3">
