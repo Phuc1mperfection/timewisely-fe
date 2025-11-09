@@ -119,25 +119,6 @@ export const toggleTaskCompletion = async (taskId: number): Promise<Task> => {
   return response.data;
 };
 
-/**
- * Toggle task favorite status
- */
-export const toggleTaskFavorite = async (taskId: number): Promise<Task> => {
-  const response = await apiClient.patch<Task>(
-    `/tasks/${taskId}/toggle-favorite`
-  );
-  return response.data;
-};
-
-/**
- * Increment completed pomodoros for a task
- */
-export const incrementTaskPomodoro = async (taskId: number): Promise<Task> => {
-  const response = await apiClient.patch<Task>(
-    `/tasks/${taskId}/increment-pomodoro`
-  );
-  return response.data;
-};
 
 // ========== Export all ==========
 export default {
@@ -147,6 +128,4 @@ export default {
   updateTask,
   deleteTask,
   toggleTaskCompletion,
-  toggleTaskFavorite,
-  incrementTaskPomodoro,
 };

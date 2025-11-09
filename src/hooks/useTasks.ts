@@ -5,7 +5,6 @@ import {
   updateTask,
   deleteTask,
   toggleTaskCompletion,
-  toggleTaskFavorite,
   type Task,
   type CreateTaskRequest,
   type UpdateTaskRequest,
@@ -156,42 +155,7 @@ export function useTasks(filters?: TaskFilters) {
     []
   );
 
-  // Toggle favorite
-  const toggleFavorite = useCallback(
-    async (taskId: number): Promise<boolean> => {
-      // Optimistic update
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === taskId ? { ...task, isFavorite: !task.isFavorite } : task
-        )
-      );
 
-      try {
-        const updatedTask = await toggleTaskFavorite(taskId);
-        setTasks((prev) =>
-          prev.map((task) => (task.id === taskId ? updatedTask : task))
-        );
-        return true;
-      } catch (err) {
-        // Revert optimistic update
-        setTasks((prev) =>
-          prev.map((task) =>
-            task.id === taskId
-              ? { ...task, isFavorite: !task.isFavorite }
-              : task
-          )
-        );
-
-        const errorMessage = "Failed to toggle task favorite";
-        setError(errorMessage);
-        toastError(errorMessage);
-        console.error("Failed to toggle task favorite:", err);
-        return false;
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
 
   // Load tasks on mount
   useEffect(() => {
@@ -207,6 +171,5 @@ export function useTasks(filters?: TaskFilters) {
     modifyTask,
     removeTask,
     toggleCompletion,
-    toggleFavorite,
   };
 }

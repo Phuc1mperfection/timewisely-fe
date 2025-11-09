@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { usePomodoroSession } from "@/hooks/usePomodoroSession";
 import { useTasks } from "@/hooks/useTasks";
-import { updateUserSettings } from "@/services/pomodoroServices";
+import {
+  updateUserSettings,
+  getNextSessionSuggestion,
+  resetFocusCount,
+} from "@/services/pomodoroServices";
 import type { StartPomodoroRequest } from "@/services/pomodoroServices";
 import { PomodoroHeader } from "@/components/pomodoro/PomodoroHeader";
 import { PomodoroTimerCard } from "@/components/pomodoro/PomodoroTimerCard";
 import { TaskSelectionCard } from "@/components/pomodoro/TaskSelectionCard";
+import { PomodoroCounter } from "@/components/pomodoro/PomodoroCounter";
 
 const PomodoroPage: React.FC = () => {
   const { success, error, info } = useToast();
@@ -59,16 +64,33 @@ const PomodoroPage: React.FC = () => {
     totalTime,
     refreshSettings,
   } = usePomodoroSession({
-    onSessionComplete: (completedSession) => {
+    onSessionComplete: async (completedSession) => {
       // Auto-switch based on completed session type
       if (completedSession.sessionType === "FOCUS") {
-        // After completing Focus → switch to Short Break
-        fetchTasks(); // Refresh task list to show updated pomodoro count
+        // After completing Focus → get suggestion for next session type
+        await fetchTasks(); // Refresh task list to show updated pomodoro count
+        await refreshSettings(); // Refresh settings to update pomodoro counter
 
-        setTimeout(() => {
-          setSelectedSessionType("SHORT_BREAK");
-          info("Great job! Time for a break! ☕");
-        }, 100);
+        try {
+          const suggestion = await getNextSessionSuggestion();
+
+          setTimeout(() => {
+            setSelectedSessionType(suggestion.suggestedType);
+
+            if (suggestion.suggestedType === "LONG_BREAK") {
+              info("Great job! Time for a long break! 🌟☕");
+            } else {
+              info("Great job! Time for a short break! ☕");
+            }
+          }, 100);
+        } catch (err) {
+          console.error("Failed to get session suggestion:", err);
+          // Fallback to short break if API fails
+          setTimeout(() => {
+            setSelectedSessionType("SHORT_BREAK");
+            info("Great job! Time for a break! ☕");
+          }, 100);
+        }
       } else if (
         completedSession.sessionType === "SHORT_BREAK" ||
         completedSession.sessionType === "LONG_BREAK"
@@ -106,6 +128,38 @@ const PomodoroPage: React.FC = () => {
     }
   }, [settings]);
 
+  // Sync selectedTaskId and selectedSessionType from active session on mount/session change
+  useEffect(() => {
+    if (session) {
+      // Sync session type
+      setSelectedSessionType(session.sessionType);
+
+      // Sync task selection
+      if (session.taskId) {
+        setSelectedTaskId(session.taskId);
+        setCustomTask(""); // Clear custom task if session has a taskId
+      } else if (session.taskName) {
+        setCustomTask(session.taskName);
+        setSelectedTaskId(undefined); // Clear selected task if using custom name
+      }
+    }
+  }, [session]);
+
+  // Refresh settings when tab becomes visible (after F5 or tab switch)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        refreshSettings(); // Refresh when user comes back to tab
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [refreshSettings]);
+
   // Compute display time based on active session or selected tab
   const getDisplayTimeLeft = (): number => {
     // If there's an active session, use its timeLeft
@@ -116,7 +170,7 @@ const PomodoroPage: React.FC = () => {
     // Otherwise, use settings based on selected tab
     if (!settings) return 0;
 
-    // For FOCUS sessions, check if selected task is a micro-task
+    // For FOCUS sessions, check if selected task is a micro-task (for preview only)
     if (selectedSessionType === "FOCUS" && selectedTaskId) {
       const selectedTask = tasks.find((t) => t.id === selectedTaskId);
       if (
@@ -124,6 +178,7 @@ const PomodoroPage: React.FC = () => {
         selectedTask.estimatedPomodoros &&
         selectedTask.estimatedPomodoros < 1
       ) {
+        // Preview micro-task duration (same calculation as backend)
         const customDuration = Math.round(
           selectedTask.estimatedPomodoros * settings.focusDuration
         );
@@ -175,16 +230,6 @@ const PomodoroPage: React.FC = () => {
   const handleCreateTask = async () => {
     if (!newTaskName.trim()) {
       error("Please enter a task name");
-      return;
-    }
-
-    if (newTaskEstPomodoros < 0.1) {
-      error("Estimated pomodoros must be at least 0.1");
-      return;
-    }
-
-    if (newTaskEstPomodoros > 20) {
-      error("Estimated pomodoros cannot exceed 20");
       return;
     }
 
@@ -245,10 +290,18 @@ const PomodoroPage: React.FC = () => {
   // Handle deleting task
   const handleDeleteTask = async (taskId: number) => {
     try {
-      await removeTask(taskId);
+      // If deleting the currently selected task, clear selection
       if (selectedTaskId === taskId) {
         setSelectedTaskId(undefined);
       }
+
+      // If there's an active session using this task, cancel it
+      if (session && session.taskId === taskId) {
+        await cancel(); // Cancel the session first
+        info("Session cancelled because the task was deleted");
+      }
+
+      await removeTask(taskId);
       // Toast already handled in removeTask hook
     } catch (error) {
       // Error handled in removeTask hook
@@ -293,6 +346,18 @@ const PomodoroPage: React.FC = () => {
     }
   };
 
+  // Handle resetting pomodoro count
+  const handleResetFocusCount = async () => {
+    try {
+      await resetFocusCount();
+      await refreshSettings(); // Refresh to get updated count
+      success("Pomodoro count reset! Starting fresh 🍅");
+    } catch (err) {
+      error("Failed to reset count");
+      console.error("Failed to reset count:", err);
+    }
+  };
+
   const handleStart = async () => {
     // For break sessions, no task required
     if (
@@ -312,28 +377,10 @@ const PomodoroPage: React.FC = () => {
       return;
     }
 
-    // Calculate custom duration for micro-tasks (< 1 pomodoro)
-    let customDuration: number | undefined = undefined;
-    if (selectedTaskId) {
-      const selectedTask = tasks.find((t) => t.id === selectedTaskId);
-      if (
-        selectedTask &&
-        selectedTask.estimatedPomodoros &&
-        selectedTask.estimatedPomodoros < 1
-      ) {
-        // Micro-task: calculate proportional duration
-        const focusDuration = settings?.focusDuration || 25;
-        customDuration = Math.round(
-          selectedTask.estimatedPomodoros * focusDuration
-        );
-        info(`Starting micro-task session: ${customDuration} minutes ⏱️`);
-      }
-    }
-
+    // Backend will auto-calculate duration for micro-tasks
     const request: StartPomodoroRequest = {
       taskId: selectedTaskId,
       sessionType: "FOCUS",
-      duration: customDuration,
     };
 
     await startSession(request);
@@ -364,13 +411,30 @@ const PomodoroPage: React.FC = () => {
 
       // Auto-switch based on session type
       if (sessionType === "FOCUS") {
-        // After skipping Focus → switch to Short Break
+        // After skipping Focus → get suggestion for next session type
         await fetchTasks(); // Refresh task list to show updated pomodoro count
+        await refreshSettings(); // Refresh settings to update pomodoro counter
 
-        setTimeout(() => {
-          setSelectedSessionType("SHORT_BREAK");
-          info("Great job! Time for a break! ☕");
-        }, 100);
+        try {
+          const suggestion = await getNextSessionSuggestion();
+
+          setTimeout(() => {
+            setSelectedSessionType(suggestion.suggestedType);
+
+            if (suggestion.suggestedType === "LONG_BREAK") {
+              info("Session skipped! Time for a long break! 🌟☕");
+            } else {
+              info("Session skipped! Time for a short break! ☕");
+            }
+          }, 100);
+        } catch (err) {
+          console.error("Failed to get session suggestion:", err);
+          // Fallback to short break if API fails
+          setTimeout(() => {
+            setSelectedSessionType("SHORT_BREAK");
+            info("Great job! Time for a break! ☕");
+          }, 100);
+        }
       } else if (
         sessionType === "SHORT_BREAK" ||
         sessionType === "LONG_BREAK"
@@ -401,6 +465,14 @@ const PomodoroPage: React.FC = () => {
           isSavingSettings={isSavingSettings}
           onSaveSettings={handleSaveSettings}
         />
+
+        {/* Pomodoro Counter */}
+        <div className="mt-6 max-w-md mx-auto">
+          <PomodoroCounter
+            settings={settings}
+            onResetCount={handleResetFocusCount}
+          />
+        </div>
 
         {/* Grid Layout: Timer Card and Task Selection */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
@@ -441,7 +513,6 @@ const PomodoroPage: React.FC = () => {
             isCreatingTask={isCreatingTask}
             settings={settings}
             isLoading={isLoading}
-            isRunning={isRunning}
             currentSessionTaskId={session?.taskId}
             onStart={handleStart}
             onCreateTask={handleCreateTask}
