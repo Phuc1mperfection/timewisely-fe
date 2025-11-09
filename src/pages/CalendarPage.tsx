@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/useAuth";
@@ -160,12 +159,7 @@ const CalendarPage: React.FC = () => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="flex flex-col h-screen"
-    >
+    <div className="flex flex-col h-screen">
       <ActivityToastListener
         error={activityError}
         success={activitySuccess}
@@ -278,7 +272,7 @@ const CalendarPage: React.FC = () => {
           }
         }}
       />
-    </motion.div>
+    </div>
   );
 };
 

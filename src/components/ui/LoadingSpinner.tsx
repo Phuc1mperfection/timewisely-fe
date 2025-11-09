@@ -1,24 +1,24 @@
-import React from 'react';
-import { Loader } from 'lucide-react';
+import React from "react";
+import { Loader } from "lucide-react";
 
 interface LoadingSpinnerProps {
   fullScreen?: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   fullScreen = false,
-  size = 'medium'
+  size = "medium",
 }) => {
   const sizeClass = {
-    small: 'w-4 h-4',
-    medium: 'w-8 h-8',
-    large: 'w-12 h-12'
+    small: "w-4 h-4",
+    medium: "w-8 h-8",
+    large: "w-12 h-12",
   };
 
   const spinner = (
     <div className="flex items-center justify-center">
-      <Loader className={`${sizeClass[size]} animate-spin text-purple-500`} />
+      <Loader className={`${sizeClass[size]} animate-spin yellow-500`} />
     </div>
   );
 

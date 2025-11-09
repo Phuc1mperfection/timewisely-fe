@@ -29,14 +29,14 @@ const motivationalQuotes: MotivationalQuote[] = [
     author: "Walt Disney",
     category: "action",
   },
-    {
+  {
     text: "Action is the foundational key to all success.",
     author: "Pablo Picasso",
     category: "action",
   },
   {
     text: "Time is money.",
-    author:" Benjamin Franklin",
+    author: " Benjamin Franklin",
     category: "time",
   },
   {
@@ -80,7 +80,6 @@ const motivationalQuotes: MotivationalQuote[] = [
     category: "future",
   },
 ];
-
 
 const positiveNudges = [
   "You've got this! Take one small step today.",
@@ -136,7 +135,7 @@ export function DailyMotivationHub() {
             className={`h-5 w-5 ${
               isDark
                 ? "text-[var(--wisely-yellow)]"
-                : "text-[var(--wisely-purple)]"
+                : "text-[var(--wisely-gold)]"
             }`}
           />
           Daily Motivation
@@ -150,8 +149,8 @@ export function DailyMotivationHub() {
               <Quote
                 className={`absolute -left-1 -top-1 h-5 w-5 ${
                   isDark
-                    ? "text-[var(--wisely-mint)]"
-                    : "text-[var(--wisely-purple)]"
+                    ? "text-[var(--wisely-champagne)]"
+                    : "text-[var(--wisely-gold)]"
                 } opacity-40`}
               />
               <p className="pl-6 pt-2 text-base italic">{currentQuote.text}</p>
@@ -165,8 +164,8 @@ export function DailyMotivationHub() {
                   <span
                     className={`font-semibold ${
                       isDark
-                        ? "text-[var(--wisely-mint)]"
-                        : "text-[var(--wisely-purple)]"
+                        ? "text-[var(--wisely-champagne)]"
+                        : "text-[var(--wisely-gold)]"
                     }`}
                   >
                     Today's Nudge:
@@ -188,7 +187,7 @@ export function DailyMotivationHub() {
                     className={`h-4 w-4 ${
                       isDark
                         ? "text-[var(--wisely-yellow)]"
-                        : "text-[var(--wisely-purple)]"
+                        : "text-[var(--wisely-gold)]"
                     }`}
                   />
                   <span className="sr-only">Refresh nudge</span>
@@ -210,7 +209,7 @@ export function DailyMotivationHub() {
                 color:
                   quoteCategory === "random"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.primary,
               }}
@@ -230,7 +229,7 @@ export function DailyMotivationHub() {
                 color:
                   quoteCategory === "action"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.primary,
               }}
@@ -250,7 +249,7 @@ export function DailyMotivationHub() {
                 color:
                   quoteCategory === "time"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.secondary,
               }}
@@ -270,7 +269,7 @@ export function DailyMotivationHub() {
                 color:
                   quoteCategory === "productivity"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.primary,
               }}
@@ -290,7 +289,7 @@ export function DailyMotivationHub() {
                 color:
                   quoteCategory === "motivation"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.secondary,
               }}

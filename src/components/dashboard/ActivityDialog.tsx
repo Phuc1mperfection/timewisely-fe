@@ -98,7 +98,7 @@ const ColorPicker = React.memo(function ColorPicker({
           }}
           className={`w-8 h-8 rounded-full border-2 ${
             color === option.value
-              ? "border-[var(--wisely-purple)]"
+              ? "border-[var(--wisely-gold)]"
               : "border-gray-200"
           }`}
           style={{ backgroundColor: option.value }}
@@ -148,7 +148,7 @@ export function ActivityDialog({
 
   const colorOptions = useMemo(
     () => [
-      { label: "Purple", value: "#8b5cf6" }, // Primary
+      { label: "yellow", value: "#8b5cf6" }, // Primary
       { label: "Mint", value: "#5eead4" }, // Accent
       { label: "Pink", value: "#f9a8d4" }, // Accent
       { label: "Yellow", value: "#fde68a" }, // Highlight only
@@ -283,23 +283,22 @@ export function ActivityDialog({
             : "Create a new activity by filling in the details below."}
         </p>
         <div className="space-y-4">
-           <div className="space-y-2 gap-2 ">
+          <div className="space-y-2 gap-2 ">
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Add title"
-              className="border-gray-300 focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)]"
+              className="border-gray-300 focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)]"
             />
-               <div className="flex items-center space-x-2">
-            <Checkbox
-              id="allDay"
-              checked={allDay}
-              onCheckedChange={(v) => setAllDay(!!v)}
-            />
-            <Label htmlFor="allDay">All day</Label>
-          </div>
-         
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="allDay"
+                checked={allDay}
+                onCheckedChange={(v) => setAllDay(!!v)}
+              />
+              <Label htmlFor="allDay">All day</Label>
+            </div>
           </div>
           {/* Thời gian bắt đầu/kết thúc */}
           <div className="flex items-center gap-2 ">
@@ -325,7 +324,6 @@ export function ActivityDialog({
               <div className="text-xs ">All day: just pick day, not time.</div>
             )}
           </div>
-       
 
           <div className="space-y-2 gap-2 flex justify-between items-center  ">
             <SquareMenu></SquareMenu>
@@ -335,7 +333,7 @@ export function ActivityDialog({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add description"
               rows={3}
-              className=" focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)] "
+              className=" focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
             />
           </div>
 
@@ -374,7 +372,7 @@ export function ActivityDialog({
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Enter location"
-              className="focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)] "
+              className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
             />
           </div>
           <div className="space-y-2 gap-2 flex justify-between">
@@ -384,7 +382,7 @@ export function ActivityDialog({
               value={goalTag}
               onChange={(e) => setGoalTag(e.target.value)}
               placeholder="Enter goal tag"
-              className="focus:border-[var(--wisely-purple)] focus:ring-[var(--wisely-purple)] border-0"
+              className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] border-0"
             />
           </div>
           <div className="flex justify-between pt-4">
@@ -410,7 +408,7 @@ export function ActivityDialog({
               <Button
                 onClick={handleSave}
                 disabled={!title.trim()}
-                className="bg-[var(--wisely-purple)] hover:bg-purple-600 text-white"
+                className="bg-[var(--wisely-gold)] hover:bg-yellow-600 text-white"
               >
                 {event ? "Update" : "Create"}
               </Button>

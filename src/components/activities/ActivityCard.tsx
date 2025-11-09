@@ -24,12 +24,12 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
 
   const getColorClass = (color?: string) => {
     switch (color) {
-      case "blue":
-        return "border-l-blue-500";
+      case "orange":
+        return "border-l-orange-500";
       case "green":
         return "border-l-green-500";
-      case "purple":
-        return "border-l-purple-500";
+      case "yellow":
+        return "border-l-yellow-500";
       case "red":
         return "border-l-red-500";
       case "yellow":
@@ -46,7 +46,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
       )} ${
         activity.completed
           ? "bg-gray-50 border-gray-200 opacity-75"
-          : "bg-white border-gray-200 hover:border-wisely-purple/30"
+          : "bg-white border-gray-200 hover:border-wisely-gold/30"
       }`}
     >
       <CardContent className="p-6">
@@ -67,17 +67,17 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
               >
                 {activity.title}
               </h3>
-                {activity.color && (
+              {activity.color && (
                 <span
                   className="items-center px-2 py-1 rounded-full text-xs font-medium"
                   style={{
-                  backgroundColor: activity.color,
-                  color:activity.color,
+                    backgroundColor: activity.color,
+                    color: activity.color,
                   }}
                 >
                   {activity.color}
                 </span>
-                )}
+              )}
             </div>
 
             {activity.description && (

@@ -154,7 +154,7 @@ export const PomodoroCounter: React.FC<PomodoroCounterProps> = ({
                 </span>
               </div>
               <div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
-                <span className="text-3xl font-bold text-blue-600">
+                <span className="text-3xl font-bold text-orange-600">
                   {Math.floor(completedCount / interval)}
                 </span>
                 <span className="text-xs text-muted-foreground text-center">

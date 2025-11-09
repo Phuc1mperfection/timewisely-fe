@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as TabsPrimitive from "@radix-ui/react-tabs"
+import * as React from "react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-const Tabs = TabsPrimitive.Root
+const Tabs = TabsPrimitive.Root;
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
@@ -19,8 +19,8 @@ const TabsList = React.forwardRef<
     )}
     {...props}
   />
-))
-TabsList.displayName = TabsPrimitive.List.displayName
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
@@ -32,20 +32,20 @@ const TabsTrigger = React.forwardRef<
       "inline-flex items-center justify-center whitespace-nowrap px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
       "relative z-10",
       // Gradient background for active tab, subtle for inactive
-      "bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400",
+      "bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400",
       "bg-clip-text text-transparent",
-      "dark:hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-blue-500",
+      "dark:hover:text-white hover:bg-gradient-to-r hover:from-amber-400 hover:via-yellow-500 hover:to-orange-500",
       // Active state: solid gradient bg, white text
-      "data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:via-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-purple-400 data-[state=active]:shadow-lg",
+      "data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:via-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:yellow-400 data-[state=active]:shadow-lg",
       // Underline effect
-      "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:scale-x-0 after:bg-gradient-to-r after:from-pink-400 after:via-purple-400 after:to-blue-400 after:transition-transform after:duration-300 hover:after:scale-x-100",
+      "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:scale-x-0 after:bg-gradient-to-r after:from-amber-300 after:via-yellow-400 after:to-orange-400 after:transition-transform after:duration-300 hover:after:scale-x-100",
       "data-[state=active]:after:scale-x-100",
       className
     )}
     {...props}
   />
-))
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
@@ -53,14 +53,10 @@ const TabsContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.Content
     ref={ref}
-    className={cn(
-      "mt-2 focus-visible:outline-none",
-      className
-    )}
+    className={cn("mt-2 focus-visible:outline-none", className)}
     {...props}
   />
-))
-TabsContent.displayName = TabsPrimitive.Content.displayName
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
-
+export { Tabs, TabsList, TabsTrigger, TabsContent };

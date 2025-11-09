@@ -391,7 +391,7 @@ const GoogleCalendar: React.FC = () => {
               end: new Date(Date.now() + 60 * 60 * 1000),
             })
           }
-          className="flex items-center gap-2 px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
         >
           <Plus size={18} />
           <span>New Event</span>
@@ -422,7 +422,7 @@ const GoogleCalendar: React.FC = () => {
           </div>
           <button
             onClick={fetchEvents}
-            className="px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
+            className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
           >
             Refresh Events
           </button>
@@ -431,7 +431,7 @@ const GoogleCalendar: React.FC = () => {
 
       {loading ? (
         <div className="flex items-center justify-center h-[600px]">
-          <Loader className="w-10 h-10 animate-spin text-purple-500" />
+          <Loader className="w-10 h-10 animate-spin yellow-500" />
         </div>
       ) : events.length > 0 ? (
         <Calendar
@@ -445,7 +445,7 @@ const GoogleCalendar: React.FC = () => {
           onSelectSlot={handleSelectSlot}
           views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
           defaultView={Views.WEEK}
-className="modern-calendar"
+          className="modern-calendar"
           tooltipAccessor={(event) => {
             const title = event.title;
             const time = `${event.start.toLocaleTimeString()} - ${event.end.toLocaleTimeString()}`;

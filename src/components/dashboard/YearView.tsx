@@ -87,17 +87,18 @@ class YearView extends React.Component<YearViewProps> {
 
   getEventsForDate(date: Date) {
     const { events = [], localizer } = this.props;
-    return events.filter((event) =>
-      localizer.lte(
-        localizer.startOf(event.start!, "day"),
-        localizer.startOf(date, "day"),
-        "day"
-      ) &&
-      localizer.lte(
-        localizer.startOf(date, "day"),
-        localizer.startOf(event.end!, "day"),
-        "day"
-      )
+    return events.filter(
+      (event) =>
+        localizer.lte(
+          localizer.startOf(event.start!, "day"),
+          localizer.startOf(date, "day"),
+          "day"
+        ) &&
+        localizer.lte(
+          localizer.startOf(date, "day"),
+          localizer.startOf(event.end!, "day"),
+          "day"
+        )
     );
   }
 
@@ -114,7 +115,7 @@ class YearView extends React.Component<YearViewProps> {
           key={i}
           className="flex-1 max-w-[220px] mx-1 mb-3 p-2 bg-white border border-gray-200 rounded-lg"
         >
-          <div className="text-sm font-bold text-center text-purple-600 mb-1">
+          <div className="text-sm font-bold text-center text-yellow-600 mb-1">
             {localizer.format(monthDate, "MMMM")}
           </div>
           <div className="grid grid-cols-7 gap-0.5 text-center">
@@ -149,9 +150,9 @@ class YearView extends React.Component<YearViewProps> {
                       size="sm"
                       className={`w-[24px] h-[24px] rounded-full text-xs mx-auto ${
                         isCurrentMonth
-                          ? "text-gray-800 bg-white hover:bg-purple-500 hover:text-yellow-100"
+                          ? "text-gray-800 bg-white hover:bg-yellow-500 hover:text-yellow-100"
                           : "text-gray-500 bg-gray-100 cursor-not-allowed"
-                      } ${isToday ? "bg-purple-500 text-yellow-100" : ""}`}
+                      } ${isToday ? "bg-yellow-500 text-yellow-100" : ""}`}
                     >
                       {date.getDate()}
                     </Button>
@@ -176,12 +177,9 @@ class YearView extends React.Component<YearViewProps> {
     }
 
     return (
-      <Card >
+      <Card>
         {rows.map((row, idx) => (
-          <div
-            key={idx}
-            className="flex w-full justify-center gap-2 mb-3"
-          >
+          <div key={idx} className="flex w-full justify-center gap-2 mb-3">
             {row}
           </div>
         ))}

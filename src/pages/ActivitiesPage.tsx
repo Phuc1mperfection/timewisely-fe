@@ -27,7 +27,7 @@ const ActivitiesPage: React.FC = () => {
     return (
       <div className="container max-w-5xl mx-auto py-8 px-4">
         <div className="flex items-center justify-center min-h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-wisely-purple" />
+          <Loader2 className="h-8 w-8 animate-spin text-wisely-gold" />
           <span className="ml-2 text-wisely-gray">Loading activities...</span>
         </div>
       </div>

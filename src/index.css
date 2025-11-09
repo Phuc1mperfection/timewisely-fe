@@ -52,100 +52,98 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  /* Light Mode - Gold & White theme (Time is Gold) */
+  --background: oklch(0.99 0.005 85);
+  --foreground: oklch(0.15 0.01 85);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.15 0.01 85);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.15 0.01 85);
+  --primary: oklch(0.65 0.15 85);
+  --primary-foreground: oklch(0.98 0.005 85);
+  --secondary: oklch(0.95 0.02 85);
+  --secondary-foreground: oklch(0.25 0.02 85);
+  --muted: oklch(0.96 0.01 85);
+  --muted-foreground: oklch(0.5 0.02 85);
+  --accent: oklch(0.92 0.05 85);
+  --accent-foreground: oklch(0.2 0.02 85);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-  --wisely-purple: #8b5cf6;
-  --wisely-blue: #4f46e5;
-  --wisely-indigo: #6366f1;
-  --wisely-white: #ffffff;
-  --wisely-mint: #5eead4;
-  --wisely-pink: #f9a8d4;
-  --wisely-yellow: #fde68a;
-  --wisely-dark: #1e1e2f;
+  --border: oklch(0.88 0.02 85);
+  --input: oklch(0.88 0.02 85);
+  --ring: oklch(0.65 0.15 85);
+  --chart-1: oklch(0.7 0.18 85);
+  --chart-2: oklch(0.75 0.15 60);
+  --chart-3: oklch(0.8 0.12 100);
+  --chart-4: oklch(0.65 0.2 70);
+  --chart-5: oklch(0.6 0.16 90);
+  --sidebar: oklch(0.98 0.005 85);
+  --sidebar-foreground: oklch(0.15 0.01 85);
+  --sidebar-primary: oklch(0.65 0.15 85);
+  --sidebar-primary-foreground: oklch(0.98 0.005 85);
+  --sidebar-accent: oklch(0.95 0.02 85);
+  --sidebar-accent-foreground: oklch(0.25 0.02 85);
+  --sidebar-border: oklch(0.88 0.02 85);
+  --sidebar-ring: oklch(0.65 0.15 85);
+  /* Gold color palette */
+  --wisely-gold: #d4af37;
+  --wisely-lightGold: #f4e5b2;
+  --wisely-darkGold: #b8941f;
+  --wisely-bronze: #cd7f32;
+  --wisely-champagne: #f7e7ce;
+  --wisely-sand: #cbbd93;
+  --wisely-cream: #fffdd0;
+  --wisely-dark: #1a1a1a;
   --wisely-gray: #6b7280;
-  --wisely-lightGray: #f3f4f6;
-  --wisely-white: #fff;
-  --wisely-lightPurple: #a78bfa;
-  --wisely-lightMint: #34d399;
-  --wisely-lightPink: #f472b6;
-  --wisely-lightYellow: #fcd34d;
-  --wisely-lightGray: #e5e7eb;
-  --wisely-darkPurple: #7c3aed;
-  --wisely-darkMint: #059669;
-  --wisely-darkPink: #db2777;
-  --wisely-darkYellow: #ca8a04;
-    /* Gradient system */
-  --gradient-primary: linear-gradient(135deg, hsl(215 85% 25%), hsl(195 100% 70%));
-  --gradient-hero: linear-gradient(180deg, hsl(215, 86%, 14%), hsl(200 80% 35%), hsl(195 100% 70%));
-  --gradient-subtle: linear-gradient(180deg, hsl(210 100% 98%), hsl(210 50% 96%));
-  --gradient-glow: radial-gradient(ellipse at center, hsl(195 100% 70% / 0.3), transparent 70%);
+  --wisely-lightGray: #f9f9f9;
+  --wisely-white: #ffffff;
+  --wisely-yellow: #fbbf24;
+  /* Gradient system - Gold theme */
+  --gradient-primary: linear-gradient(135deg, hsl(43 74% 49%), hsl(45 100% 85%));
+  --gradient-hero: linear-gradient(180deg, hsl(45 15% 10%), hsl(43 50% 35%), hsl(45 100% 85%));
+  --gradient-subtle: linear-gradient(180deg, hsl(45 100% 98%), hsl(45 80% 92%));
+  --gradient-glow: radial-gradient(ellipse at center, hsl(45 100% 70% / 0.3), transparent 70%);
+  --gradient-gold: linear-gradient(135deg, #d4af37, #f4e5b2, #d4af37);
 }
+
 .bg-hero {
   background: var(--gradient-hero);
 }
 
 .dark {
-  --background: #181825;
-  --foreground: #fafaff;
-  --card: #2e2e4d;
-  --card-foreground: #fafaff;
-  --popover: #2e2e4d;
-  --popover-foreground: #fafaff;
-  --primary: #e0e7ff;
-  --primary-foreground: #2e2e4d;
-  --secondary: #3b3b5c;
-  --secondary-foreground: #fafaff;
-  --muted: #3b3b5c;
-  --muted-foreground: #b4b4d6;
-  --accent: #3b3b5c;
-  --accent-foreground: #fafaff;
-  --destructive: #c96d4a;
-  --border: #ffffff1a;
-  --input: #ffffff26;
-  --ring: #6c6ca8;
-  --chart-1: #4d4dff;
-  --chart-2: #4fd1c5;
-  --chart-3: #fcd34d;
-  --chart-4: #7c3aed;
-  --chart-5: #eab308;
-  --sidebar: #2e2e4d;
-  --sidebar-foreground: #fafaff;
-  --sidebar-primary: #4d4dff;
-  --sidebar-primary-foreground: #fafaff;
-  --sidebar-accent: #3b3b5c;
-  --sidebar-accent-foreground: #fafaff;
-  --sidebar-border: #ffffff1a;
-  --sidebar-ring: #6c6ca8;
+  /* Dark Mode - Gold & Black theme (Time is Gold - Night Edition) */
+  --background: oklch(0.12 0.01 85);
+  --foreground: oklch(0.95 0.01 85);
+  --card: oklch(0.18 0.015 85);
+  --card-foreground: oklch(0.95 0.01 85);
+  --popover: oklch(0.18 0.015 85);
+  --popover-foreground: oklch(0.95 0.01 85);
+  --primary: oklch(0.7 0.15 85);
+  --primary-foreground: oklch(0.12 0.01 85);
+  --secondary: oklch(0.25 0.02 85);
+  --secondary-foreground: oklch(0.95 0.01 85);
+  --muted: oklch(0.22 0.02 85);
+  --muted-foreground: oklch(0.6 0.02 85);
+  --accent: oklch(0.28 0.03 85);
+  --accent-foreground: oklch(0.95 0.01 85);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.3 0.02 85);
+  --input: oklch(0.28 0.02 85);
+  --ring: oklch(0.7 0.15 85);
+  --chart-1: oklch(0.7 0.18 85);
+  --chart-2: oklch(0.75 0.15 60);
+  --chart-3: oklch(0.8 0.12 100);
+  --chart-4: oklch(0.65 0.2 70);
+  --chart-5: oklch(0.6 0.16 90);
+  --sidebar: oklch(0.15 0.015 85);
+  --sidebar-foreground: oklch(0.95 0.01 85);
+  --sidebar-primary: oklch(0.7 0.15 85);
+  --sidebar-primary-foreground: oklch(0.12 0.01 85);
+  --sidebar-accent: oklch(0.25 0.02 85);
+  --sidebar-accent-foreground: oklch(0.95 0.01 85);
+  --sidebar-border: oklch(0.3 0.02 85);
+  --sidebar-ring: oklch(0.7 0.15 85);
 }
+
 @keyframes accordion-down {
   from {
     height: 0;
@@ -211,6 +209,7 @@
   }
 
 }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -220,12 +219,13 @@
     @apply bg-background text-foreground;
   }
 }
+
 /* Primary Button Styles */
 .btn-primary {
   background: linear-gradient(90deg,
-      var(--wisely-purple),
-      var(--wisely-indigo),
-      var(--wisely-mint));
+      var(--wisely-gold),
+      var(--wisely-darkGold),
+      var(--wisely-champagne));
   background-size: 200% 200%;
   transition: all 0.3s ease;
 }
@@ -233,7 +233,7 @@
 .btn-primary:hover {
   background-position: right center;
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 10px 30px rgba(134, 110, 0, 0.4);
   cursor: pointer;
 }
 
@@ -321,15 +321,16 @@
 }
 
 .auth-gradient-bg {
-  background: linear-gradient(135deg,
-      var(--wisely-purple),
+  background: linear-gradient(335deg,
+      var(--wisely-gold),
       var(--wisely-dark),
-      var(--wisely-indigo),
-      var(--wisely-darkYellow),
-      var(--wisely-purple),
-      var(--wisely-dark));
+      var(--wisely-darkGold),
+      var(--wisely-dark),
+      var(--wisely-bronze),
+      var(--wisely-champagne),
+      var(--wisely-gold));
   background-size: 400% 400%;
-  animation: gradient-shift 9s ease infinite;
+  animation: gradient-shift 29s ease infinite;
 }
 
 /* Glassmorphism effects */
@@ -337,7 +338,7 @@
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(177, 24, 24, 0.1);
 }
 
 .glass-input {
@@ -349,8 +350,8 @@
 
 .glass-input:focus {
   background: rgba(255, 255, 255, 0.1);
-  border-color: var(--wisely-mint);
-  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+  border-color: var(--wisely-champagne);
+  box-shadow: 0 0 0 3px rgba(247, 231, 206, 0.1);
 }
 
 /* Background clock animation */
@@ -380,9 +381,9 @@
 
 .skeleton {
   background: linear-gradient(90deg,
-      rgba(139, 92, 246, 0.1) 25%,
-      rgba(94, 234, 212, 0.2) 50%,
-      rgba(139, 92, 246, 0.1) 75%);
+      rgba(212, 175, 55, 0.1) 25%,
+      rgba(247, 231, 206, 0.2) 50%,
+      rgba(212, 175, 55, 0.1) 75%);
   background-size: 200% 100%;
   animation: skeleton-pulse 2s ease-in-out infinite;
 }
@@ -446,8 +447,8 @@
 }
 
 .input-success {
-  border-color: var(--wisely-mint);
-  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+  border-color: var(--wisely-champagne);
+  box-shadow: 0 0 0 3px rgba(247, 231, 206, 0.1);
 }
 
 /* Responsive adjustments */
@@ -457,62 +458,75 @@
     transform: scale(0.8);
   }
 }
-/* Modern Calendar Styles - TimeWisely Theme */
+
+/* Modern Calendar Styles - TimeWisely Gold Theme */
 .modern-calendar.rbc-calendar {
   @apply bg-transparent border-0 font-sans;
 }
+.rbc-calendar {
+    min-height: 790px;
+}
+
 /* Header Styling */
 .modern-calendar .rbc-month-view .rbc-header,
 .modern-calendar .rbc-time-view .rbc-header {
   @apply uppercase flex flex-col justify-center items-center text-center font-semibold py-4 px-3 text-sm tracking-wide whitespace-pre-line leading-[1.4] border-0;
-  color: var(--calendar-header-fg, #4b5563);
 }
-/*custom scrollbar*/
 
-/* .light .modern-calendar .rbc-header {
-  --calendar-header-fg: #4b5563;
-  --calendar-header-bg: linear-gradient(to right, #f9fafb, #f3e8ff);
-} */
+.light .modern-calendar .rbc-header {
+  color: var(--wisely-darkGold);
+  background: linear-gradient(to bottom, #fffdf7, #fef8e8);
+}
 
 .dark .modern-calendar .rbc-header {
-  /* --calendar-header-fg: #e0e7ff;
-  --calendar-header-bg: #232347; */
-  @apply text-[#e0e7ff];
+  color: var(--wisely-lightGold);
+  background: rgba(212, 175, 55, 0.05);
 }
 
 /* Month View */
 .modern-calendar .rbc-month-view {
-  @apply border-0 rounded-lg overflow-hidden ;
-  background: var(--calendar-month-bg, #fff);
+  @apply border-0 rounded-lg overflow-hidden;
 }
 
 .light .modern-calendar .rbc-month-view {
-  --calendar-month-bg: #fff;
+  background: #ffffff;
 }
 
 .dark .modern-calendar .rbc-month-view {
-  --calendar-month-bg: #232347;
+  background: rgba(26, 26, 26, 0.5);
 }
 
+/* Off-range dates (previous/next month) */
 .light .modern-calendar .rbc-off-range-bg {
-  background: #f3e8ff !important ;
-  color: #fff !important;
+  background: #fef8e8 !important;
+  color: var(--wisely-sand) !important;
 }
 
 .dark .modern-calendar .rbc-off-range-bg {
-  background: #191933 !important;
+  background: rgba(212, 175, 55, 0.03) !important;
+  color: rgba(244, 229, 178, 0.3) !important;
 }
+
+/* Date cells */
 .modern-calendar .rbc-date-cell {
-  @apply text-gray-600 p-3 cursor-pointer ;
-  color: var(--calendar-date-fg, #4b5563);
+  @apply p-3 cursor-pointer;
+  transition: all 0.2s ease;
 }
 
 .light .modern-calendar .rbc-date-cell {
-  --calendar-date-fg: #4b5563;
+  color: var(--wisely-dark);
+}
+
+.light .modern-calendar .rbc-date-cell:hover {
+  background: var(--wisely-champagne);
 }
 
 .dark .modern-calendar .rbc-date-cell {
-  --calendar-date-fg: #e0e7ff;
+  color: var(--wisely-lightGold);
+}
+
+.dark .modern-calendar .rbc-date-cell:hover {
+  background: rgba(212, 175, 55, 0.1);
 }
 
 .modern-calendar .rbc-date-cell>a {
@@ -521,57 +535,100 @@
 
 /* Week/Day View */
 .modern-calendar .rbc-time-view {
-  @apply border-0 ;
-  /* background: var(--calendar-time-bg, #fff); */
+  @apply border-0;
 }
 
-/* .light .modern-calendar .rbc-time-view {
-  --calendar-time-bg: #fff;
+/* Limit calendar height and enable scrolling */
+.modern-calendar .rbc-time-content {
+  max-height: 550px;
+  overflow-y: auto;
 }
 
-.dark .modern-calendar .rbc-time-view {
-  --calendar-time-bg: #232347;
-} */
+/* Smooth scrolling */
+.modern-calendar .rbc-time-content::-webkit-scrollbar {
+  width: 8px;
+}
 
+.light .modern-calendar .rbc-time-content::-webkit-scrollbar-track {
+  background: #fef8e8;
+  border-radius: 4px;
+}
+
+.dark .modern-calendar .rbc-time-content::-webkit-scrollbar-track {
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: 4px;
+}
+
+.light .modern-calendar .rbc-time-content::-webkit-scrollbar-thumb {
+  background: var(--wisely-gold);
+  border-radius: 4px;
+}
+
+.dark .modern-calendar .rbc-time-content::-webkit-scrollbar-thumb {
+  background: var(--wisely-darkGold);
+  border-radius: 4px;
+}
+
+.modern-calendar .rbc-time-content::-webkit-scrollbar-thumb:hover {
+  background: var(--wisely-bronze);
+}
 
 .modern-calendar .rbc-time-gutter {
   @apply bg-gray-50/50;
-  color: var(--calendar-gutter-fg, #6b7280);
-  background: var(--calendar-gutter-bg, #f9fafb);
 }
 
 .light .modern-calendar .rbc-time-gutter {
-  --calendar-gutter-fg: #6b7280;
-  --calendar-gutter-bg: #f9fafb;
+  color: var(--wisely-darkGold);
+  background: #fef8e8;
 }
 
 .dark .modern-calendar .rbc-time-gutter {
-  --calendar-gutter-fg: #e0e7ff;
-  --calendar-gutter-bg: #232347;
+  color: var(--wisely-lightGold);
+  background: rgba(212, 175, 55, 0.05);
 }
 
-.modern-calendar .rbc-time-header-gutter {
-  @apply bg-gray-50;
+.light .modern-calendar .rbc-time-header-gutter {
+  background: #fffdf7 !important;
 }
 
 .dark .modern-calendar .rbc-time-header-gutter {
-  background: #232347 !important;
+  background: rgba(212, 175, 55, 0.05) !important;
 }
 
 /* Current Time Indicator */
 .modern-calendar .rbc-current-time-indicator {
-  @apply bg-purple-500 h-0.5;
+  @apply h-0.5;
+}
+
+.light .modern-calendar .rbc-current-time-indicator {
+  background-color: var(--wisely-gold);
+  box-shadow: 0 0 4px rgba(212, 175, 55, 0.5);
+}
+
+.dark .modern-calendar .rbc-current-time-indicator {
+  background-color: var(--wisely-lightGold);
+  box-shadow: 0 0 6px rgba(244, 229, 178, 0.6);
 }
 
 /* Events */
 .modern-calendar .rbc-event {
-  @apply border-0  text-white font-medium text-sm cursor-pointer;
-  background: var(--calendar-event-bg, #000);
-  color: var(--calendar-event-fg, #fff);
+  @apply border-0 font-medium text-sm cursor-pointer transition-all;
 }
 
 .modern-calendar .rbc-event.rbc-selected {
-  @apply ring-2 ring-purple-300 ring-offset-2 bg-amber-600;
+  @apply ring-2 ring-offset-2;
+}
+
+.light .modern-calendar .rbc-event.rbc-selected {
+  background: var(--wisely-darkGold);
+  --tw-ring-color: var(--wisely-gold);
+  --tw-ring-offset-color: #ffffff;
+}
+
+.dark .modern-calendar .rbc-event.rbc-selected {
+  background: var(--wisely-gold);
+  --tw-ring-color: var(--wisely-lightGold);
+  --tw-ring-offset-color: rgba(26, 26, 26, 0.5);
 }
 
 .modern-calendar .rbc-event-label {
@@ -580,30 +637,30 @@
 
 /* Slot Selection */
 .modern-calendar .rbc-slot-selection {
-  @apply border-2 border-purple-300 rounded-lg;
-  background: var(--calendar-slot-selection-bg, #e0e7ff);
+  @apply border-2 rounded-lg;
 }
 
 .light .modern-calendar .rbc-slot-selection {
-  @apply bg-blue-600 font-semibold;
+  background: rgba(212, 175, 55, 0.1);
+  border-color: var(--wisely-gold);
 }
 
 .dark .modern-calendar .rbc-slot-selection {
-  --calendar-slot-selection-bg: #232347;
+  background: rgba(24, 18, 1, 0.1);
+  border-color: var(--wisely-lightGold);
 }
 
 /* Agenda View */
 .modern-calendar .rbc-agenda-view {
-  @apply border-0 rounded-lg overflow-hidden bg-white;
-  background: var(--calendar-agenda-bg, #fff);
+  @apply border-0 rounded-lg overflow-hidden;
 }
 
 .light .modern-calendar .rbc-agenda-view {
-  --calendar-agenda-bg: #fff;
+  background: #ffffff;
 }
 
 .dark .modern-calendar .rbc-agenda-view {
-  --calendar-agenda-bg: #232347;
+  background: rgba(26, 26, 26, 0.5);
 }
 
 .modern-calendar .rbc-agenda-table {
@@ -611,29 +668,69 @@
 }
 
 .modern-calendar .rbc-agenda-table tbody>tr>td {
-  @apply border-gray-100 py-3 px-4;
+  @apply py-3 px-4;
+}
+
+.light .modern-calendar .rbc-agenda-table tbody>tr>td {
+  border-color: var(--wisely-champagne);
+}
+
+.dark .modern-calendar .rbc-agenda-table tbody>tr>td {
+  border-color: rgba(212, 175, 55, 0.1);
 }
 
 .modern-calendar .rbc-agenda-date-cell {
-  @apply font-semibold text-purple-100;
+  @apply font-semibold;
+  color: var(--wisely-gold);
 }
 
 .modern-calendar .rbc-agenda-time-cell {
-  @apply text-gray-100 font-medium;
+  @apply font-medium;
+}
+
+.light .modern-calendar .rbc-agenda-time-cell {
+  color: var(--wisely-darkGold);
+}
+
+.dark .modern-calendar .rbc-agenda-time-cell {
+  color: var(--wisely-lightGold);
 }
 
 .modern-calendar .rbc-agenda-event-cell {
-  @apply text-gray-100;
+  @apply font-normal;
 }
 
-/* Today Highlight */
-.light .modern-calendar .rbc-today {
-  @apply bg-purple-500/10;
+.light .modern-calendar .rbc-agenda-event-cell {
+  color: var(--wisely-dark);
 }
 
-.dark .modern-calendar .rbc-today {
-  @apply bg-purple-900/90;
-  color: #fff;
+.dark .modern-calendar .rbc-agenda-event-cell {
+  color: var(--wisely-cream);
+}
+
+/* Today Highlight - Google Calendar Style (Circle around date number) */
+.modern-calendar .rbc-today {
+  background: transparent !important;
+}
+
+.light .modern-calendar .rbc-today .rbc-date-cell>a,
+.light .modern-calendar .rbc-today .rbc-button-link {
+  @apply inline-flex items-center justify-center;
+  min-width: 24rem;
+  min-height: 6rem;
+  background: var(--wisely-gold);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.dark .modern-calendar .rbc-today .rbc-date-cell>a,
+.dark .modern-calendar .rbc-today .rbc-button-link {
+  @apply inline-flex items-center justify-center;
+  min-width: 24rem;
+  min-height: 6rem;
+  background: var(--wisely-darkGold);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 /* Dark mode for calendar grid lines and slots */
@@ -643,20 +740,25 @@
 .dark .modern-calendar .rbc-timeslot-group,
 .dark .modern-calendar .rbc-agenda-table,
 .dark .modern-calendar .rbc-agenda-table tbody>tr>td {
-  border-color: #39395a !important;
+  border-color: #3f3f3f8c !important;
   background-color: transparent;
 }
+
 /* Show More Link */
 
 .light .modern-calendar .rbc-show-more {
-  color: #4f46e5;
+  color: var(--wisely-darkGold);
 }
+
 .dark .modern-calendar .rbc-show-more {
-  color: #c084fc;
+  color: var(--wisely-lightGold);
 }
-.dark .modern-calendar .rbc-time-slot{
+
+.dark .modern-calendar .rbc-time-slot {
   @apply border-0
 }
-.light .modern-calendar .rbc-time-slot{
+
+.light .modern-calendar .rbc-time-slot {
   @apply border-0
 }
+

@@ -39,6 +39,7 @@ export interface PomodoroStats {
 }
 
 export interface UserSettings {
+  completedFocusCount: number;
   id: number;
   userId: string;
   focusDuration: number;

@@ -15,7 +15,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-wisely-blue via-indigo-900 to-gray-900 dark:bg-gray-950">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-wisely-orange via-yellow-900 to-gray-900 dark:bg-gray-950">
       <div className="text-center animate-fade-in">
         <div className="flex justify-center mb-6">
           <img
@@ -25,7 +25,7 @@ const NotFound = () => {
             height={100}
           />
         </div>
-        <h1 className="text-5xl font-extrabold mb-2 text-[var(--wisely-blue)] drop-shadow-lg">
+        <h1 className="text-5xl font-extrabold mb-2 text-[var(--wisely-orange)] drop-shadow-lg">
           404
         </h1>
         <p className="text-2xl text-gray-200 mb-4 font-semibold">
@@ -37,7 +37,7 @@ const NotFound = () => {
           Maybe it went to "sleep early"—just like you probably should!
         </p>
         <Button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/dashboard")}
           className="px-6 py-2 rounded-full "
         >
           Back to Dashboard

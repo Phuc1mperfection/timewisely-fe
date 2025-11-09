@@ -54,7 +54,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
         >
           {sparkles}
           <div className="text-center space-y-8 relative z-10">
-            {/* Animated hourglass icon */}
+            {/* Animated circular icon */}
             <motion.div
               animate={{
                 rotateY: [0, 180, 360],
@@ -67,15 +67,15 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
               }}
               className="mx-auto w-32 h-32 relative"
             >
-              {/* Glow border */}
-              <div className="absolute inset-0 bg-gradient-to-b from-accent via-[var(--primary-glow)] to-primary rounded-lg rotate-45 animate-glow"></div>
+              {/* Glow border - Circle */}
+              <div className="absolute inset-0 bg-gradient-to-b from-accent via-[var(--primary-glow)] to-primary rounded-full animate-glow"></div>
 
-              {/* Inner background */}
-              <div className="absolute inset-2 bg-blue-500/30 rounded rotate-45 flex items-center justify-center">
+              {/* Inner background - Circle */}
+              <div className="absolute inset-2 bg-orange-500/30 rounded-full rotate-45 flex items-center justify-center">
                 <img
                   src="/src/assets/icon.svg"
                   alt="Logo"
-                  className="w-8 h-8 transition-transform duration-200"
+                  className="w-12 h-12 transition-transform duration-200"
                 />
               </div>
             </motion.div>
@@ -92,7 +92,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
               </h1>
 
               {/* Progress bar */}
-              <div className="w-64 h-2 bg-blue-800/20 rounded-full overflow-hidden mx-auto">
+              <div className="w-64 h-2 bg-orange-800/20 rounded-full overflow-hidden mx-auto">
                 <motion.div
                   className="h-full bg-gradient-to-r from-accent to-[var(--primary-glow)] rounded-full"
                   initial={{ width: "0%" }}
@@ -104,7 +104,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
               <motion.p
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="text-blue-800/80"
+                className="text-orange-800/80"
               >
                 {Math.round(progress)}%
               </motion.p>

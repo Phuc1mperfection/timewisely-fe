@@ -192,7 +192,7 @@ export const DailyMotivationHub1 = () => {
                 color:
                   quoteCategory === "random"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.primary,
               }}
@@ -212,7 +212,7 @@ export const DailyMotivationHub1 = () => {
                 color:
                   quoteCategory === "action"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.primary,
               }}
@@ -232,7 +232,7 @@ export const DailyMotivationHub1 = () => {
                 color:
                   quoteCategory === "time"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.secondary,
               }}
@@ -252,7 +252,7 @@ export const DailyMotivationHub1 = () => {
                 color:
                   quoteCategory === "productivity"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.primary,
               }}
@@ -272,7 +272,7 @@ export const DailyMotivationHub1 = () => {
                 color:
                   quoteCategory === "motivation"
                     ? isDark
-                      ? "var(--wisely-mint)"
+                      ? "var(--wisely-champagne)"
                       : "white"
                     : iconColors.secondary,
               }}
@@ -286,8 +286,8 @@ export const DailyMotivationHub1 = () => {
               <span
                 className={`font-semibold ${
                   isDark
-                    ? "text-[var(--wisely-mint)]"
-                    : "text-[var(--wisely-purple)]"
+                    ? "text-[var(--wisely-champagne)]"
+                    : "text-[var(--wisely-gold)]"
                 }`}
               >
                 Today's Reminder:
@@ -309,7 +309,7 @@ export const DailyMotivationHub1 = () => {
                 className={`h-4 w-4 ${
                   isDark
                     ? "text-[var(--wisely-yellow)]"
-                    : "text-[var(--wisely-purple)]"
+                    : "text-[var(--wisely-gold)]"
                 }`}
               />
               <span className="sr-only">Refresh nudge</span>
