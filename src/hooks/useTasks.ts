@@ -1,175 +1,90 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import {
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
-  toggleTaskCompletion,
-  type Task,
-  type CreateTaskRequest,
-  type UpdateTaskRequest,
-  type TaskFilters,
-} from "@/services/taskServices";
-import { useToast } from "./useToast";
+﻿import { useState, useEffect, useCallback } from "react";
+import { useToast } from "@/hooks/useToast";
+import type { Task, TaskFormData } from "@/interfaces";
+import * as taskServices from "@/services/taskServices";
 
-export function useTasks(filters?: TaskFilters) {
+export function useTasks() {
+  const { success, handleError } = useToast();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { success: toastSuccess, error: toastError } = useToast();
+  const [loading, setLoading] = useState(true);
 
-  // Serialize filters to avoid object reference changes causing re-renders
-  const filtersKey = useMemo(() => JSON.stringify(filters || {}), [filters]);
-
-  // Fetch tasks
   const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError(null);
     try {
-      const data = await getTasks(filters);
+      setLoading(true);
+      const data = await taskServices.getTasks();
       setTasks(data);
     } catch (err) {
-      const errorMessage = "Failed to load tasks";
-      setError(errorMessage);
-      toastError(errorMessage);
-      console.error("Failed to load tasks:", err);
+      console.error("Failed to fetch tasks:", err);
+      // Simple error handling without toast to avoid dependency issues
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtersKey]); 
+  }, []); // Empty deps to prevent infinite loop
 
-  // Create task
-  const addTask = useCallback(
-    async (taskData: CreateTaskRequest): Promise<Task | null> => {
-      setLoading(true);
-      setError(null);
-      try {
-        const newTask = await createTask(taskData);
-        setTasks((prev) => [newTask, ...prev]);
-        toastSuccess("Task created successfully");
-        return newTask;
-      } catch (err) {
-        const errorMessage = "Failed to create task";
-        setError(errorMessage);
-        toastError(errorMessage);
-        console.error("Failed to create task:", err);
-        return null;
-      } finally {
-        setLoading(false);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  const createTask = async (taskData: TaskFormData) => {
+    try {
+      const newTask = await taskServices.createTask(taskData);
+      setTasks((prev) => [newTask, ...prev]);
+      success("Task created successfully!");
+      return newTask;
+    } catch (err) {
+      handleError(err, "Failed to create task", "Create Task");
+      return null;
+    }
+  };
 
-  // Update task
-  const modifyTask = useCallback(
-    async (
-      taskId: number,
-      updates: UpdateTaskRequest
-    ): Promise<Task | null> => {
-      setLoading(true);
-      setError(null);
-      try {
-        const updatedTask = await updateTask(taskId, updates);
-        setTasks((prev) =>
-          prev.map((task) => (task.id === taskId ? updatedTask : task))
-        );
-        toastSuccess("Task updated successfully");
-        return updatedTask;
-      } catch (err) {
-        const errorMessage = "Failed to update task";
-        setError(errorMessage);
-        toastError(errorMessage);
-        console.error("Failed to update task:", err);
-        return null;
-      } finally {
-        setLoading(false);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  // Delete task
-  const removeTask = useCallback(
-    async (taskId: number): Promise<boolean> => {
-      setLoading(true);
-      setError(null);
-      try {
-        await deleteTask(taskId);
-        setTasks((prev) => prev.filter((task) => task.id !== taskId));
-        toastSuccess("Task deleted successfully");
-        return true;
-      } catch (err) {
-        const errorMessage = "Failed to delete task";
-        setError(errorMessage);
-        toastError(errorMessage);
-        console.error("Failed to delete task:", err);
-        return false;
-      } finally {
-        setLoading(false);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  // Toggle completion
-  const toggleCompletion = useCallback(
-    async (taskId: number): Promise<boolean> => {
-      // Optimistic update
+  const toggleComplete = async (id: string) => {
+    try {
+      const updatedTask = await taskServices.toggleTaskComplete(id);
       setTasks((prev) =>
-        prev.map((task) =>
-          task.id === taskId
-            ? { ...task, isCompleted: !task.isCompleted }
-            : task
-        )
+        prev.map((task) => (task.id === id ? updatedTask : task))
       );
+      success(
+        updatedTask.completed
+          ? "Task marked as complete!"
+          : "Task marked as incomplete!"
+      );
+    } catch (err) {
+      handleError(err, "Failed to update task status", "Toggle Task Complete");
+    }
+  };
 
-      try {
-        const updatedTask = await toggleTaskCompletion(taskId);
-        setTasks((prev) =>
-          prev.map((task) => (task.id === taskId ? updatedTask : task))
-        );
-        return true;
-      } catch (err) {
-        // Revert optimistic update
-        setTasks((prev) =>
-          prev.map((task) =>
-            task.id === taskId
-              ? { ...task, isCompleted: !task.isCompleted }
-              : task
-          )
-        );
+  const updateTask = async (id: string, taskData: Partial<TaskFormData>) => {
+    try {
+      const updatedTask = await taskServices.updateTask(id, taskData);
+      setTasks((prev) =>
+        prev.map((task) => (task.id === id ? updatedTask : task))
+      );
+      success("Task updated successfully!");
+      return updatedTask;
+    } catch (err) {
+      handleError(err, "Failed to update task", "Update Task");
+      return null;
+    }
+  };
 
-        const errorMessage = "Failed to toggle task completion";
-        setError(errorMessage);
-        toastError(errorMessage);
-        console.error("Failed to toggle task completion:", err);
-        return false;
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-
-
-  // Load tasks on mount
   useEffect(() => {
     fetchTasks();
-  }, [fetchTasks]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount to prevent infinite loop
+
+  const deleteTask = async (id: string) => {
+    try {
+      await taskServices.deleteTask(id);
+      setTasks((prev) => prev.filter((task) => task.id !== id));
+      success("Task deleted successfully!");
+    } catch (err) {
+      handleError(err, "Failed to delete task", "Delete Task");
+    }
+  };
 
   return {
     tasks,
     loading,
-    error,
     fetchTasks,
-    addTask,
-    modifyTask,
-    removeTask,
-    toggleCompletion,
+    createTask,
+    updateTask,
+    toggleComplete,
+    deleteTask,
   };
 }

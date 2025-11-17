@@ -37,18 +37,16 @@ const PomodoroPage: React.FC = () => {
     tasks: allTasks,
     loading: loadingTasks,
     fetchTasks,
-    addTask,
-    modifyTask,
-    removeTask,
-    toggleCompletion,
-  } = useTasks({
-    // No filter - load all tasks
-  });
+    createTask: addTask,
+    updateTask: modifyTask,
+    toggleComplete: toggleCompletion,
+    deleteTask: removeTask,
+  } = useTasks();
 
   // Filter tasks based on showCompletedTasks state
   const tasks = showCompletedTasks
     ? allTasks
-    : allTasks.filter((task) => !task.isCompleted);
+    : allTasks.filter((task) => !task.completed);
 
   const {
     session,
@@ -172,7 +170,9 @@ const PomodoroPage: React.FC = () => {
 
     // For FOCUS sessions, check if selected task is a micro-task (for preview only)
     if (selectedSessionType === "FOCUS" && selectedTaskId) {
-      const selectedTask = tasks.find((t) => t.id === selectedTaskId);
+      const selectedTask = tasks.find(
+        (t) => t.id === selectedTaskId?.toString()
+      );
       if (
         selectedTask &&
         selectedTask.estimatedPomodoros &&
@@ -211,7 +211,9 @@ const PomodoroPage: React.FC = () => {
 
     // If a task is selected, get its name from the tasks list
     if (selectedTaskId) {
-      const selectedTask = tasks.find((t) => t.id === selectedTaskId);
+      const selectedTask = tasks.find(
+        (t) => t.id === selectedTaskId?.toString()
+      );
       if (selectedTask) {
         return selectedTask.name;
       }
@@ -237,14 +239,18 @@ const PomodoroPage: React.FC = () => {
       setIsCreatingTask(true);
       const newTask = await addTask({
         name: newTaskName.trim(),
+        description: "",
+        type: "both",
         estimatedPomodoros: newTaskEstPomodoros,
-        type: "BOTH", // Can be used in both Pomodoro and Todo
+        priority: "medium",
+        category: "other",
+        dueDate: new Date(),
       });
 
       if (newTask) {
         success(`Task "${newTask.name}" created successfully! 🎉`);
         // Auto-select the new task
-        setSelectedTaskId(newTask.id);
+        setSelectedTaskId(parseInt(newTask.id));
         setCustomTask("");
         // Reset form
         setNewTaskName("");
@@ -268,7 +274,7 @@ const PomodoroPage: React.FC = () => {
 
   // Handle toggling task completion
   const handleToggleTaskCompletion = async (taskId: number) => {
-    await toggleCompletion(taskId);
+    await toggleCompletion(taskId.toString());
   };
 
   // Handle editing task
@@ -278,16 +284,17 @@ const PomodoroPage: React.FC = () => {
     estimatedPomodoros: number
   ) => {
     try {
-      await modifyTask(taskId, { name, estimatedPomodoros });
-      await fetchTasks();
-      // Toast already handled in modifyTask hook
-    } catch (error) {
-      // Error handled in modifyTask hook
-      console.error("Failed to edit task:", error);
+      await modifyTask(taskId.toString(), {
+        name,
+        estimatedPomodoros,
+      });
+      await fetchTasks(); // Refresh task list
+      success("Task updated successfully!");
+    } catch (err) {
+      error("Failed to update task");
+      console.error("Failed to edit task:", err);
     }
   };
-
-  // Handle deleting task
   const handleDeleteTask = async (taskId: number) => {
     try {
       // If deleting the currently selected task, clear selection
@@ -301,7 +308,7 @@ const PomodoroPage: React.FC = () => {
         info("Session cancelled because the task was deleted");
       }
 
-      await removeTask(taskId);
+      await removeTask(taskId.toString());
       // Toast already handled in removeTask hook
     } catch (error) {
       // Error handled in removeTask hook
@@ -523,7 +530,7 @@ const PomodoroPage: React.FC = () => {
             onClearCompletedTasks={handleClearCompletedTasks}
             showCompletedTasks={showCompletedTasks}
             onShowCompletedTasks={handleShowCompletedTasks}
-            completedCount={allTasks.filter((t) => t.isCompleted).length}
+            completedCount={allTasks.filter((t) => t.completed).length}
             onCancelSession={handleStop}
           />
         </div>

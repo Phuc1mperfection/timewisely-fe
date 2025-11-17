@@ -15,10 +15,11 @@ import {
   Settings,
   User,
   Home,
-  Sparkles,
+  // Sparkles,
   LayoutDashboard,
   ChevronUp,
   Timer,
+  CheckSquare,
 } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -34,7 +35,8 @@ const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
-  { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
+  { title: "Tasks", url: "/dashboard/tasks", icon: CheckSquare },
+  // { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
   { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },

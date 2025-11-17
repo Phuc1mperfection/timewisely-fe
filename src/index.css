@@ -49,6 +49,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
 }
+
 :root {
   --radius: 0.625rem;
   /* Light Mode - Gold & White theme (Time is Gold) */
@@ -103,31 +104,39 @@
   --gradient-subtle: linear-gradient(180deg, hsl(45 100% 98%), hsl(45 80% 92%));
   --gradient-glow: radial-gradient(ellipse at center, hsl(45 100% 70% / 0.3), transparent 70%);
   --gradient-gold: linear-gradient(135deg, #d4af37, #f4e5b2, #d4af37);
+  /* Animations */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 10px 15px -3px rgba(212, 175, 55, 0.1), 0 4px 6px -4px rgba(212, 175, 55, 0.1);
 }
+
 .bg-hero-light {
   width: 100%;
   height: 100%;
   filter: contrast(130%) brightness(450%);
 
-  background: 
+  background:
     /* LỚP 1: Nguồn sáng (Spotlight) tương tác
       Nó sẽ lấy vị trí từ --mouseX và --mouseY.
       Khi JS chạy, nó sẽ ghi đè các giá trị mặc định ở trên.
     */
-linear-gradient(134deg, rgba(82,26,35,1), rgba(243,152,19,0.47)),
+    linear-gradient(134deg, rgba(82, 26, 35, 1), rgba(243, 152, 19, 0.47)),
     /* LỚP 2: Lớp gradient tuyến tính ban đầu của bạn
     Dùng làm nền dự phòng và lấp đầy các cạnh
-    */   
-radial-gradient(
-      circle at var(--mouseX) var(--mouseY),
-      rgba(251, 251, 251, 0.6) 0%, /* Màu sáng hơn ở tâm */
-      rgba(156, 44, 44, 0.4) 35%, /* Màu nền chính */
-      transparent 100% /* Chuyển sang trong suốt */
+    */
+    radial-gradient(circle at var(--mouseX) var(--mouseY),
+      rgba(251, 251, 251, 0.6) 0%,
+      /* Màu sáng hơn ở tâm */
+      rgba(156, 44, 44, 0.4) 35%,
+      /* Màu nền chính */
+      transparent 100%
+      /* Chuyển sang trong suốt */
     ),
     /* LỚP 3: Lớp "hạt nhiễu" (grainy) SVG của bạn
     */
-url("https://grainy-gradients.vercel.app/noise.svg");}
-  
+    url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
 .bg-hero {
   background: var(--gradient-hero);
   background-size: 300% 300%;
@@ -192,6 +201,8 @@ url("https://grainy-gradients.vercel.app/noise.svg");}
   --sidebar-accent-foreground: oklch(0.95 0.01 85);
   --sidebar-border: oklch(0.3 0.02 85);
   --sidebar-ring: oklch(0.7 0.15 85);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 10px 15px -3px rgba(212, 175, 55, 0.2), 0 4px 6px -4px rgba(212, 175, 55, 0.2);
 }
 
 @keyframes accordion-down {
