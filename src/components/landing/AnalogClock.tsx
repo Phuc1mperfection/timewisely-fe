@@ -145,28 +145,6 @@ const AnalogClock: React.FC = () => {
           </CardItem>
         </CardItem>
 
-        {/* Floating decorative elements */}
-        <CardItem
-          translateZ={80}
-          translateX={-20}
-          className="floating-shape blur-xl absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full opacity-60 "
-        >
-          <div />
-        </CardItem>
-        <CardItem
-          translateZ={90}
-          translateX={20}
-          className="floating-shape blur-xl absolute -bottom-6 -left-6 w-6 h-6 bg-gradient-to-br from-amber-300 to-amber-400 rounded-lg opacity-60"
-        >
-          <div />
-        </CardItem>
-        <CardItem
-          translateZ={70}
-          translateX={-15}
-          className="floating-shape blur-xl absolute top-10 -left-8 w-4 h-4 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full opacity-60 "
-        >
-          <div />
-        </CardItem>
       </CardBody>
     </CardContainer>
   );

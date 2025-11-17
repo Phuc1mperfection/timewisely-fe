@@ -71,7 +71,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
               <div className="absolute inset-0 bg-gradient-to-b from-accent via-[var(--primary-glow)] to-primary rounded-full animate-glow"></div>
 
               {/* Inner background - Circle */}
-              <div className="absolute inset-2 bg-orange-500/30 rounded-full rotate-45 flex items-center justify-center">
+              <div className="absolute inset-2 bg-orange-500/40 rounded-full rotate-45 flex items-center justify-center">
                 <img
                   src="/src/assets/icon.svg"
                   alt="Logo"

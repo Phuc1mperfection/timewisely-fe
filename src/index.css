@@ -49,7 +49,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
 }
-
 :root {
   --radius: 0.625rem;
   /* Light Mode - Gold & White theme (Time is Gold) */
@@ -97,20 +96,71 @@
   --wisely-lightGray: #f9f9f9;
   --wisely-white: #ffffff;
   --wisely-yellow: #fbbf24;
+  --primary-glow: hsl(45 80% 70%);
   /* Gradient system - Gold theme */
   --gradient-primary: linear-gradient(135deg, hsl(43 74% 49%), hsl(45 100% 85%));
-  --gradient-hero: linear-gradient(180deg, hsl(45 15% 10%), hsl(43 50% 35%), hsl(45 100% 85%));
+  --gradient-hero: linear-gradient(180deg, #2b210f, #5c4417, #d7a838, #fff2c1);
   --gradient-subtle: linear-gradient(180deg, hsl(45 100% 98%), hsl(45 80% 92%));
   --gradient-glow: radial-gradient(ellipse at center, hsl(45 100% 70% / 0.3), transparent 70%);
   --gradient-gold: linear-gradient(135deg, #d4af37, #f4e5b2, #d4af37);
 }
+.bg-hero-light {
+  width: 100%;
+  height: 100%;
+  filter: contrast(130%) brightness(450%);
 
+  background: 
+    /* LỚP 1: Nguồn sáng (Spotlight) tương tác
+      Nó sẽ lấy vị trí từ --mouseX và --mouseY.
+      Khi JS chạy, nó sẽ ghi đè các giá trị mặc định ở trên.
+    */
+linear-gradient(134deg, rgba(82,26,35,1), rgba(243,152,19,0.47)),
+    /* LỚP 2: Lớp gradient tuyến tính ban đầu của bạn
+    Dùng làm nền dự phòng và lấp đầy các cạnh
+    */   
+radial-gradient(
+      circle at var(--mouseX) var(--mouseY),
+      rgba(251, 251, 251, 0.6) 0%, /* Màu sáng hơn ở tâm */
+      rgba(156, 44, 44, 0.4) 35%, /* Màu nền chính */
+      transparent 100% /* Chuyển sang trong suốt */
+    ),
+    /* LỚP 3: Lớp "hạt nhiễu" (grainy) SVG của bạn
+    */
+url("https://grainy-gradients.vercel.app/noise.svg");}
+  
 .bg-hero {
   background: var(--gradient-hero);
+  background-size: 300% 300%;
+  animation: goldShift 8s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.bg-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+/* Smooth gold wave animation */
+@keyframes goldShift {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 0%;
+  }
 }
 
 .dark {
-  /* Dark Mode - Gold & Black theme (Time is Gold - Night Edition) */
+  /* Dark Mode - gold & black theme (Time is Gold - Night Edition) */
   --background: oklch(0.12 0.01 85);
   --foreground: oklch(0.95 0.01 85);
   --card: oklch(0.18 0.015 85);
@@ -343,7 +393,6 @@
 
 .glass-input {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -463,8 +512,9 @@
 .modern-calendar.rbc-calendar {
   @apply bg-transparent border-0 font-sans;
 }
+
 .rbc-calendar {
-    min-height: 790px;
+  min-height: 790px;
 }
 
 /* Header Styling */
@@ -761,4 +811,3 @@
 .light .modern-calendar .rbc-time-slot {
   @apply border-0
 }
-

@@ -1,17 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense, useMemo, memo } from "react";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
-import HeroSection from "@/components/landing/HeroSection";
-import FeaturesSection from "@/components/landing/FeaturesSection";
-// import CTASection from "@/components/landing/CTASection";
 import { Preloader } from "@/components/Preloader";
-import FooterSection from "@/components/layout/Footer";
-import PersonalizationSection from "@/components/landing/PersonalizeSection";
-import ScrollAnimationSection from "@/components/landing/ScrollAnimationSection";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { StorylineSection } from "@/components/landing/StorylineSection";
+import HeroSection from "@/components/landing/HeroSection";
 
+const FeaturesSection = lazy(
+  () => import("@/components/landing/FeaturesSection")
+);
+const ScrollAnimationSection = lazy(
+  () => import("@/components/landing/ScrollAnimationSection")
+);
+const StorylineSection = lazy(() =>
+  import("@/components/landing/StorylineSection").then((module) => ({
+    default: module.StorylineSection,
+  }))
+);
+const PersonalizationSection = lazy(
+  () => import("@/components/landing/PersonalizeSection")
+);
+const FooterSection = lazy(() => import("@/components/layout/Footer"));
+
+// Loading fallback component - memoized
+const SectionLoader = memo(() => (
+  <div className="flex items-center justify-center py-20">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+));
+
+SectionLoader.displayName = "SectionLoader";
 
 const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,66 +42,85 @@ const LandingPage = () => {
     if (!isLoading) {
       gsap.registerPlugin(ScrollTrigger);
 
-      // Scroll-triggered section reveals
-      gsap.utils.toArray(".section-reveal").forEach((section: any) => {
-        gsap.fromTo(
+      // Scroll-triggered section reveals with performance optimization
+      const sections = gsap.utils.toArray<HTMLElement>(".section-reveal");
+      const animations: gsap.core.Tween[] = [];
+
+      sections.forEach((section) => {
+        const animation = gsap.fromTo(
           section,
           { opacity: 0, y: 100 },
           {
             opacity: 1,
             y: 0,
             duration: 1,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: section,
               start: "top 80%",
               end: "bottom 20%",
               toggleActions: "play none none reverse",
+              // Performance optimizations
+              fastScrollEnd: true,
+              preventOverlaps: true,
             },
           }
         );
+        animations.push(animation);
       });
+
+      // Cleanup function
+      return () => {
+        animations.forEach((anim) => anim.kill());
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
     }
   }, [isLoading]);
+
+  // Memoize features array to prevent recreation on every render
+  const features = useMemo(
+    () => [
+      {
+        icon: Calendar,
+        title: "Smart Calendar",
+        description:
+          "Intuitive calendar interface with drag & drop functionality",
+      },
+      {
+        icon: Sparkles,
+        title: "AI Suggestions",
+        description:
+          "Get personalized activity recommendations based on your interests",
+      },
+      {
+        icon: Clock,
+        title: "Time Optimization",
+        description:
+          "Maximize your productivity with intelligent time slot analysis",
+      },
+      {
+        icon: Target,
+        title: "Goal Tracking",
+        description:
+          "Set and achieve your personal and professional objectives",
+      },
+      {
+        icon: Users,
+        title: "Social Integration",
+        description: "Coordinate with friends and colleagues seamlessly",
+      },
+      {
+        icon: Zap,
+        title: "Quick Actions",
+        description: "Create events and tasks with lightning-fast shortcuts",
+      },
+    ],
+    []
+  );
 
   if (isLoading) {
     return <Preloader onComplete={handlePreloaderComplete} />;
   }
-
-  const features = [
-    {
-      icon: Calendar,
-      title: "Smart Calendar",
-      description:
-        "Intuitive calendar interface with drag & drop functionality",
-    },
-    {
-      icon: Sparkles,
-      title: "AI Suggestions",
-      description:
-        "Get personalized activity recommendations based on your interests",
-    },
-    {
-      icon: Clock,
-      title: "Time Optimization",
-      description:
-        "Maximize your productivity with intelligent time slot analysis",
-    },
-    {
-      icon: Target,
-      title: "Goal Tracking",
-      description: "Set and achieve your personal and professional objectives",
-    },
-    {
-      icon: Users,
-      title: "Social Integration",
-      description: "Coordinate with friends and colleagues seamlessly",
-    },
-    {
-      icon: Zap,
-      title: "Quick Actions",
-      description: "Create events and tasks with lightning-fast shortcuts",
-    },
-  ];
 
   return (
     <div className="">
@@ -94,25 +131,32 @@ const LandingPage = () => {
       <HeroSection />
 
       {/* Scroll Animation Section */}
-      <ScrollAnimationSection
-        title="Time is your most valuable asset"
-        subtitle="Our powerful tools help you make the most of every minute"
-      />
-      {/* Features Grid */}
-      <FeaturesSection features={features} />
+      <Suspense fallback={<SectionLoader />}>
+        <ScrollAnimationSection
+          title="Time is your most valuable asset"
+          subtitle="Our powerful tools help you make the most of every minute"
+        />
+      </Suspense>
 
-      {/* How It Works Section */}
+      {/* Features Grid */}
+      <Suspense fallback={<SectionLoader />}>
+        <FeaturesSection features={features} />
+      </Suspense>
 
       {/* Storyline Section */}
-      <StorylineSection />
-      {/* Personalize Section */}
-      <PersonalizationSection />
+      <Suspense fallback={<SectionLoader />}>
+        <StorylineSection />
+      </Suspense>
 
-      {/* CTA Section */}
-      {/* <CTASection /> */}
+      {/* Personalize Section */}
+      <Suspense fallback={<SectionLoader />}>
+        <PersonalizationSection />
+      </Suspense>
 
       {/* Footer */}
-      <FooterSection />
+      <Suspense fallback={<SectionLoader />}>
+        <FooterSection />
+      </Suspense>
     </div>
   );
 };

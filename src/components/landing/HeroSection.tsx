@@ -2,38 +2,71 @@ import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, PlayCircle } from "lucide-react";
+import { memo, useEffect, useRef, useState } from "react";
 import AnalogClock from "./AnalogClock";
 import { FlipWords } from "@/components/ui/flip-words";
 import DarkVeil from "../ui/DarkVeil";
+import { useTheme } from "@/hooks/useTheme";
 
-const HeroSection = () => {
+const HeroSection = memo(() => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const words = ["smarter", "faster", "better", "easier"];
+  const gradientRef = useRef<HTMLDivElement>(null);
+  const [isGradientLoaded, setIsGradientLoaded] = useState(false);
+
+  useEffect(() => {
+    // Preload gradient by setting it loaded after a short delay
+    const timer = setTimeout(() => {
+      setIsGradientLoaded(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!gradientRef.current) {
+        return;
+      }
+      const { clientWidth, clientHeight } = gradientRef.current;
+      const mouseX = (event.clientX / clientWidth) * 100;
+      const mouseY = (event.clientY / clientHeight) * 100;
+
+      gradientRef.current.style.setProperty("--mouseX", `${mouseX}%`);
+      gradientRef.current.style.setProperty("--mouseY", `${mouseY}%`);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 -z-10">
-        {/* Light mode gradient */}
-        <div className="bg-gradient-to-b from-amber-50 via-orange-100 to-white animate-gradient dark:hidden w-full h-full" />
+      <div
+        className={`absolute inset-0 -z-10 transition-opacity duration-700 ${
+          isGradientLoaded ? "opacity-100" : "opacity-0"
+        }`}
+        ref={gradientRef}
+      >
+        {/* Light mode gradient with mouse tracking */}
+        <div className="bg-hero-light dark:hidden w-full h-full absolute inset-0" />
 
-        {/* Dark mode background */}
-        <DarkVeil
-          hueShift={204}
-          noiseIntensity={0}
-          scanlineIntensity={0.1}
-          scanlineFrequency={40.0}
-          warpAmount={2.02}
-          speed={0.5}
-        />
-
-        {/* Floating blobs */}
-
-        <motion.div
-          className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-amber-300/20 blur-3xl"
-          animate={{ y: [0, 20, 0] }}
-          transition={{ repeat: Infinity, duration: 10 }}
-        />
+        {/* Dark mode background - only render in dark mode */}
+        {theme === "dark" && (
+          <DarkVeil
+            hueShift={204}
+            noiseIntensity={0}
+            scanlineIntensity={0.1}
+            scanlineFrequency={40.0}
+            warpAmount={2.02}
+            speed={0.5}
+          />
+        )}
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
@@ -129,13 +162,14 @@ const HeroSection = () => {
           >
             <div className="relative">
               <AnalogClock />
-              <div className="absolute inset-0 rounded-full blur-3xl bg-orange-500/30 -z-10 w-40 mt-10" />
             </div>
           </motion.div>
         </div>
       </div>
     </section>
   );
-};
+});
+
+HeroSection.displayName = "HeroSection";
 
 export default HeroSection;

@@ -1,48 +1,55 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion, useInView } from "motion/react";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, memo } from "react";
 
-const FeatureCard = ({ feature, index }: { feature: any; index: number }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
+const FeatureCard = memo(
+  ({ feature, index }: { feature: any; index: number }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-10%" });
 
-  // Memoize animation variants
-  const animationVariants = useMemo(
-    () => ({
-      initial: { opacity: 0, y: 50 },
-      animate: isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 },
-      transition: { duration: 0.6, delay: index * 0.1 },
-    }),
-    [isInView, index]
-  );
+    // Memoize animation variants
+    const animationVariants = useMemo(
+      () => ({
+        initial: { opacity: 0, y: 50 },
+        animate: isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 },
+        transition: { duration: 0.6, delay: index * 0.1 },
+      }),
+      [isInView, index]
+    );
 
-  const hoverVariants = useMemo(
-    () => ({
-      scale: 1.05,
-    }),
-    []
-  );
+    const hoverVariants = useMemo(
+      () => ({
+        scale: 1.05,
+      }),
+      []
+    );
 
-  return (
-    <motion.div
-      ref={ref}
-      initial={animationVariants.initial}
-      animate={animationVariants.animate}
-      transition={animationVariants.transition}
-      className="bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 hover:bg-[var(--wisely-sand)]/20 transition-all duration-300"
-    >
-      <motion.div className="flex items-center mb-6" whileHover={hoverVariants}>
-        <div className="p-3 bg-gradient-to-r from-[var(--wisely-gold)] to-[var(--wisely-champagne)] rounded-xl mr-4 ">
-          <feature.icon className="w-6 h-6 text-[var(--wisely-white)]" />
-        </div>
-        <h3 className="text-xl font-semibold ">{feature.title}</h3>
+    return (
+      <motion.div
+        ref={ref}
+        initial={animationVariants.initial}
+        animate={animationVariants.animate}
+        transition={animationVariants.transition}
+        className="bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 hover:bg-[var(--wisely-sand)]/20 transition-all duration-300"
+      >
+        <motion.div
+          className="flex items-center mb-6"
+          whileHover={hoverVariants}
+        >
+          <div className="p-3 bg-gradient-to-r from-[var(--wisely-gold)] to-[var(--wisely-champagne)] rounded-xl mr-4 ">
+            <feature.icon className="w-6 h-6 text-[var(--wisely-white)]" />
+          </div>
+          <h3 className="text-xl font-semibold ">{feature.title}</h3>
+        </motion.div>
+        <p className="leading-relaxed">{feature.description}</p>
       </motion.div>
-      <p className="leading-relaxed">{feature.description}</p>
-    </motion.div>
-  );
-};
+    );
+  }
+);
 
-const FeaturesSection = ({ features }: { features: any[] }) => {
+FeatureCard.displayName = "FeatureCard";
+
+const FeaturesSection = memo(({ features }: { features: any[] }) => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
 
@@ -246,6 +253,8 @@ const FeaturesSection = ({ features }: { features: any[] }) => {
       </motion.div>
     </section>
   );
-};
+});
+
+FeaturesSection.displayName = "FeaturesSection";
 
 export default FeaturesSection;

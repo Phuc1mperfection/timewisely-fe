@@ -1,7 +1,7 @@
-import React from "react";
+import { memo } from "react";
 import { UserCheck, Sparkles, ArrowRight } from "lucide-react";
 
-const PersonalizationSection: React.FC = () => {
+const PersonalizationSection = memo(() => {
   return (
     <section
       id="about"
@@ -145,6 +145,8 @@ const PersonalizationSection: React.FC = () => {
       </div>
     </section>
   );
-};
+});
+
+PersonalizationSection.displayName = "PersonalizationSection";
 
 export default PersonalizationSection;

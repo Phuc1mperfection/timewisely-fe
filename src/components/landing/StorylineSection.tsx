@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 
 const storySteps = [
@@ -44,76 +44,78 @@ const storySteps = [
   },
 ];
 
-const StoryStep = ({
-  step,
-  index,
-}: {
-  step: (typeof storySteps)[0];
-  index: number;
-}) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-20%" });
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
+const StoryStep = memo(
+  ({ step, index }: { step: (typeof storySteps)[0]; index: number }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-20%" });
+    const { scrollYProgress } = useScroll({
+      target: ref,
+      offset: ["start end", "end start"],
+    });
 
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
+    const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
+    const opacity = useTransform(
+      scrollYProgress,
+      [0, 0.3, 0.7, 1],
+      [0, 1, 1, 0]
+    );
 
-  return (
-    <motion.section ref={ref} style={{ y, opacity }} className="relative">
-      <div className="flex items-center gap-8 lg:gap-16">
-        {/* Timeline dot */}
-        <div className="flex-shrink-0 relative">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={isInView ? { scale: 1 } : { scale: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.2 }}
-            className={`w-16 h-16 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center text-2xl shadow-glow`}
-          >
-            {step.visual}
-          </motion.div>
-
-          {/* Connecting line */}
-          {index < storySteps.length - 1 && (
+    return (
+      <motion.section ref={ref} style={{ y, opacity }} className="relative">
+        <div className="flex items-center gap-8 lg:gap-16">
+          {/* Timeline dot */}
+          <div className="flex-shrink-0 relative">
             <motion.div
-              initial={{ height: 0 }}
-              animate={isInView ? { height: "100%" } : { height: 0 }}
-              transition={{ duration: 1, delay: index * 0.2 + 0.3 }}
-              className="absolute top-16 left-1/2 w-0.5 h-32 bg-gradient-to-b from-current to-transparent opacity-30"
-            />
-          )}
-        </div>
-
-        {/* Content */}
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-          transition={{ duration: 0.6, delay: index * 0.2 + 0.1 }}
-          className="flex-1 space-y-4"
-        >
-          <div className="space-y-2">
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r ${step.color} text-white`}
+              initial={{ scale: 0 }}
+              animate={isInView ? { scale: 1 } : { scale: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              className={`w-16 h-16 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center text-2xl shadow-glow`}
             >
-              {step.phase}
-            </span>
-            <h3 className="text-2xl lg:text-3xl font-bold text-foreground">
-              {step.title}
-            </h3>
+              {step.visual}
+            </motion.div>
+
+            {/* Connecting line */}
+            {index < storySteps.length - 1 && (
+              <motion.div
+                initial={{ height: 0 }}
+                animate={isInView ? { height: "100%" } : { height: 0 }}
+                transition={{ duration: 1, delay: index * 0.2 + 0.3 }}
+                className="absolute top-16 left-1/2 w-0.5 h-32 bg-gradient-to-b from-current to-transparent opacity-30"
+              />
+            )}
           </div>
 
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
-            {step.description}
-          </p>
-        </motion.div>
-      </div>
-    </motion.section>
-  );
-};
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+            transition={{ duration: 0.6, delay: index * 0.2 + 0.1 }}
+            className="flex-1 space-y-4"
+          >
+            <div className="space-y-2">
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r ${step.color} text-white`}
+              >
+                {step.phase}
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-bold text-foreground">
+                {step.title}
+              </h3>
+            </div>
 
-export const StorylineSection = () => {
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
+              {step.description}
+            </p>
+          </motion.div>
+        </div>
+      </motion.section>
+    );
+  }
+);
+
+StoryStep.displayName = "StoryStep";
+
+export const StorylineSection = memo(() => {
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true });
 
@@ -129,8 +131,8 @@ export const StorylineSection = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            Your Journey Through
-            <span className="bg-gradient-to-r from-[var(--primary-glow)] to-[var(--secondary-glow)] bg-clip-text text-transparent">
+            Your Journey Through{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-pink-500 to-red-500">
               Time
             </span>
           </h2>
@@ -150,4 +152,6 @@ export const StorylineSection = () => {
       </div>
     </section>
   );
-};
+});
+
+StorylineSection.displayName = "StorylineSection";
