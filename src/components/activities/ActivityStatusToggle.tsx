@@ -7,16 +7,19 @@ interface ActivityStatusToggleProps {
   onToggle: (activityId: string) => void;
 }
 
-export const ActivityStatusToggle: React.FC<ActivityStatusToggleProps> = ({
-  activityId,
-  completed,
-  onToggle,
-}) => {
-  return (
-    <Checkbox
-      checked={completed}
-      onCheckedChange={() => onToggle(activityId)}
-      className="data-[state=checked]:bg-wisely-gold data-[state=checked]:border-wisely-gold"
-    />
-  );
-};
+// Memoize to prevent re-renders
+export const ActivityStatusToggle = React.memo<ActivityStatusToggleProps>(
+  ({ activityId, completed, onToggle }) => {
+    const handleToggle = React.useCallback(() => {
+      onToggle(activityId);
+    }, [activityId, onToggle]);
+
+    return (
+      <Checkbox
+        checked={completed}
+        onCheckedChange={handleToggle}
+        className="data-[state=checked]:bg-wisely-gold data-[state=checked]:border-wisely-gold hover:cursor-pointer"
+      />
+    );
+  }
+);

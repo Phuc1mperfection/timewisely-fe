@@ -15,7 +15,6 @@ import { DashboardContent } from "./pages/Dashboard";
 import { ThemeProvider } from "@/components/theme-provider";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
-import ActivitiesPage from "./pages/ActivitiesPage";
 import PomodoroPage from "./pages/PomodoroPage";
 
 const queryClient = new QueryClient();
@@ -26,7 +25,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>
-            <Toaster position="top-center" richColors/>
+            <Toaster position="top-center" richColors />
             {/* You can place <ModeToggle /> in your layout or header for theme switching */}
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -58,8 +57,7 @@ function App() {
                 <Route index element={<DashboardContent />} />
                 <Route path="overview" element={<OverviewPage />} />
                 <Route path="calendar" element={<CalendarPage />} />
-                <Route path="activities" element={<ActivitiesPage /> }/>
-                <Route path="pomodoro" element={<PomodoroPage/>} />
+                <Route path="pomodoro" element={<PomodoroPage />} />
                 <Route path="goals" element={<div>Goals Page</div>} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="settings" element={<div>Settings Page</div>} />

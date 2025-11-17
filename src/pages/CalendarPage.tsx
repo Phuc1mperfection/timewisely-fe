@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/contexts/useAuth";
@@ -13,6 +13,7 @@ import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import { useActivities } from "@/hooks/useActivity";
 import { NewActivityButton } from "@/components/activities/NewActivityButton";
 import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
+import { ActivityList } from "@/components/activities/ActivityLists";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import type { View } from "react-big-calendar";
 import type { Activity } from "@/interfaces/Activity";
@@ -128,6 +129,7 @@ const CalendarPage: React.FC = () => {
     handleActivityResize,
     handleSaveActivity,
     handleDeleteActivity,
+    toggleActivityComplete,
     activityStyleGetter,
     error: activityError,
     success: activitySuccess,
@@ -142,17 +144,22 @@ const CalendarPage: React.FC = () => {
   const [filterAllDay, setFilterAllDay] = useState<null | boolean>(null);
 
   // Helper: convert {startTime, endTime} to {start, end}
-  const slotToLegacy = (slot: { startTime: Date; endTime: Date } | null) =>
-    slot ? { start: slot.startTime, end: slot.endTime } : null;
+  const slotToLegacy = useCallback(
+    (slot: { startTime: Date; endTime: Date } | null) =>
+      slot ? { start: slot.startTime, end: slot.endTime } : null,
+    []
+  );
 
-  // Filtered activities
-  const filteredActivities = activities.filter((a: Activity) => {
-    if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
-      return false;
-    if (filterColor && a.color !== filterColor) return false;
-    if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
-    return true;
-  });
+  // Filtered activities - memoize to avoid recalculation on every render
+  const filteredActivities = useMemo(() => {
+    return activities.filter((a: Activity) => {
+      if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
+        return false;
+      if (filterColor && a.color !== filterColor) return false;
+      if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
+      return true;
+    });
+  }, [activities, search, filterColor, filterAllDay]);
 
   if (loading) {
     return <LoadingSpinner fullScreen />;
@@ -177,6 +184,7 @@ const CalendarPage: React.FC = () => {
           <div className="flex items-center">
             <TabsList className="mr-4">
               <TabsTrigger value="timewisely">TimeWisely Calendar</TabsTrigger>
+              <TabsTrigger value="activities">Activities</TabsTrigger>
               <TabsTrigger value="google">Google Calendar</TabsTrigger>
             </TabsList>
 
@@ -192,7 +200,7 @@ const CalendarPage: React.FC = () => {
             )}
           </div>
 
-          {activeTab === "timewisely" && (
+          {(activeTab === "timewisely" || activeTab === "activities") && (
             <NewActivityButton
               onOpenModal={() => {
                 handleSelectSlot({
@@ -245,9 +253,25 @@ const CalendarPage: React.FC = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="activities" className="h-full overflow-auto">
+            <Card className="h-full">
+              <CardContent className="p-6">
+                <div className="mb-6">
+                  <h1 className="text-3xl font-bold">Activities</h1>
+                  <p className="text-muted-foreground text-base">
+                    Manage your activities and track your progress.
+                  </p>
+                </div>
+                <ActivityList
+                  activities={activities}
+                  onToggleComplete={toggleActivityComplete}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="google" className="h-full overflow-auto p-6">
-            <GoogleCalendar
-            />
+            <GoogleCalendar />
           </TabsContent>
         </div>
       </Tabs>
