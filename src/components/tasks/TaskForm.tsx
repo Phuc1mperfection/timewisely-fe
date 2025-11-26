@@ -131,6 +131,7 @@ export function TaskForm({
       priority: data.priority,
       category: data.category,
       dueDate: data.dueDate,
+      order: 0
     });
     form.reset();
   };

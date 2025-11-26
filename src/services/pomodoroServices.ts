@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 export interface PomodoroSession {
   id: number;
   userId: string;
-  taskId?: number;
+  taskId?: string;
   taskName?: string;
   status: "RUNNING" | "PAUSED" | "COMPLETED" | "CANCELLED";
   sessionType: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK";
@@ -21,7 +21,7 @@ export interface PomodoroSession {
 }
 
 export interface StartPomodoroRequest {
-  taskId?: number;
+  taskId?: string;
   sessionType?: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK"; // Optional: defaults to FOCUS in backend
   duration?: number; // Optional: custom duration in minutes for micro-tasks (< 1 pomodoro)
 }
@@ -49,7 +49,6 @@ export interface UserSettings {
   autoStartBreaks: boolean;
   autoStartPomodoros: boolean;
   soundEnabled: boolean;
-  completedFocusCount: number; // Track consecutive completed focus sessions
 }
 
 export interface UpdateUserSettingsRequest {

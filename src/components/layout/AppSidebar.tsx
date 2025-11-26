@@ -9,6 +9,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import {
   Calendar,
@@ -19,7 +22,10 @@ import {
   LayoutDashboard,
   ChevronUp,
   Timer,
-  CheckSquare,
+  CalendarDays,
+  Clock,
+  CheckCircle,
+  ListTodo,
 } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -31,16 +37,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Logo from "@/assets/icon.svg"; // Adjust the path as necessary
 
-const menuItems = [
+const mainMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
-  { title: "Tasks", url: "/dashboard/tasks", icon: CheckSquare },
   // { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
   { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
 ];
+
+const taskMenuItems = [
+  { title: "Today", url: "/dashboard/tasks/today", icon: CalendarDays },
+  { title: "Upcoming", url: "/dashboard/tasks/upcoming", icon: Clock },
+  { title: "Completed", url: "/dashboard/tasks/completed", icon: CheckCircle },
+];
+
 
 export function AppSidebar() {
   const { user, logout } = useAuth();
@@ -62,11 +74,11 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent>
+        {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => {
+              {mainMenuItems.map((item) => {
                 const isActive = location.pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
@@ -107,6 +119,64 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Tasks Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Tasks</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  <ListTodo className="w-5 h-5" />
+                  <span>Tasks</span>
+                </SidebarMenuButton>
+                <SidebarMenuSub>
+                  {taskMenuItems.map((item) => {
+                    const isActive = location.pathname === item.url;
+                    return (
+                      <SidebarMenuSubItem key={item.title}>
+                        <SidebarMenuSubButton asChild isActive={isActive}>
+                          <button
+                            type="button"
+                            onClick={() => navigate(item.url)}
+                            className={
+                              "flex items-center space-x-3 p-3 rounded-lg transition-colors group w-full text-left " +
+                              (isActive
+                                ? " text-[var(--wisely-gold)] font-semibold "
+                                : "hover:bg-yellow-500 hover:text-[var(--wisely-gold)] hover:cursor-pointer")
+                            }
+                            aria-current={isActive ? "page" : undefined}
+                          >
+                            <item.icon
+                              className={
+                                "w-5 h-5 " +
+                                (isActive
+                                  ? "text-[var(--wisely-gold)]"
+                                  : "hover:text-[var(--wisely-gold)]")
+                              }
+                            />
+                            <span
+                              className={
+                                isActive
+                                  ? "text-[var(--wisely-gold)]"
+                                  : "hover:text-[var(--wisely-gold)] dark:hover:text-[var(--wisely-white)]"
+                              }
+                            >
+                              {item.title}
+                            </span>
+                          </button>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })}
+                </SidebarMenuSub>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Account Group */}
+       
       </SidebarContent>
       <SidebarFooter>
         <DropdownMenu>

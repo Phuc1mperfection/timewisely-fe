@@ -14,13 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TaskEditDialog } from "./TaskEditDialog";
-import type { Task } from "@/services/taskServices";
+import type { Task } from "@/interfaces";
 import type { UserSettings } from "@/services/pomodoroServices";
 
 interface TaskSelectionCardProps {
   selectedSessionType: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK";
-  selectedTaskId: number | undefined;
-  setSelectedTaskId: (id: number | undefined) => void;
+  selectedTaskId: string | undefined;
+  setSelectedTaskId: (id: string | undefined) => void;
   customTask: string;
   setCustomTask: (task: string) => void;
   tasks: Task[];
@@ -34,21 +34,21 @@ interface TaskSelectionCardProps {
   isCreatingTask: boolean;
   settings: UserSettings | null;
   isLoading: boolean;
-  currentSessionTaskId: number | undefined; // Task ID of active session (running or paused)
+  currentSessionTaskId: string | undefined; // Task ID of active session (running or paused)
   onStart: () => void;
   onCreateTask: () => void;
   onCancelAddTask: () => void;
-  onToggleTaskCompletion: (taskId: number) => void;
+  onToggleTaskCompletion: (taskId: string) => void;
   onClearCompletedTasks: () => void;
   showCompletedTasks: boolean;
   onShowCompletedTasks: () => void;
   completedCount: number;
   onEditTask: (
-    taskId: number,
+    taskId: string,
     name: string,
     estimatedPomodoros: number
   ) => void;
-  onDeleteTask: (taskId: number) => void;
+  onDeleteTask: (taskId: string) => void;
   onCancelSession: () => void; // Cancel current session
 }
 
@@ -86,7 +86,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // Handle task selection with confirmation if session exists (running or paused)
-  const handleTaskSelection = (taskId: number) => {
+  const handleTaskSelection = (taskId: string) => {
     // If there's an active session (running or paused) and user is switching to a different task
     if (currentSessionTaskId && currentSessionTaskId !== taskId) {
       const confirmed = confirm(
@@ -106,8 +106,8 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
 
   // Sort tasks: incomplete first, then completed
   const sortedTasks = [...tasks].sort((a, b) => {
-    if (a.isCompleted === b.isCompleted) return 0;
-    return a.isCompleted ? 1 : -1; // incomplete tasks (false) come first
+    if (a.completed === b.completed) return 0;
+    return a.completed ? 1 : -1; // incomplete tasks (false) come first
   });
 
   return (
@@ -301,10 +301,10 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                           className={`flex items-start gap-2 p-3 rounded-md border transition-colors ${
                             selectedTaskId === task.id
                               ? "bg-primary-60 text-primary border-primary"
-                              : task.isCompleted
+                              : task.completed
                               ? "bg-muted/50 border-muted"
                               : "bg-background border-input hover:bg-accent"
-                          } ${task.isCompleted ? "opacity-60" : ""}`}
+                          } ${task.completed ? "opacity-60" : ""}`}
                         >
                           {/* Checkbox */}
                           <div
@@ -315,7 +315,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                             className="cursor-pointer mt-1"
                           >
                             <Checkbox
-                              checked={task.isCompleted}
+                              checked={task.completed}
                               className="pointer-events-none"
                             />
                           </div>
@@ -324,7 +324,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                           <div
                             className="flex-1 cursor-pointer"
                             onClick={() => {
-                              if (!task.isCompleted) {
+                              if (!task.completed) {
                                 handleTaskSelection(task.id);
                               }
                             }}
@@ -333,7 +333,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                               <div className="flex items-center justify-between w-full">
                                 <span
                                   className={`font-medium text-base ${
-                                    task.isCompleted ? "line-through" : ""
+                                    task.completed ? "line-through" : ""
                                   }`}
                                 >
                                   {task.name}

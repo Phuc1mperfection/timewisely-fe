@@ -1,5 +1,20 @@
 ﻿import apiClient from "./apiClient";
-import type {Task, TaskFormData } from "@/interfaces";
+import type { Task, TaskFormData } from "@/interfaces";
+
+// Backend response interface
+interface BackendTask {
+  id?: string | number;
+  name?: string;
+  description?: string;
+  type?: string;
+  estimatedPomodoros?: number;
+  completedPomodoros?: number;
+  priority?: string;
+  category?: string;
+  dueDate?: string | Date;
+  isCompleted?: boolean;
+  createdAt?: string | Date;
+}
 
 // Backend type mapping helpers
 const mapTypeToBackend = (type: string): string => {
@@ -19,18 +34,20 @@ const mapCategoryToBackend = (category: string): string => {
   return category.toUpperCase();
 };
 
-const mapTaskFromBackend = (task: any): Task => ({
+const mapTaskFromBackend = (task: BackendTask): Task => ({
   id: task.id?.toString() || "",
   name: task.name || "",
   description: task.description || "",
-  type: task.type?.toLowerCase().replace("_only", "") || "todo",
+  type: (task.type?.toLowerCase().replace("_only", "") ||
+    "todo") as Task["type"],
   estimatedPomodoros: task.estimatedPomodoros || 0,
   completedPomodoros: task.completedPomodoros || 0,
-  priority: task.priority?.toLowerCase() || "medium",
-  category: task.category?.toLowerCase() || "other",
+  priority: (task.priority?.toLowerCase() || "medium") as Task["priority"],
+  category: (task.category?.toLowerCase() || "other") as Task["category"],
   dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
   completed: task.isCompleted || false,
   createdAt: task.createdAt ? new Date(task.createdAt) : new Date(),
+  order: 0,
 });
 
 // Get all tasks for current user
@@ -64,7 +81,7 @@ export const updateTask = async (
   id: string,
   taskData: Partial<TaskFormData>
 ): Promise<Task> => {
-  const payload: any = {};
+  const payload: Record<string, unknown> = {};
 
   if (taskData.name !== undefined) payload.name = taskData.name;
   if (taskData.description !== undefined)
@@ -86,17 +103,11 @@ export const updateTask = async (
 
 // Toggle task completion status
 export const toggleTaskComplete = async (id: string): Promise<Task> => {
-  const response = await apiClient.patch(`/tasks/${id}/toggle-complete`);
+  const response = await apiClient.patch(`/tasks/${id}/toggle-completion`);
   return mapTaskFromBackend(response.data);
 };
 
 // Delete task
 export const deleteTask = async (id: string): Promise<void> => {
   await apiClient.delete(`/tasks/${id}`);
-};
-
-// Toggle favorite status
-export const toggleTaskFavorite = async (id: string): Promise<Task> => {
-  const response = await apiClient.patch(`/tasks/${id}/toggle-favorite`);
-  return mapTaskFromBackend(response.data);
 };

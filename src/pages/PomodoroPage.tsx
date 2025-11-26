@@ -15,7 +15,7 @@ import { PomodoroCounter } from "@/components/pomodoro/PomodoroCounter";
 
 const PomodoroPage: React.FC = () => {
   const { success, error, info } = useToast();
-  const [selectedTaskId, setSelectedTaskId] = useState<number | undefined>(
+  const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
     undefined
   );
   const [customTask, setCustomTask] = useState<string>("");
@@ -134,7 +134,7 @@ const PomodoroPage: React.FC = () => {
 
       // Sync task selection
       if (session.taskId) {
-        setSelectedTaskId(session.taskId);
+        setSelectedTaskId(session.taskId.toString());
         setCustomTask(""); // Clear custom task if session has a taskId
       } else if (session.taskName) {
         setCustomTask(session.taskName);
@@ -250,7 +250,7 @@ const PomodoroPage: React.FC = () => {
       if (newTask) {
         success(`Task "${newTask.name}" created successfully! 🎉`);
         // Auto-select the new task
-        setSelectedTaskId(parseInt(newTask.id));
+        setSelectedTaskId(newTask.id);
         setCustomTask("");
         // Reset form
         setNewTaskName("");
@@ -273,18 +273,18 @@ const PomodoroPage: React.FC = () => {
   };
 
   // Handle toggling task completion
-  const handleToggleTaskCompletion = async (taskId: number) => {
-    await toggleCompletion(taskId.toString());
+  const handleToggleTaskCompletion = async (taskId: string) => {
+    await toggleCompletion(taskId);
   };
 
   // Handle editing task
   const handleEditTask = async (
-    taskId: number,
+    taskId: string,
     name: string,
     estimatedPomodoros: number
   ) => {
     try {
-      await modifyTask(taskId.toString(), {
+      await modifyTask(taskId, {
         name,
         estimatedPomodoros,
       });
@@ -295,7 +295,7 @@ const PomodoroPage: React.FC = () => {
       console.error("Failed to edit task:", err);
     }
   };
-  const handleDeleteTask = async (taskId: number) => {
+  const handleDeleteTask = async (taskId: string) => {
     try {
       // If deleting the currently selected task, clear selection
       if (selectedTaskId === taskId) {
@@ -308,7 +308,7 @@ const PomodoroPage: React.FC = () => {
         info("Session cancelled because the task was deleted");
       }
 
-      await removeTask(taskId.toString());
+      await removeTask(taskId);
       // Toast already handled in removeTask hook
     } catch (error) {
       // Error handled in removeTask hook

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PomodoroTimer } from "./PomodoroTimer";
 import type { PomodoroSession } from "@/services/pomodoroServices";
-import type { Task } from "@/services/taskServices";
+import type { Task } from "@/interfaces";
 
 interface PomodoroTimerCardProps {
   session: PomodoroSession | null;
@@ -19,7 +19,7 @@ interface PomodoroTimerCardProps {
   displayTotalTime: number;
   isRunning: boolean;
   isLoading: boolean;
-  selectedTaskId: number | undefined;
+  selectedTaskId: string | undefined;
   customTask: string;
   tasks: Task[];
   onStart: () => void;

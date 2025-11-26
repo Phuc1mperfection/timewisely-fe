@@ -15,15 +15,13 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSearchParams } from "react-router-dom";
 import type { Task } from "@/interfaces";
 import { TaskForm } from "@/components/tasks/TaskForm";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
 import { TaskItem } from "@/components/tasks/TaskItem";
 import { useTasks } from "@/hooks/useTasks";
 
-// TaskListView component for reuse across tabs
+// TaskListView component for reuse
 interface TaskListViewProps {
   tasks: Task[];
   activeTasks: Task[];
@@ -80,10 +78,10 @@ function TaskListView({
           <TaskListSkeleton count={3} />
         ) : activeTasks.length === 0 && !isAddingTask ? (
           <div className="p-8 text-center">
-            <div className="text-4xl mb-4">🎯</div>
-            <p className="text-muted-foreground">No tasks yet</p>
+            <div className="text-4xl mb-4">📅</div>
+            <p className="text-muted-foreground">No upcoming tasks</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Add your first task below
+              Plan ahead and add your future tasks
             </p>
           </div>
         ) : (
@@ -194,7 +192,7 @@ function TaskListView({
   );
 }
 
-export function TaskPage() {
+export function UpcomingTasksPage() {
   const {
     tasks,
     loading,
@@ -203,13 +201,8 @@ export function TaskPage() {
     toggleComplete,
     deleteTask: deleteTaskAPI,
   } = useTasks();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-
-  // Get active view from URL query param, default to "today"
-  const activeView =
-    (searchParams.get("view") as "today" | "upcoming" | "completed") || "today";
 
   // Drag and drop sensors
   const sensors = useSensors(
@@ -219,34 +212,19 @@ export function TaskPage() {
     })
   );
 
-  // Filter tasks based on active view
+  // Filter tasks for upcoming only
   const filteredTasks = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
+    const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
 
-    switch (activeView) {
-      case "today":
-        return tasks.filter((task) => {
-          if (task.completed) return false;
-          const dueDate = new Date(task.dueDate);
-          dueDate.setHours(0, 0, 0, 0);
-          return dueDate.getTime() === today.getTime();
-        });
-      case "upcoming":
-        return tasks.filter((task) => {
-          if (task.completed) return false;
-          const dueDate = new Date(task.dueDate);
-          dueDate.setHours(0, 0, 0, 0);
-          return dueDate.getTime() >= tomorrow.getTime();
-        });
-      case "completed":
-        return tasks.filter((task) => task.completed);
-      default:
-        return [];
-    }
-  }, [tasks, activeView]);
+    return tasks.filter((task) => {
+      if (task.completed) return false;
+      const dueDate = new Date(task.dueDate);
+      dueDate.setHours(0, 0, 0, 0);
+      return dueDate.getTime() >= tomorrow.getTime();
+    });
+  }, [tasks]);
 
   const activeTasks = filteredTasks.filter((t) => !t.completed);
   const completedTasks = filteredTasks.filter((t) => t.completed);
@@ -305,10 +283,6 @@ export function TaskPage() {
     setEditingTaskId(null);
   };
 
-  const handleViewChange = (value: string) => {
-    setSearchParams({ view: value as "today" | "upcoming" | "completed" });
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -316,92 +290,34 @@ export function TaskPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 mb-2">
             <ListTodo className="w-8 h-8 text-primary" />
-            Tasks
+            Upcoming Tasks
           </h1>
           <p className="text-muted-foreground">
-            Stay organized and focused with your tasks
+            Plan and organize your future tasks
           </p>
         </div>
 
-        {/* View Tabs */}
-        <div className="mb-6">
-          <Tabs value={activeView} onValueChange={handleViewChange}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="today">Today</TabsTrigger>
-              <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-              <TabsTrigger value="completed">Completed</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="today" className="mt-6">
-              <TaskListView
-                tasks={filteredTasks}
-                activeTasks={activeTasks}
-                completedTasks={completedTasks}
-                loading={loading}
-                isAddingTask={isAddingTask}
-                setIsAddingTask={setIsAddingTask}
-                editingTaskId={editingTaskId}
-                setEditingTaskId={setEditingTaskId}
-                onCreateTask={handleCreateTask}
-                onToggleComplete={handleToggleComplete}
-                onEdit={handleEditTask}
-                onDelete={handleDeleteTask}
-                onCancelEdit={handleCancelEdit}
-                onUpdateTask={async (id, taskData) => {
-                  await updateTaskAPI(id, taskData);
-                }}
-                sensors={sensors}
-                handleDragEnd={handleDragEnd}
-              />
-            </TabsContent>
-
-            <TabsContent value="upcoming" className="mt-6">
-              <TaskListView
-                tasks={filteredTasks}
-                activeTasks={activeTasks}
-                completedTasks={completedTasks}
-                loading={loading}
-                isAddingTask={isAddingTask}
-                setIsAddingTask={setIsAddingTask}
-                editingTaskId={editingTaskId}
-                setEditingTaskId={setEditingTaskId}
-                onCreateTask={handleCreateTask}
-                onToggleComplete={handleToggleComplete}
-                onEdit={handleEditTask}
-                onDelete={handleDeleteTask}
-                onCancelEdit={handleCancelEdit}
-                onUpdateTask={async (id, taskData) => {
-                  await updateTaskAPI(id, taskData);
-                }}
-                sensors={sensors}
-                handleDragEnd={handleDragEnd}
-              />
-            </TabsContent>
-
-            <TabsContent value="completed" className="mt-6">
-              <TaskListView
-                tasks={filteredTasks}
-                activeTasks={activeTasks}
-                completedTasks={completedTasks}
-                loading={loading}
-                isAddingTask={isAddingTask}
-                setIsAddingTask={setIsAddingTask}
-                editingTaskId={editingTaskId}
-                setEditingTaskId={setEditingTaskId}
-                onCreateTask={handleCreateTask}
-                onToggleComplete={handleToggleComplete}
-                onEdit={handleEditTask}
-                onDelete={handleDeleteTask}
-                onCancelEdit={handleCancelEdit}
-                onUpdateTask={async (id, taskData) => {
-                  await updateTaskAPI(id, taskData);
-                }}
-                sensors={sensors}
-                handleDragEnd={handleDragEnd}
-              />
-            </TabsContent>
-          </Tabs>
-        </div>
+        {/* Task List */}
+        <TaskListView
+          tasks={filteredTasks}
+          activeTasks={activeTasks}
+          completedTasks={completedTasks}
+          loading={loading}
+          isAddingTask={isAddingTask}
+          setIsAddingTask={setIsAddingTask}
+          editingTaskId={editingTaskId}
+          setEditingTaskId={setEditingTaskId}
+          onCreateTask={handleCreateTask}
+          onToggleComplete={handleToggleComplete}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          onCancelEdit={handleCancelEdit}
+          onUpdateTask={async (id, taskData) => {
+            await updateTaskAPI(id, taskData);
+          }}
+          sensors={sensors}
+          handleDragEnd={handleDragEnd}
+        />
       </div>
     </div>
   );

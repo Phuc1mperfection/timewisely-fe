@@ -23,6 +23,7 @@ export interface Task {
   dueDate: Date;
   completed: boolean;
   createdAt: Date;
+  order: number;
 }
 
 export interface TaskFilters {

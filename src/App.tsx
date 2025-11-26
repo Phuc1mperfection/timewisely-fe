@@ -16,7 +16,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import PomodoroPage from "./pages/PomodoroPage";
-import { TaskPage } from "./pages/TaskPage";
+import { TodayTasksPage } from "./pages/tasks/TodayTasksPage";
+import { UpcomingTasksPage } from "./pages/tasks/UpcomingTasksPage";
+import { CompletedTasksPage } from "./pages/tasks/CompletedTasksPage";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +60,16 @@ function App() {
                 <Route index element={<DashboardContent />} />
                 <Route path="overview" element={<OverviewPage />} />
                 <Route path="calendar" element={<CalendarPage />} />
-                <Route path="tasks" element={<TaskPage />} />
+                <Route
+                  path="tasks"
+                  element={<Navigate to="/dashboard/tasks/today" replace />}
+                />
+                <Route path="tasks/today" element={<TodayTasksPage />} />
+                <Route path="tasks/upcoming" element={<UpcomingTasksPage />} />
+                <Route
+                  path="tasks/completed"
+                  element={<CompletedTasksPage />}
+                />
                 <Route path="pomodoro" element={<PomodoroPage />} />
                 <Route path="goals" element={<div>Goals Page</div>} />
                 <Route path="profile" element={<Profile />} />

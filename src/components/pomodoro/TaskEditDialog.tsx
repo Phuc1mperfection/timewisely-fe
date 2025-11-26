@@ -10,14 +10,14 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import type { Task } from "@/services/taskServices";
+import type { Task } from "@/interfaces";
 import type { UserSettings } from "@/services/pomodoroServices";
 
 interface TaskEditDialogProps {
   task: Task | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (taskId: number, name: string, estimatedPomodoros: number) => void;
+  onSave: (taskId: string, name: string, estimatedPomodoros: number) => void;
   settings: UserSettings | null;
 }
 
