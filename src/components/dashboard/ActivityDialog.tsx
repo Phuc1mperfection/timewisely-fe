@@ -144,6 +144,7 @@ export function ActivityDialog({
   const [goalTag, setGoalTag] = useState("");
   const [completed, setCompleted] = useState(false);
   const [customColorLabel, setCustomColorLabel] = useState("");
+  const [showMore, setShowMore] = useState(false);
   const descId = useId();
 
   const colorOptions = useMemo(
@@ -172,7 +173,6 @@ export function ActivityDialog({
     } else if (timeSlot) {
       setTitle("");
       setDescription("");
-      setColor("#8b5cf6");
       setAllDay(false);
       setStart(timeSlot.start);
       setEnd(timeSlot.end);
@@ -182,7 +182,6 @@ export function ActivityDialog({
     } else {
       setTitle("");
       setDescription("");
-      setColor("#8b5cf6");
       setAllDay(false);
       setStart(null);
       setEnd(null);
@@ -191,6 +190,7 @@ export function ActivityDialog({
       setCompleted(false);
     }
     setCustomColorLabel("");
+    setShowMore(false);
   }, [event, timeSlot, isOpen]);
 
   // Memoized handlers
@@ -239,13 +239,13 @@ export function ActivityDialog({
     });
     setTitle("");
     setDescription("");
-    setColor("#8b5cf6");
     setAllDay(false);
     setStart(null);
     setEnd(null);
     setLocation("");
     setGoalTag("");
     setCompleted(false);
+    setShowMore(false);
   };
 
   const handleClose = () => {
@@ -258,6 +258,7 @@ export function ActivityDialog({
     setLocation("");
     setGoalTag("");
     setCompleted(false);
+    setShowMore(false);
     onClose();
   };
 
@@ -299,6 +300,7 @@ export function ActivityDialog({
               />
               <Label htmlFor="allDay">All day</Label>
             </div>
+            <div className="flex items-center space-x-2"></div>
           </div>
           {/* Thời gian bắt đầu/kết thúc */}
           <div className="flex items-center gap-2 ">
@@ -325,66 +327,86 @@ export function ActivityDialog({
             )}
           </div>
 
-          <div className="space-y-2 gap-2 flex justify-between items-center  ">
-            <SquareMenu></SquareMenu>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add description"
-              rows={3}
-              className=" focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
-            />
-          </div>
+          {!showMore && (
+            <button
+              onClick={() => setShowMore(true)}
+              className="text-sm text-[var(--wisely-gold)] hover:underline"
+            >
+              Show more options
+            </button>
+          )}
 
-          <div className="space-y-2">
-            <Label>Color</Label>
-            <ColorPicker
-              color={color}
-              setColor={handleSetColor}
-              customColorLabel={customColorLabel}
-              setCustomColorLabel={handleSetCustomColorLabel}
-              colorOptions={colorOptions}
-            />
-            {/* Show input for custom color label if color is not in preset */}
-            {!colorOptions.some((opt) => opt.value === color) && (
-              <div className="pt-1 flex items-center space-x-2">
-                <Input
-                  type="text"
-                  value={customColorLabel}
-                  onChange={(e) => setCustomColorLabel(e.target.value)}
-                  placeholder="Enter color name (legend)"
-                  className="w-48 border-gray-300 text-xs py-1 px-2"
-                  maxLength={20}
+          {showMore && (
+            <>
+              <div className="space-y-2 gap-2 flex justify-between items-center  ">
+                <SquareMenu></SquareMenu>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Add description"
+                  rows={3}
+                  className=" focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
                 />
-                <span className="text-xs text-gray-400">(Optional)</span>
               </div>
-            )}
-            <div className="text-xs text-gray-400 pt-1">
-              You can pick any color or use a preset.
-            </div>
-          </div>
 
-          <div className="space-y-2 gap-2 flex justify-between ">
-            <MapPin>Location</MapPin>
-            <Input
-              id="location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Enter location"
-              className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
-            />
-          </div>
-          <div className="space-y-2 gap-2 flex justify-between">
-            <Goal>Goal Tag</Goal>
-            <Input
-              id="goalTag"
-              value={goalTag}
-              onChange={(e) => setGoalTag(e.target.value)}
-              placeholder="Enter goal tag"
-              className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] border-0"
-            />
-          </div>
+              <div className="space-y-2">
+                <Label>Color</Label>
+                <ColorPicker
+                  color={color}
+                  setColor={handleSetColor}
+                  customColorLabel={customColorLabel}
+                  setCustomColorLabel={handleSetCustomColorLabel}
+                  colorOptions={colorOptions}
+                />
+                {/* Show input for custom color label if color is not in preset */}
+                {!colorOptions.some((opt) => opt.value === color) && (
+                  <div className="pt-1 flex items-center space-x-2">
+                    <Input
+                      type="text"
+                      value={customColorLabel}
+                      onChange={(e) => setCustomColorLabel(e.target.value)}
+                      placeholder="Enter color name (legend)"
+                      className="w-48 border-gray-300 text-xs py-1 px-2"
+                      maxLength={20}
+                    />
+                    <span className="text-xs text-gray-400">(Optional)</span>
+                  </div>
+                )}
+                <div className="text-xs text-gray-400 pt-1">
+                  You can pick any color or use a preset.
+                </div>
+              </div>
+
+              <div className="space-y-2 gap-2 flex justify-between ">
+                <MapPin>Location</MapPin>
+                <Input
+                  id="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Enter location"
+                  className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
+                />
+              </div>
+              <div className="space-y-2 gap-2 flex justify-between">
+                <Goal>Goal Tag</Goal>
+                <Input
+                  id="goalTag"
+                  value={goalTag}
+                  onChange={(e) => setGoalTag(e.target.value)}
+                  placeholder="Enter goal tag"
+                  className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] border-0"
+                />
+              </div>
+
+              <button
+                onClick={() => setShowMore(false)}
+                className="text-sm text-[var(--wisely-gold)] hover:underline"
+              >
+                Show less
+              </button>
+            </>
+          )}
           <div className="flex justify-between pt-4">
             {event && (
               <Button

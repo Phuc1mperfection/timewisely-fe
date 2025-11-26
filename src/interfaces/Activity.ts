@@ -10,4 +10,8 @@ export interface Activity {
   goalTag?: string;
   completed?: boolean;
   loading?: boolean;
+  placeType?: string;
+  latitude?: number;
+  longitude?: number;
+  type?: "activity" | "task";
 }

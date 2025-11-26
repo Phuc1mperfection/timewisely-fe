@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/useToast";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import { useActivities } from "@/hooks/useActivity";
+import { useTasks } from "@/hooks/useTasks";
 import { NewActivityButton } from "@/components/activities/NewActivityButton";
 import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import { ActivityList } from "@/components/activities/ActivityLists";
@@ -137,6 +138,8 @@ const CalendarPage: React.FC = () => {
     setSuccess,
   } = useActivities();
 
+  const { tasks, toggleComplete: toggleTaskComplete } = useTasks();
+
   const [view, setView] = useState<View>("week");
   const [date, setDate] = useState(new Date());
   const [search, setSearch] = useState("");
@@ -150,16 +153,36 @@ const CalendarPage: React.FC = () => {
     []
   );
 
+  // Merge activities and tasks into one list
+  const mergedActivities = useMemo(() => {
+    const activityItems: Activity[] = activities.map((a) => ({
+      ...a,
+      type: "activity" as const,
+    }));
+    const taskItems: Activity[] = tasks.map((t) => ({
+      id: t.id,
+      title: t.name,
+      startTime: t.dueDate,
+      endTime: t.dueDate,
+      description: t.description,
+      color: "#3b82f6", // Default color for tasks
+      allDay: true,
+      completed: t.completed,
+      type: "task" as const,
+    }));
+    return [...activityItems, ...taskItems];
+  }, [activities, tasks]);
+
   // Filtered activities - memoize to avoid recalculation on every render
   const filteredActivities = useMemo(() => {
-    return activities.filter((a: Activity) => {
+    return mergedActivities.filter((a: Activity) => {
       if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
         return false;
       if (filterColor && a.color !== filterColor) return false;
       if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
       return true;
     });
-  }, [activities, search, filterColor, filterAllDay]);
+  }, [mergedActivities, search, filterColor, filterAllDay]);
 
   if (loading) {
     return <LoadingSpinner fullScreen />;
@@ -247,6 +270,13 @@ const CalendarPage: React.FC = () => {
                   onNavigate={setDate}
                   onEventDelete={(activityId) => {
                     handleDeleteActivity(activityId);
+                  }}
+                  onToggleCompleted={(activity) => {
+                    if (activity.type === "task") {
+                      toggleTaskComplete(activity.id);
+                    } else {
+                      toggleActivityComplete(activity.id);
+                    }
                   }}
                 />
               </CardContent>

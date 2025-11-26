@@ -44,7 +44,8 @@ interface ScheduleCalendarProps {
   onView?: (view: View) => void;
   date?: Date;
   onNavigate?: (date: Date) => void;
-onEventDelete?: (activityId: string) => void;
+  onEventDelete?: (activityId: string) => void;
+  onToggleCompleted?: (activity: Activity) => void;
   className?: string;
 }
 
@@ -60,6 +61,7 @@ export function ScheduleCalendar({
   date,
   onNavigate,
   onEventDelete,
+  onToggleCompleted,
   className = "",
 }: ScheduleCalendarProps) {
   // Memoize custom views
@@ -87,15 +89,18 @@ export function ScheduleCalendar({
       return (
         <ActivityPopover
           onOpenEditDialog={() => onSelectEvent?.(activity)}
-        onDelete={() => {
-  onEventDelete?.(activity.id);
-}}
+          onDelete={() => {
+            onEventDelete?.(activity.id);
+          }}
         >
-          <CustomActivityCard activity={legacyEvent} />
+          <CustomActivityCard
+            activity={legacyEvent}
+            onToggleCompleted={onToggleCompleted}
+          />
         </ActivityPopover>
       );
     },
-    [onSelectEvent, onEventDelete]
+    [onSelectEvent, onEventDelete, onToggleCompleted]
   );
 
   // Memoize toolbar component
@@ -136,6 +141,7 @@ export function ScheduleCalendar({
       showMultiDayTimes
       step={15}
       timeslots={4}
+      allDayMaxRows={2}
       messages={{
         month: "Month",
         week: "Week",
