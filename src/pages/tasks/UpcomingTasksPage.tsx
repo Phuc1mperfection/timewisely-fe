@@ -64,19 +64,30 @@ export function UpcomingTasksPage() {
     await updateTaskAPI(taskId, updates);
   };
 
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    const sectionId = isSameDay(date, startOfToday())
+      ? "today-section"
+      : `day-section-${format(date, "yyyy-MM-dd")}`;
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offsetTop = element.offsetTop - 180; // Offset for header + date strip
+      window.scrollTo({ top: offsetTop, behavior: "smooth" });
+    }
+  };
+
   const goToToday = () => {
-    setSelectedDate(startOfToday());
-    document
-      .getElementById("today-section")
-      ?.scrollIntoView({ behavior: "smooth" });
+    handleDateSelect(startOfToday());
   };
 
   const goToPrevious = () => {
-    setSelectedDate(addDays(selectedDate, -1));
+    const prevDate = addDays(selectedDate, -1);
+    handleDateSelect(prevDate);
   };
 
   const goToNext = () => {
-    setSelectedDate(addDays(selectedDate, 1));
+    const nextDate = addDays(selectedDate, 1);
+    handleDateSelect(nextDate);
   };
 
   if (loading) {
@@ -100,7 +111,7 @@ export function UpcomingTasksPage() {
         <DateStrip
           days={days}
           selectedDate={selectedDate}
-          onDateSelect={setSelectedDate}
+          onDateSelect={handleDateSelect}
         />
 
         <div className="px-6 pb-12">

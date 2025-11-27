@@ -2,7 +2,7 @@ import type { Task, TaskFormData } from "@/interfaces/Task";
 import { DayHeader } from "./DayHeader";
 import { TaskItem } from "./TaskItem";
 import { AddTaskButton } from "./AddTaskButton";
-import { isToday } from "date-fns";
+import { isToday, format } from "date-fns";
 
 interface DaySectionProps {
   date: Date;
@@ -22,10 +22,11 @@ export function DaySection({
   onTaskEdit,
 }: DaySectionProps) {
   const isTodaySection = isToday(date);
+  const sectionId = `day-section-${format(date, "yyyy-MM-dd")}`;
 
   return (
     <div
-      id={isTodaySection ? "today-section" : undefined}
+      id={isTodaySection ? "today-section" : sectionId}
       className="mt-8 first:mt-6"
     >
       <DayHeader date={date} />
