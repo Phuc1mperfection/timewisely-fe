@@ -12,7 +12,9 @@ export function useTasks() {
     try {
       setLoading(true);
       const data = await taskServices.getTasks();
-      setTasks(data);
+      // Sort tasks by order
+      const sortedData = data.sort((a, b) => (a.order || 0) - (b.order || 0));
+      setTasks(sortedData);
     } catch (err) {
       console.error("Failed to fetch tasks:", err);
       // Simple error handling without toast to avoid dependency issues
@@ -24,7 +26,11 @@ export function useTasks() {
   const createTask = async (taskData: TaskFormData) => {
     try {
       const newTask = await taskServices.createTask(taskData);
-      setTasks((prev) => [newTask, ...prev]);
+      setTasks((prev) => {
+        const updated = [newTask, ...prev];
+        // Sort by order after adding
+        return updated.sort((a, b) => (a.order || 0) - (b.order || 0));
+      });
       success("Task created successfully!");
       return newTask;
     } catch (err) {
@@ -36,9 +42,13 @@ export function useTasks() {
   const toggleComplete = async (id: string) => {
     try {
       const updatedTask = await taskServices.toggleTaskComplete(id);
-      setTasks((prev) =>
-        prev.map((task) => (task.id === id ? updatedTask : task))
-      );
+      setTasks((prev) => {
+        const updated = prev.map((task) =>
+          task.id === id ? updatedTask : task
+        );
+        // Sort by order after updating
+        return updated.sort((a, b) => (a.order || 0) - (b.order || 0));
+      });
       success(
         updatedTask.completed
           ? "Task marked as complete!"
@@ -52,9 +62,13 @@ export function useTasks() {
   const updateTask = async (id: string, taskData: Partial<TaskFormData>) => {
     try {
       const updatedTask = await taskServices.updateTask(id, taskData);
-      setTasks((prev) =>
-        prev.map((task) => (task.id === id ? updatedTask : task))
-      );
+      setTasks((prev) => {
+        const updated = prev.map((task) =>
+          task.id === id ? updatedTask : task
+        );
+        // Sort by order after updating
+        return updated.sort((a, b) => (a.order || 0) - (b.order || 0));
+      });
       success("Task updated successfully!");
       return updatedTask;
     } catch (err) {
@@ -78,6 +92,10 @@ export function useTasks() {
     }
   };
 
+  const updateTasksOrder = useCallback((reorderedTasks: Task[]) => {
+    setTasks(reorderedTasks);
+  }, []);
+
   return {
     tasks,
     loading,
@@ -86,5 +104,6 @@ export function useTasks() {
     updateTask,
     toggleComplete,
     deleteTask,
+    updateTasksOrder,
   };
 }

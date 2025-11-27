@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { Task } from "@/interfaces";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,6 +82,18 @@ export function TaskForm({
     initialValues?.estimatedPomodoros || 1
   );
 
+  // Create default date once to avoid re-creating on every render
+  const defaultDueDate = useMemo(() => {
+    if (initialValues?.dueDate) {
+      return initialValues.dueDate;
+    }
+    // Create date at start of next day to avoid timezone issues
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(9, 0, 0, 0); // Set to 9 AM tomorrow
+    return tomorrow;
+  }, [initialValues?.dueDate]);
+
   const form = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
@@ -91,7 +103,7 @@ export function TaskForm({
       estimatedPomodoros: initialValues?.estimatedPomodoros || 1,
       priority: initialValues?.priority || "medium",
       category: initialValues?.category || "work",
-      dueDate: initialValues?.dueDate || new Date(),
+      dueDate: defaultDueDate,
     },
   });
 
@@ -316,7 +328,14 @@ export function TaskForm({
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      if (date) {
+                        // Ensure we create a clean date without time components that might cause issues
+                        const cleanDate = new Date(date);
+                        cleanDate.setHours(9, 0, 0, 0); // Set to 9 AM to avoid timezone issues
+                        field.onChange(cleanDate);
+                      }
+                    }}
                     disabled={(date) =>
                       date < new Date(new Date().setHours(0, 0, 0, 0))
                     }

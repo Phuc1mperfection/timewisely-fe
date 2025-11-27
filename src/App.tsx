@@ -19,6 +19,7 @@ import PomodoroPage from "./pages/PomodoroPage";
 import { TodayTasksPage } from "./pages/tasks/TodayTasksPage";
 import { UpcomingTasksPage } from "./pages/tasks/UpcomingTasksPage";
 import { CompletedTasksPage } from "./pages/tasks/CompletedTasksPage";
+import { InboxTasksPage } from "./pages/tasks/InboxTasksPage";
 
 const queryClient = new QueryClient();
 
@@ -62,8 +63,9 @@ function App() {
                 <Route path="calendar" element={<CalendarPage />} />
                 <Route
                   path="tasks"
-                  element={<Navigate to="/dashboard/tasks/today" replace />}
+                  element={<Navigate to="/dashboard/tasks/inbox" replace />}
                 />
+                <Route path="tasks/inbox" element={<InboxTasksPage />} />
                 <Route path="tasks/today" element={<TodayTasksPage />} />
                 <Route path="tasks/upcoming" element={<UpcomingTasksPage />} />
                 <Route

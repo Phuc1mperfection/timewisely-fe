@@ -26,6 +26,7 @@ import {
   Clock,
   CheckCircle,
   ListTodo,
+  Inbox,
 } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -48,11 +49,11 @@ const mainMenuItems = [
 ];
 
 const taskMenuItems = [
+  { title: "Inbox", url: "/dashboard/tasks/inbox", icon: Inbox },
   { title: "Today", url: "/dashboard/tasks/today", icon: CalendarDays },
   { title: "Upcoming", url: "/dashboard/tasks/upcoming", icon: Clock },
   { title: "Completed", url: "/dashboard/tasks/completed", icon: CheckCircle },
 ];
-
 
 export function AppSidebar() {
   const { user, logout } = useAuth();
@@ -176,7 +177,6 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Account Group */}
-       
       </SidebarContent>
       <SidebarFooter>
         <DropdownMenu>

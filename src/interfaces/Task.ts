@@ -45,4 +45,5 @@ export interface TaskFormData {
   priority: Priority;
   category: Category;
   dueDate: Date;
+  order?: number;
 }

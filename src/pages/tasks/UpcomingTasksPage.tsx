@@ -3,23 +3,19 @@ import { Plus, ListTodo } from "lucide-react";
 import {
   DndContext,
   closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { Task } from "@/interfaces";
 import { TaskForm } from "@/components/tasks/TaskForm";
+import { TaskList } from "@/components/tasks/TaskList";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
-import { TaskItem } from "@/components/tasks/TaskItem";
 import { useTasks } from "@/hooks/useTasks";
+import { useTaskDragAndDrop } from "@/hooks/useTaskDragAndDrop";
 
 // TaskListView component for reuse
 interface TaskListViewProps {
@@ -70,6 +66,9 @@ function TaskListView({
   sensors,
   handleDragEnd,
 }: TaskListViewProps) {
+  // Don't sort here - useTasks already sorts by order
+  const sortedActiveTasks = activeTasks;
+
   return (
     <div className="hover:cursor-pointer">
       {/* Active Tasks */}
@@ -91,20 +90,17 @@ function TaskListView({
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={activeTasks.map((task) => task.id)}
+              items={sortedActiveTasks.map((task) => task.id)}
               strategy={verticalListSortingStrategy}
             >
-              <div>
-                {activeTasks.map((task) => (
-                  <TaskItem
-                    key={task.id}
-                    task={task}
-                    onToggleComplete={onToggleComplete}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                  />
-                ))}
-              </div>
+              <TaskList
+                tasks={sortedActiveTasks}
+                onToggleComplete={onToggleComplete}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                loading={false}
+                emptyMessage=""
+              />
             </SortableContext>
           </DndContext>
         )}
@@ -131,19 +127,18 @@ function TaskListView({
         </button>
       )}
 
-      {/* Completed Tasks Section - only show in completed view */}
+      {/* Completed Tasks Section */}
       {completedTasks.length > 0 && (
         <div className="mt-8">
-          <div className="bg-card rounded-lg border shadow-sm divide-y divide-border/50">
-            {completedTasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                onToggleComplete={onToggleComplete}
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
-            ))}
+          <div className="bg-card rounded-lg border shadow-sm">
+            <TaskList
+              tasks={completedTasks}
+              onToggleComplete={onToggleComplete}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              loading={false}
+              emptyMessage=""
+            />
           </div>
         </div>
       )}
@@ -200,17 +195,10 @@ export function UpcomingTasksPage() {
     updateTask: updateTaskAPI,
     toggleComplete,
     deleteTask: deleteTaskAPI,
+    updateTasksOrder,
   } = useTasks();
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-
-  // Drag and drop sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   // Filter tasks for upcoming only
   const filteredTasks = useMemo(() => {
@@ -229,31 +217,11 @@ export function UpcomingTasksPage() {
   const activeTasks = filteredTasks.filter((t) => !t.completed);
   const completedTasks = filteredTasks.filter((t) => t.completed);
 
-  // Handle drag end
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = activeTasks.findIndex((task) => task.id === active.id);
-      const newIndex = activeTasks.findIndex((task) => task.id === over.id);
-
-      // Reorder the tasks array
-      const reorderedTasks = arrayMove(activeTasks, oldIndex, newIndex);
-
-      // Update order values
-      const updatedTasks = reorderedTasks.map((task, index) => ({
-        ...task,
-        order: index,
-      }));
-
-      // Here you would typically call an API to update the order on the backend
-      // For now, we'll just update the local state
-      console.log(
-        "New order:",
-        updatedTasks.map((t) => ({ id: t.id, order: t.order }))
-      );
-    }
-  };
+  // Use custom DnD hook with callback to update local state
+  const { sensors, handleDragEnd } = useTaskDragAndDrop(
+    activeTasks,
+    updateTasksOrder
+  );
 
   const handleCreateTask = async (
     taskData: Omit<
