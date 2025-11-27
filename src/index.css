@@ -281,6 +281,16 @@
   }
 }
 
+/* Hide scrollbar for horizontal date strip */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Primary Button Styles */
 .btn-primary {
   background: linear-gradient(90deg,
