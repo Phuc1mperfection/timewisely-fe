@@ -14,7 +14,6 @@ import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import { useActivities } from "@/hooks/useActivity";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { useState } from "react";
-import type { Activity } from "@/interfaces/Activity";
 import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
 
 // Stat Card Component for better reusability
@@ -78,18 +77,6 @@ export function DashboardContent() {
     setSuccess,
   } = useActivities();
   const [date, setDate] = useState(new Date());
-  const [search] = useState("");
-  const [filterColor] = useState<string | null>(null);
-  const [filterAllDay] = useState<null | boolean>(null);
-
-  // Filtered activities
-  const filteredActivities = activities.filter((a: Activity) => {
-    if (search && !a.title.toLowerCase().includes(search.toLowerCase()))
-      return false;
-    if (filterColor && a.color !== filterColor) return false;
-    if (filterAllDay !== null && a.allDay !== filterAllDay) return false;
-    return true;
-  });
 
   // Helper: convert {startTime, endTime} to {start, end}
   const slotToLegacy = (slot: { startTime: Date; endTime: Date } | null) =>
@@ -192,7 +179,7 @@ export function DashboardContent() {
                 <div className="h-[600px]">
                   <ScheduleCalendar
                     className="modern-calendar"
-                    events={filteredActivities}
+                    events={activities}
                     onSelectSlot={(slot) =>
                       handleSelectSlot({
                         startTime: slot.start,
