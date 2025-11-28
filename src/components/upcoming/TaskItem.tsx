@@ -1,6 +1,6 @@
 import type { Task } from "@/interfaces/Task";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Inbox, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,18 +16,6 @@ interface TaskItemProps {
 export function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
-  const categoryColors: Record<string, string> = {
-    work: "text-blue-500",
-    personal: "text-purple-500",
-    study: "text-green-500",
-    fitness: "text-orange-500",
-    health: "text-pink-500",
-    shopping: "text-yellow-500",
-    learning: "text-indigo-500",
-    social: "text-cyan-500",
-    other: "text-gray-500",
-  };
 
   if (isEditing) {
     return (
@@ -96,12 +84,6 @@ export function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
             </Button>
           </>
         )}
-        <Inbox
-          className={cn(
-            "h-4 w-4",
-            categoryColors[task.category] || categoryColors.other
-          )}
-        />
       </div>
     </div>
   );

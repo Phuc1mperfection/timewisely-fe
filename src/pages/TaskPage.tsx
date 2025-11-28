@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { startOfToday } from "date-fns";
-import { ListTodo } from "lucide-react";
+import { ListTodo, Plus } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSearchParams } from "react-router-dom";
 import type { Task } from "@/interfaces";
 import type { TaskFormData } from "@/interfaces/Task";
-import { AddTaskButton } from "@/components/upcoming/AddTaskButton";
+import { TaskInlineAddForm } from "@/components/tasks/TaskInlineAddForm";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
 import { TaskItem } from "@/components/tasks/TaskItem";
 import { useTasks } from "@/hooks/useTasks";
@@ -31,6 +31,8 @@ interface TaskListViewProps {
   activeTasks: Task[];
   completedTasks: Task[];
   loading: boolean;
+  isAddingTask: boolean;
+  setIsAddingTask: (value: boolean) => void;
   onCreateTask: (taskData: Omit<TaskFormData, "order">) => void;
   onToggleComplete: (id: string) => void;
   onEdit: (id: string, updates: Partial<Task>) => void;
@@ -44,6 +46,8 @@ function TaskListView({
   activeTasks,
   completedTasks,
   loading,
+  isAddingTask,
+  setIsAddingTask,
   onCreateTask,
   onToggleComplete,
   onEdit,
@@ -91,8 +95,26 @@ function TaskListView({
         )}
       </div>
 
-      <div className="mt-2">
-        <AddTaskButton date={date} onAdd={onCreateTask} />
+      {/* Add Task Section */}
+      <div className="mt-4">
+        {isAddingTask ? (
+          <TaskInlineAddForm
+            defaultDate={date}
+            onSubmit={(taskData) => {
+              onCreateTask(taskData);
+              setIsAddingTask(false);
+            }}
+            onCancel={() => setIsAddingTask(false)}
+          />
+        ) : (
+          <button
+            onClick={() => setIsAddingTask(true)}
+            className="w-full p-3 text-left text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors flex items-center gap-2 group"
+          >
+            <Plus className="w-4 h-4 text-yellow-600 group-hover:text-yellow-700" />
+            <span className="text-sm">Add task</span>
+          </button>
+        )}
       </div>
 
       {/* Completed Tasks Section - only show in completed view */}
@@ -125,6 +147,7 @@ export function TaskPage() {
     deleteTask: deleteTaskAPI,
   } = useTasks();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isAddingTask, setIsAddingTask] = useState(false);
 
   // Get active view from URL query param, default to "today"
   const activeView =
@@ -247,6 +270,8 @@ export function TaskPage() {
                 activeTasks={activeTasks}
                 completedTasks={completedTasks}
                 loading={loading}
+                isAddingTask={isAddingTask}
+                setIsAddingTask={setIsAddingTask}
                 onCreateTask={handleCreateTask}
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleEditTask}
@@ -261,6 +286,8 @@ export function TaskPage() {
                 activeTasks={activeTasks}
                 completedTasks={completedTasks}
                 loading={loading}
+                isAddingTask={isAddingTask}
+                setIsAddingTask={setIsAddingTask}
                 onCreateTask={handleCreateTask}
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleEditTask}
@@ -275,6 +302,8 @@ export function TaskPage() {
                 activeTasks={activeTasks}
                 completedTasks={completedTasks}
                 loading={loading}
+                isAddingTask={isAddingTask}
+                setIsAddingTask={setIsAddingTask}
                 onCreateTask={handleCreateTask}
                 onToggleComplete={handleToggleComplete}
                 onEdit={handleEditTask}

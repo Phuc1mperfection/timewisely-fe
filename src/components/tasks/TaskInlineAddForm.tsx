@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { Star, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -15,49 +14,132 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { format, isBefore, startOfDay, startOfToday } from "date-fns";
+import {
+  format,
+  startOfToday,
+  startOfTomorrow,
+  nextMonday,
+  nextTuesday,
+  nextWednesday,
+  nextThursday,
+  nextFriday,
+  nextSaturday,
+  nextSunday,
+  isBefore,
+  startOfDay,
+} from "date-fns";
+import { CalendarIcon, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   createCleanDate,
   clampPomodoroEstimate,
   validatePomodoroEstimate,
 } from "@/lib/taskUtils";
-import type { Task, Priority, Category, TaskType } from "@/interfaces/Task";
+import type { Priority, Category, TaskType } from "@/interfaces";
 
-interface TaskEditFormProps {
-  task: Task;
-  onSave: (updates: Partial<Task>) => void;
+interface TaskInlineAddFormProps {
+  onSubmit: (taskData: {
+    name: string;
+    description: string;
+    type: TaskType;
+    estimatedPomodoros: number;
+    priority: Priority;
+    category: Category;
+    dueDate: Date;
+    isFavorite?: boolean;
+  }) => void;
   onCancel: () => void;
+  defaultDate?: Date;
 }
 
 const PRIORITY_COLORS = {
-  low: "text-blue-500",
-  medium: "text-yellow-500",
-  high: "text-orange-500",
   urgent: "text-red-500",
+  high: "text-orange-500",
+  medium: "text-yellow-500",
+  low: "text-blue-500",
 };
 
 const PRIORITY_LABELS = {
-  low: "P4",
-  medium: "P3",
-  high: "P2",
   urgent: "P1",
+  high: "P2",
+  medium: "P3",
+  low: "P4",
 };
 
-export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
-  const [name, setName] = useState(task.name);
-  const [description, setDescription] = useState(task.description || "");
-  const [type, setType] = useState<TaskType>(task.type);
-  const [estimatedPomodoros, setEstimatedPomodoros] = useState(
-    String(task.estimatedPomodoros || 1)
+// Smart date parsing
+function parseSmartDate(text: string): Date | null {
+  const lowerText = text.toLowerCase();
+  const today = startOfToday();
+
+  if (lowerText.includes("today")) return today;
+  if (lowerText.includes("tomorrow") || lowerText.includes("tmr"))
+    return startOfTomorrow();
+  if (lowerText.includes("monday") || lowerText.includes("mon"))
+    return nextMonday(today);
+  if (lowerText.includes("tuesday") || lowerText.includes("tue"))
+    return nextTuesday(today);
+  if (lowerText.includes("wednesday") || lowerText.includes("wed"))
+    return nextWednesday(today);
+  if (lowerText.includes("thursday") || lowerText.includes("thu"))
+    return nextThursday(today);
+  if (lowerText.includes("friday") || lowerText.includes("fri"))
+    return nextFriday(today);
+  if (lowerText.includes("saturday") || lowerText.includes("sat"))
+    return nextSaturday(today);
+  if (lowerText.includes("sunday") || lowerText.includes("sun"))
+    return nextSunday(today);
+
+  return null;
+}
+
+// Smart priority parsing
+function parseSmartPriority(text: string): Priority | null {
+  const lowerText = text.toLowerCase();
+
+  if (lowerText.includes("p1") || lowerText.includes("urgent")) return "urgent";
+  if (lowerText.includes("p2") || lowerText.includes("high")) return "high";
+  if (lowerText.includes("p3") || lowerText.includes("medium")) return "medium";
+  if (lowerText.includes("p4") || lowerText.includes("low")) return "low";
+
+  return null;
+}
+
+// Clean smart keywords from text
+function cleanSmartKeywords(text: string): string {
+  let cleaned = text;
+
+  // Remove date keywords
+  cleaned = cleaned.replace(
+    /\b(today|tomorrow|tmr|monday|mon|tuesday|tue|wednesday|wed|thursday|thu|friday|fri|saturday|sat|sunday|sun)\b/gi,
+    ""
   );
-  const [priority, setPriority] = useState<Priority>(task.priority);
-  const [category, setCategory] = useState<Category>(task.category);
-  const [dueDate, setDueDate] = useState<Date>(new Date(task.dueDate));
-  const [isFavorite, setIsFavorite] = useState(task.isFavorite || false);
+
+  // Remove priority keywords
+  cleaned = cleaned.replace(/\b(p1|p2|p3|p4|urgent|high|medium|low)\b/gi, "");
+
+  // Clean up extra spaces
+  cleaned = cleaned.replace(/\s+/g, " ").trim();
+
+  return cleaned;
+}
+
+export function TaskInlineAddForm({
+  onSubmit,
+  onCancel,
+  defaultDate,
+}: TaskInlineAddFormProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState<TaskType>("both");
+  const [estimatedPomodoros, setEstimatedPomodoros] = useState("1");
+  const [priority, setPriority] = useState<Priority>("medium");
+  const [category, setCategory] = useState<Category>("personal");
+  const [dueDate, setDueDate] = useState<Date>(createCleanDate(defaultDate));
+  const [isFavorite, setIsFavorite] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   // Auto-expand textarea
   useEffect(() => {
@@ -68,21 +150,59 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
     }
   }, [name]);
 
+  // Click outside to cancel
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        onCancel();
+      }
+    };
+
+    // Add a small delay to prevent immediate trigger
+    const timeout = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onCancel]);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setName(value);
+
+    // Smart parsing only on last word
+    const words = value.trim().split(/\s+/);
+    const lastWord = words[words.length - 1];
+
+    const smartDate = parseSmartDate(lastWord);
+    if (smartDate) setDueDate(smartDate);
+
+    const smartPriority = parseSmartPriority(lastWord);
+    if (smartPriority) setPriority(smartPriority);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSave();
+      handleSubmit();
     } else if (e.key === "Escape") {
       e.preventDefault();
       onCancel();
     }
   };
 
-  const handleSave = () => {
+  const handleSubmit = () => {
     if (!name.trim()) return;
 
-    onSave({
-      name: name.trim(),
+    // Clean smart keywords from name
+    const cleanName = cleanSmartKeywords(name);
+    if (!cleanName) return; // Don't submit if only keywords were entered
+
+    onSubmit({
+      name: cleanName,
       description: description.trim(),
       type,
       estimatedPomodoros: parseFloat(estimatedPomodoros) || 1,
@@ -91,15 +211,20 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
       dueDate,
       isFavorite,
     });
+
+    // Form will be unmounted after submit, no need to reset
   };
 
   return (
-    <div className="border rounded-lg p-3 bg-card shadow-sm space-y-3">
+    <div
+      ref={formRef}
+      className="border rounded-lg p-3 bg-card shadow-sm space-y-3 animate-in fade-in slide-in-from-top-2 duration-200"
+    >
       {/* Task Name Input */}
       <Textarea
         ref={textareaRef}
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={handleNameChange}
         onKeyDown={handleKeyDown}
         placeholder="Task name"
         className="min-h-[44px] max-h-[200px] resize-none border-0 focus-visible:ring-0 px-0 text-base leading-relaxed"
@@ -271,12 +396,12 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
           Cancel
         </Button>
         <Button
-          onClick={handleSave}
+          onClick={handleSubmit}
           disabled={!name.trim()}
           size="sm"
           className="h-8 text-xs bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
-          Save
+          Add task
         </Button>
       </div>
     </div>

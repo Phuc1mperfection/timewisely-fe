@@ -42,6 +42,7 @@ export function TaskItem({
     high: "bg-red-500",
     medium: "bg-yellow-500",
     low: "bg-green-500",
+    urgent: "bg-purple-500",
   };
 
   // Show inline edit form when editing

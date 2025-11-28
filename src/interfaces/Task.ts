@@ -1,5 +1,5 @@
 ﻿export type TaskType = "pomodoro" | "todo" | "both";
-export type Priority = "low" | "medium" | "high";
+export type Priority = "low" | "medium" | "high" | "urgent";
 export type Category =
   | "work"
   | "personal"
@@ -24,6 +24,7 @@ export interface Task {
   completed: boolean;
   createdAt: Date;
   order: number;
+  isFavorite?: boolean;
 }
 
 export interface TaskFilters {
@@ -46,4 +47,5 @@ export interface TaskFormData {
   category: Category;
   dueDate: Date;
   order?: number;
+  isFavorite?: boolean;
 }

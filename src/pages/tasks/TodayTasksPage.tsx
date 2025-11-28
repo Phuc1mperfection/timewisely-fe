@@ -10,8 +10,9 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { startOfToday } from "date-fns";
 import type { Task } from "@/interfaces";
-import { TaskForm } from "@/components/tasks/TaskAddForm";
+import { TaskInlineAddForm } from "@/components/tasks/TaskInlineAddForm";
 import { TaskList } from "@/components/tasks/TaskList";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
 import { useTasks } from "@/hooks/useTasks";
@@ -39,7 +40,6 @@ interface TaskListViewProps {
 }
 
 function TaskListView({
-  tasks,
   activeTasks,
   loading,
   isAddingTask,
@@ -91,26 +91,27 @@ function TaskListView({
         )}
       </div>
 
-      {/* Inline Add Task */}
-      {isAddingTask && (
-        <div className="border-t border-border/50 p-4">
-          <TaskForm
-            onSubmit={onCreateTask}
+      {/* Add Task Section */}
+      <div className="mt-4">
+        {isAddingTask ? (
+          <TaskInlineAddForm
+            defaultDate={startOfToday()}
+            onSubmit={(taskData) => {
+              onCreateTask({ ...taskData, order: 0 });
+              setIsAddingTask(false);
+            }}
             onCancel={() => setIsAddingTask(false)}
           />
-        </div>
-      )}
-
-      {/* Add Task Button */}
-      {!isAddingTask && (
-        <button
-          onClick={() => setIsAddingTask(true)}
-          className="w-full p-4 text-left text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors flex items-center gap-3 group"
-        >
-          <Plus className="w-5 h-5 group-hover:text-primary transition-colors" />
-          <span>Add a task</span>
-        </button>
-      )}
+        ) : (
+          <button
+            onClick={() => setIsAddingTask(true)}
+            className="w-full p-3 text-left text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors flex items-center gap-2 group"
+          >
+            <Plus className="w-4 h-4 text-red-600 group-hover:text-red-700" />
+            <span className="text-sm">Add task</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 }

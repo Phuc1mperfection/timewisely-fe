@@ -3,6 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  clampPomodoroEstimate,
+  validatePomodoroEstimate,
+} from "@/lib/taskUtils";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -47,31 +51,11 @@ export const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
   };
 
   const handleEstimateChange = (value: string) => {
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) {
-      setEditEstimate(0.1);
-      return;
-    }
-    // Only limit min/max while typing, no rounding
-    setEditEstimate(Math.min(Math.max(numValue, 0.1), 20));
+    setEditEstimate(clampPomodoroEstimate(value));
   };
 
   const handleEstimateBlur = (value: string) => {
-    const numValue = parseFloat(value);
-    let finalValue;
-
-    if (isNaN(numValue) || numValue < 0.1) {
-      finalValue = 0.1;
-    } else if (numValue < 1) {
-      // Micro-tasks: 0.1-0.9 (decimal)
-      finalValue = Math.round(numValue * 10) / 10;
-    } else {
-      // Real tasks: whole numbers only
-      finalValue = Math.round(numValue);
-    }
-
-    // Ensure max limit after rounding
-    setEditEstimate(Math.min(finalValue, 20));
+    setEditEstimate(validatePomodoroEstimate(value));
   };
 
   return (
