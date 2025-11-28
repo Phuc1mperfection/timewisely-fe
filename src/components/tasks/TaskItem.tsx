@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "@/interfaces";
+import { TaskEditForm } from "./TaskEditForm";
 
 interface TaskItemProps {
   task: Task;
   onToggleComplete: (id: string) => void;
-  onEdit: (task: Task) => void;
+  onEdit: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
 }
 
@@ -21,6 +22,7 @@ export function TaskItem({
   onDelete,
 }: TaskItemProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const {
     attributes,
@@ -41,6 +43,26 @@ export function TaskItem({
     medium: "bg-yellow-500",
     low: "bg-green-500",
   };
+
+  // Show inline edit form when editing
+  if (isEditing) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="p-4 border-b border-border/50"
+      >
+        <TaskEditForm
+          task={task}
+          onSave={(updates) => {
+            onEdit(task.id, updates);
+            setIsEditing(false);
+          }}
+          onCancel={() => setIsEditing(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -115,7 +137,7 @@ export function TaskItem({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onEdit(task)}
+            onClick={() => setIsEditing(true)}
             className="h-8 w-8 p-0"
           >
             <Edit2 className="w-4 h-4" />

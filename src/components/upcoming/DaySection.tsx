@@ -3,6 +3,7 @@ import { DayHeader } from "./DayHeader";
 import { TaskItem } from "./TaskItem";
 import { AddTaskButton } from "./AddTaskButton";
 import { isToday, format } from "date-fns";
+import { memo } from "react";
 
 interface DaySectionProps {
   date: Date;
@@ -13,7 +14,7 @@ interface DaySectionProps {
   onTaskEdit: (taskId: string, updates: Partial<Task>) => void;
 }
 
-export function DaySection({
+export const DaySection = memo(function DaySection({
   date,
   tasks,
   onTaskToggle,
@@ -46,4 +47,4 @@ export function DaySection({
       </div>
     </div>
   );
-}
+});

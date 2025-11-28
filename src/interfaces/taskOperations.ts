@@ -22,7 +22,7 @@ export interface TaskService extends TaskReader, TaskWriter, TaskStateManager {}
 // Component-specific interfaces
 export interface TaskListOperations {
   onToggleComplete: (id: string) => void;
-  onEdit: (task: Task) => void;
+  onEdit: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
 }
 

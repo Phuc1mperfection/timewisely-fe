@@ -4,6 +4,7 @@ import { Inbox, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { TaskEditForm } from "@/components/tasks/TaskEditForm";
 
 interface TaskItemProps {
   task: Task;
@@ -14,6 +15,7 @@ interface TaskItemProps {
 
 export function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const categoryColors: Record<string, string> = {
     work: "text-blue-500",
@@ -26,6 +28,19 @@ export function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
     social: "text-cyan-500",
     other: "text-gray-500",
   };
+
+  if (isEditing) {
+    return (
+      <TaskEditForm
+        task={task}
+        onSave={(updates) => {
+          onEdit(updates);
+          setIsEditing(false);
+        }}
+        onCancel={() => setIsEditing(false)}
+      />
+    );
+  }
 
   return (
     <div
@@ -66,7 +81,7 @@ export function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
               variant="ghost"
               size="icon"
               className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => onEdit(task)}
+              onClick={() => setIsEditing(true)}
             >
               <Pencil className="h-3 w-3" />
             </Button>

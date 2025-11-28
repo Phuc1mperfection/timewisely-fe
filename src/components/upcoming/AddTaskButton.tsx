@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import type { TaskFormData } from "@/interfaces/Task";
 
 interface AddTaskButtonProps {
-  date: Date;
+  date?: Date;
   onAdd: (taskData: Omit<TaskFormData, "order">) => void;
 }
 
@@ -17,8 +17,8 @@ export function AddTaskButton({ date, onAdd }: AddTaskButtonProps) {
     e.preventDefault();
     if (taskName.trim()) {
       // Create a clean date with fixed time (9 AM) to avoid timezone issues
-      const cleanDate = new Date(date);
-      cleanDate.setHours(9, 0, 0, 0);
+      const useDate = date ? new Date(date) : new Date();
+      useDate.setHours(9, 0, 0, 0);
 
       onAdd({
         name: taskName.trim(),
@@ -27,7 +27,7 @@ export function AddTaskButton({ date, onAdd }: AddTaskButtonProps) {
         estimatedPomodoros: 1,
         priority: "medium",
         category: "personal",
-        dueDate: cleanDate,
+        dueDate: useDate,
       });
       setTaskName("");
       setIsAdding(false);

@@ -11,7 +11,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { Task } from "@/interfaces";
-import { TaskForm } from "@/components/tasks/TaskForm";
+import { TaskForm } from "@/components/tasks/TaskAddForm";
 import { TaskList } from "@/components/tasks/TaskList";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
 import { useTasks } from "@/hooks/useTasks";
@@ -25,8 +25,6 @@ interface TaskListViewProps {
   loading: boolean;
   isAddingTask: boolean;
   setIsAddingTask: (adding: boolean) => void;
-  editingTaskId: string | null;
-  setEditingTaskId: (id: string | null) => void;
   onCreateTask: (
     taskData: Omit<
       Task,
@@ -34,16 +32,8 @@ interface TaskListViewProps {
     >
   ) => void;
   onToggleComplete: (id: string) => void;
-  onEdit: (task: Task) => void;
+  onEdit: (id: string, updates: Partial<Task>) => void;
   onDelete: (id: string) => void;
-  onCancelEdit: () => void;
-  onUpdateTask: (
-    id: string,
-    taskData: Omit<
-      Task,
-      "id" | "completedPomodoros" | "completed" | "createdAt"
-    >
-  ) => void;
   sensors: ReturnType<typeof useSensors>;
   handleDragEnd: (event: DragEndEvent) => void;
 }
@@ -54,14 +44,10 @@ function TaskListView({
   loading,
   isAddingTask,
   setIsAddingTask,
-  editingTaskId,
-  setEditingTaskId,
   onCreateTask,
   onToggleComplete,
   onEdit,
   onDelete,
-  onCancelEdit,
-  onUpdateTask,
   sensors,
   handleDragEnd,
 }: TaskListViewProps) {
@@ -125,47 +111,6 @@ function TaskListView({
           <span>Add a task</span>
         </button>
       )}
-
-      {/* Edit Task Dialog */}
-      {editingTaskId && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-          onClick={() => setEditingTaskId(null)}
-        >
-          <div
-            className="bg-card rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
-              {(() => {
-                const task = tasks.find((t) => t.id === editingTaskId);
-                return task ? (
-                  <TaskForm
-                    initialValues={{
-                      name: task.name,
-                      description: task.description,
-                      type: task.type,
-                      estimatedPomodoros: task.estimatedPomodoros,
-                      priority: task.priority,
-                      category: task.category,
-                      dueDate: task.dueDate,
-                    }}
-                    onSubmit={async (taskData) => {
-                      if (editingTaskId) {
-                        await onUpdateTask(editingTaskId, taskData);
-                        setEditingTaskId(null);
-                      }
-                    }}
-                    onCancel={onCancelEdit}
-                    submitLabel="Update Task"
-                  />
-                ) : null;
-              })()}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -181,7 +126,6 @@ export function TodayTasksPage() {
     updateTasksOrder,
   } = useTasks();
   const [isAddingTask, setIsAddingTask] = useState(false);
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
 
   // Filter tasks for today only
   const filteredTasks = useMemo(() => {
@@ -218,18 +162,14 @@ export function TodayTasksPage() {
     await toggleComplete(id);
   };
 
-  const handleEditTask = (task: Task) => {
-    setEditingTaskId(task.id);
+  const handleEditTask = async (id: string, updates: Partial<Task>) => {
+    await updateTaskAPI(id, updates);
   };
 
   const handleDeleteTask = async (id: string) => {
     if (confirm("Are you sure you want to delete this task?")) {
       await deleteTaskAPI(id);
     }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingTaskId(null);
   };
 
   return (
@@ -252,16 +192,10 @@ export function TodayTasksPage() {
           loading={loading}
           isAddingTask={isAddingTask}
           setIsAddingTask={setIsAddingTask}
-          editingTaskId={editingTaskId}
-          setEditingTaskId={setEditingTaskId}
           onCreateTask={handleCreateTask}
           onToggleComplete={handleToggleComplete}
           onEdit={handleEditTask}
           onDelete={handleDeleteTask}
-          onCancelEdit={handleCancelEdit}
-          onUpdateTask={async (id, taskData) => {
-            await updateTaskAPI(id, taskData);
-          }}
           sensors={sensors}
           handleDragEnd={handleDragEnd}
         />
