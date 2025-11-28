@@ -178,6 +178,7 @@ export function UpcomingTasksPage() {
           days={days}
           selectedDate={selectedDate}
           onDateSelect={handleDateSelect}
+          compact={isHeaderCompact}
         />
 
         <div className="px-6 pb-12">

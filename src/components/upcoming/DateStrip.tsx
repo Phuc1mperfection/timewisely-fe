@@ -6,12 +6,14 @@ interface DateStripProps {
   days: Date[];
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
+  compact?: boolean;
 }
 
 export const DateStrip = memo(function DateStrip({
   days,
   selectedDate,
   onDateSelect,
+  compact = false,
 }: DateStripProps) {
   const todayRef = useRef<HTMLButtonElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
@@ -49,7 +51,10 @@ export const DateStrip = memo(function DateStrip({
   return (
     <div
       ref={containerRef}
-      className="sticky top-16 z-[9] overflow-x-auto scrollbar-hide border-b border-border px-6 py-3 bg-background"
+      className={cn(
+        "overflow-x-auto scrollbar-hide border-b border-border px-6 py-3 bg-background",
+        compact ? "sticky top-0 z-20" : "sticky top-16 z-[9]"
+      )}
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <div className="flex gap-2 min-w-max">

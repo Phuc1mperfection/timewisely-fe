@@ -1,16 +1,11 @@
-import { useState, useMemo } from "react";
-import { Plus, Inbox } from "lucide-react";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useMemo } from "react";
+import { Inbox } from "lucide-react";
 import { startOfToday } from "date-fns";
 import type { Task } from "@/interfaces";
-import { TaskInlineAddForm } from "@/components/tasks/TaskInlineAddForm";
-import { TaskList } from "@/components/tasks/TaskList";
 import { useTasks } from "@/hooks/useTasks";
 import { useTaskDragAndDrop } from "@/hooks/useTaskDragAndDrop";
+import { AddTaskButton } from "@/components/tasks/AddTaskButton";
+import { SortableTaskList } from "@/components/tasks/SortableTaskList";
 
 export function InboxTasksPage() {
   const {
@@ -22,7 +17,6 @@ export function InboxTasksPage() {
     deleteTask: deleteTaskAPI,
     updateTasksOrder,
   } = useTasks();
-  const [isAddingTask, setIsAddingTask] = useState(false);
 
   // Filter tasks that are not completed (inbox shows all incomplete tasks)
   // Don't sort here - useTasks already sorts by order
@@ -43,7 +37,6 @@ export function InboxTasksPage() {
     >
   ) => {
     await createTaskAPI(taskData);
-    setIsAddingTask(false);
   };
 
   const handleToggleComplete = async (id: string) => {
@@ -75,47 +68,24 @@ export function InboxTasksPage() {
         </div>
 
         {/* Task List */}
-        <DndContext
+        <SortableTaskList
+          tasks={inboxTasks}
           sensors={sensors}
-          collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={inboxTasks.map((task) => task.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <TaskList
-              tasks={inboxTasks}
-              onToggleComplete={handleToggleComplete}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-              loading={loading}
-              emptyMessage="No tasks in your inbox yet. Add some tasks to get started!"
-            />
-          </SortableContext>
-        </DndContext>
+          onToggleComplete={handleToggleComplete}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          loading={loading}
+          emptyMessage="No tasks in your inbox yet. Add some tasks to get started!"
+        />
 
         {/* Add Task Section */}
-        <div className="mt-4">
-          {isAddingTask ? (
-            <TaskInlineAddForm
-              defaultDate={startOfToday()}
-              onSubmit={(taskData) => {
-                handleCreateTask({ ...taskData, order: 0 });
-                setIsAddingTask(false);
-              }}
-              onCancel={() => setIsAddingTask(false)}
-            />
-          ) : (
-            <button
-              onClick={() => setIsAddingTask(true)}
-              className="w-full p-3 text-left text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors flex items-center gap-2 group"
-            >
-              <Plus className="w-4 h-4 text-yellow-600 group-hover:text-yellow-700" />
-              <span className="text-sm">Add task</span>
-            </button>
-          )}
-        </div>
+        <AddTaskButton
+          defaultDate={startOfToday()}
+          onCreateTask={(taskData) =>
+            handleCreateTask({ ...taskData, order: 0 })
+          }
+        />
       </div>
     </div>
   );

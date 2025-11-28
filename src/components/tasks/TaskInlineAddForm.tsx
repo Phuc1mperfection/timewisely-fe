@@ -399,7 +399,7 @@ export function TaskInlineAddForm({
           onClick={handleSubmit}
           disabled={!name.trim()}
           size="sm"
-          className="h-8 text-xs bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="h-8 text-xs bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Add task
         </Button>

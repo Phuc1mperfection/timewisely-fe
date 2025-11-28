@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Plus, ListTodo } from "lucide-react";
+import { useMemo } from "react";
+import { ListTodo } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -12,7 +12,7 @@ import {
 } from "@dnd-kit/sortable";
 import { startOfToday } from "date-fns";
 import type { Task } from "@/interfaces";
-import { TaskInlineAddForm } from "@/components/tasks/TaskInlineAddForm";
+import { AddTaskButton } from "@/components/tasks/AddTaskButton";
 import { TaskList } from "@/components/tasks/TaskList";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
 import { useTasks } from "@/hooks/useTasks";
@@ -24,8 +24,6 @@ interface TaskListViewProps {
   activeTasks: Task[];
   completedTasks: Task[];
   loading: boolean;
-  isAddingTask: boolean;
-  setIsAddingTask: (adding: boolean) => void;
   onCreateTask: (
     taskData: Omit<
       Task,
@@ -42,8 +40,6 @@ interface TaskListViewProps {
 function TaskListView({
   activeTasks,
   loading,
-  isAddingTask,
-  setIsAddingTask,
   onCreateTask,
   onToggleComplete,
   onEdit,
@@ -60,7 +56,7 @@ function TaskListView({
       <div className="hover:cursor-pointer">
         {loading ? (
           <TaskListSkeleton count={3} />
-        ) : activeTasks.length === 0 && !isAddingTask ? (
+        ) : activeTasks.length === 0 ? (
           <div className="p-8 text-center">
             <div className="text-4xl mb-4">🎯</div>
             <p className="text-muted-foreground">No tasks for today</p>
@@ -92,26 +88,10 @@ function TaskListView({
       </div>
 
       {/* Add Task Section */}
-      <div className="mt-4">
-        {isAddingTask ? (
-          <TaskInlineAddForm
-            defaultDate={startOfToday()}
-            onSubmit={(taskData) => {
-              onCreateTask({ ...taskData, order: 0 });
-              setIsAddingTask(false);
-            }}
-            onCancel={() => setIsAddingTask(false)}
-          />
-        ) : (
-          <button
-            onClick={() => setIsAddingTask(true)}
-            className="w-full p-3 text-left text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors flex items-center gap-2 group"
-          >
-            <Plus className="w-4 h-4 text-red-600 group-hover:text-red-700" />
-            <span className="text-sm">Add task</span>
-          </button>
-        )}
-      </div>
+      <AddTaskButton
+        defaultDate={startOfToday()}
+        onCreateTask={(taskData) => onCreateTask({ ...taskData, order: 0 })}
+      />
     </div>
   );
 }
@@ -120,13 +100,12 @@ export function TodayTasksPage() {
   const {
     tasks,
     loading,
-    createTask: createTaskAPI,
     updateTask: updateTaskAPI,
     toggleComplete,
     deleteTask: deleteTaskAPI,
     updateTasksOrder,
+    createTask: createTaskAPI,
   } = useTasks();
-  const [isAddingTask, setIsAddingTask] = useState(false);
 
   // Filter tasks for today only
   const filteredTasks = useMemo(() => {
@@ -149,16 +128,6 @@ export function TodayTasksPage() {
     updateTasksOrder
   );
 
-  const handleCreateTask = async (
-    taskData: Omit<
-      Task,
-      "id" | "completedPomodoros" | "completed" | "createdAt"
-    >
-  ) => {
-    await createTaskAPI(taskData);
-    setIsAddingTask(false);
-  };
-
   const handleToggleComplete = async (id: string) => {
     await toggleComplete(id);
   };
@@ -171,6 +140,16 @@ export function TodayTasksPage() {
     if (confirm("Are you sure you want to delete this task?")) {
       await deleteTaskAPI(id);
     }
+  };
+
+  // Define a proper onCreateTask handler
+  const handleCreateTask = async (
+    taskData: Omit<
+      Task,
+      "id" | "completedPomodoros" | "completed" | "createdAt"
+    >
+  ) => {
+    await createTaskAPI({ ...taskData, order: 0 });
   };
 
   return (
@@ -191,8 +170,6 @@ export function TodayTasksPage() {
           activeTasks={activeTasks}
           completedTasks={completedTasks}
           loading={loading}
-          isAddingTask={isAddingTask}
-          setIsAddingTask={setIsAddingTask}
           onCreateTask={handleCreateTask}
           onToggleComplete={handleToggleComplete}
           onEdit={handleEditTask}

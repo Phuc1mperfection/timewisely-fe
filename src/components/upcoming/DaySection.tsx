@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { memo } from "react";
+import { isToday, format } from "date-fns";
 import type { Task, TaskFormData } from "@/interfaces/Task";
 import { DayHeader } from "./DayHeader";
 import { TaskItem } from "./TaskItem";
-import { TaskInlineAddForm } from "@/components/tasks/TaskInlineAddForm";
-import { isToday, format } from "date-fns";
-import { memo } from "react";
+import { AddTaskButton } from "@/components/tasks/AddTaskButton";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 interface DaySectionProps {
   date: Date;
@@ -24,7 +27,6 @@ export const DaySection = memo(function DaySection({
   onTaskDelete,
   onTaskEdit,
 }: DaySectionProps) {
-  const [isAdding, setIsAdding] = useState(false);
   const isTodaySection = isToday(date);
   const sectionId = `day-section-${format(date, "yyyy-MM-dd")}`;
 
@@ -36,37 +38,34 @@ export const DaySection = memo(function DaySection({
       <DayHeader date={date} />
 
       <div className="space-y-1 mt-3">
-        {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            onToggle={() => onTaskToggle(task.id)}
-            onDelete={() => onTaskDelete(task.id)}
-            onEdit={(updates) => onTaskEdit(task.id, updates)}
-          />
-        ))}
+        <DndContext
+          sensors={[]}
+          collisionDetection={closestCenter}
+          onDragEnd={() => {}}
+        >
+          <SortableContext
+            items={tasks.map((task) => task.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            {tasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                onToggle={() => onTaskToggle(task.id)}
+                onDelete={() => onTaskDelete(task.id)}
+                onEdit={(updates) => onTaskEdit(task.id, updates)}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
 
         {/* Add Task Section */}
-        {isAdding ? (
-          <div className="mt-2">
-            <TaskInlineAddForm
-              defaultDate={date}
-              onSubmit={(taskData) => {
-                onTaskAdd(taskData);
-                setIsAdding(false);
-              }}
-              onCancel={() => setIsAdding(false)}
-            />
-          </div>
-        ) : (
-          <button
-            onClick={() => setIsAdding(true)}
-            className="w-full p-2 text-left text-muted-foreground hover:cursor-pointer rounded-lg transition-colors flex items-center gap-2 group mt-1"
-          >
-            <Plus className="w-4 h-4 text-yellow-600 group-hover:text-yellow-700" />
-            <span className="text-sm">Add task</span>
-          </button>
-        )}
+        <AddTaskButton
+          defaultDate={date}
+          onCreateTask={(taskData) => {
+            onTaskAdd(taskData);
+          }}
+        />
       </div>
     </div>
   );
