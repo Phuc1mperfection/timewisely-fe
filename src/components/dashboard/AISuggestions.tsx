@@ -66,15 +66,15 @@ export function AISuggestions() {
   };
 
   return (
-    <Card className="bg-white shadow-sm ">
+    <Card>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
-          <Sparkles className="w-5 h-5 text-[var(--wisely-gold)]" />
-          <span className="text-[var(--wisely-dark)]">AI Suggestions</span>
+        <CardTitle className="flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-primary" />
+          <span>AI Suggestions</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-[var(--wisely-gray)] mb-4">
+        <p className="text-sm text-muted-foreground">
           Smart activity recommendations based on your free time and
           preferences.
         </p>
@@ -83,35 +83,35 @@ export function AISuggestions() {
           {mockSuggestions.map((suggestion) => (
             <div
               key={suggestion.id}
-              className="p-3 bg-gray-50 rounded-lg hover:bg-yellow-50 transition-colors"
+              className="p-3 bg-muted/50 rounded-lg hover:bg-accent transition-colors"
             >
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-medium text-sm text-[var(--wisely-dark)]">
+                <h4 className="font-medium text-sm">
                   {suggestion.title}
                 </h4>
                 <Button
                   size="sm"
                   variant="ghost"
                   onClick={() => handleAddSuggestion(suggestion)}
-                  className="h-6 w-6 p-0 hover:bg-white hover:text-[var(--wisely-gold)]"
+                  className="h-6 w-6 p-0 hover:bg-background hover:text-primary"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="h-3 w-3" />
                 </Button>
               </div>
 
-              <p className="text-xs text-[var(--wisely-gray)] mb-2">
+              <p className="text-xs text-muted-foreground mb-2">
                 {suggestion.description}
               </p>
 
-              <div className="flex items-center justify-between text-xs text-[var(--wisely-gray)]">
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-1">
-                    <Clock className="w-3 h-3" />
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
                     <span>{suggestion.duration}</span>
                   </div>
                   {suggestion.location && (
-                    <div className="flex items-center space-x-1">
-                      <MapPin className="w-3 h-3" />
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
                       <span>{suggestion.location}</span>
                     </div>
                   )}
@@ -127,11 +127,8 @@ export function AISuggestions() {
           ))}
         </div>
 
-        <Button
-          variant="default"
-          className="w-full mt-4 border-[var(--wisely-gold)] text-[var(--wisely-white)] hover:bg-[var(--wisely-gold)] hover:text-white"
-        >
-          <Sparkles className="w-4 h-4 mr-2" />
+        <Button variant="default" className="w-full mt-4">
+          <Sparkles className="h-4 w-4" />
           Get More Suggestions
         </Button>
       </CardContent>
