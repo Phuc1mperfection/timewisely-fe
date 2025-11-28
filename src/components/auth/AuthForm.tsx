@@ -15,7 +15,7 @@ interface AuthFormProps {
   onLaunchOnboarding: () => void;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
+const AuthForm: React.FC<AuthFormProps> = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

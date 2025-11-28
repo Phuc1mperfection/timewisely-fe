@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { ActivityCard } from "./ActivityCard";
 import { motion } from "motion/react";
 import type { Activity } from "@/interfaces/Activity";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import type { Activity } from "@/interfaces/Activity";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,7 +25,7 @@ export const CustomActivityCard = React.memo(function CustomActivityCard({
         {isTask && (
           <Checkbox
             checked={activity.completed}
-            onCheckedChange={(checked) => onToggleCompleted?.(activity)}
+            onCheckedChange={() => onToggleCompleted?.(activity)}
             className="w-4 h-4"
           />
         )}

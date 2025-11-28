@@ -68,7 +68,9 @@ export function CompletedTasksPage() {
                   key={task.id}
                   task={task}
                   onToggleComplete={handleToggleComplete}
-                  onEdit={handleEditTask}
+                  onEdit={(id) =>
+                    handleEditTask(tasks.find((t) => t.id === id)!)
+                  }
                   onDelete={handleDeleteTask}
                 />
               ))}

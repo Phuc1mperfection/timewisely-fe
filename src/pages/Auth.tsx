@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/useToast";
 type AuthState = "auth" | "onboarding" | "complete";
 
 const AuthPage: React.FC = () => {
-  const [authState, setAuthState] = useState<AuthState>("auth");
+  const [authState] = useState<AuthState>("auth");
   const location = useLocation();
   const navigate = useNavigate();
   const { error } = useToast();
@@ -38,15 +38,6 @@ const AuthPage: React.FC = () => {
       navigate("/auth", { replace: true, state: {} });
     }
   }, [location, navigate, error]);
-
-  const handleAuthSuccess = () => {
-    // Could redirect to dashboard or show success message
-    console.log("Authentication successful!");
-  };
-
-  const handleLaunchOnboarding = () => {
-    setAuthState("onboarding");
-  };
 
   return (
     <div className="min-h-screen auth-gradient-bg relative overflow-hidden flex flex-col">
@@ -83,10 +74,11 @@ const AuthPage: React.FC = () => {
                 exit={{ opacity: 0, scale: 1.1 }}
                 transition={{ duration: 0.3 }}
               >
-                <AuthForm
-                  onSuccess={handleAuthSuccess}
-                  onLaunchOnboarding={handleLaunchOnboarding}
-                />
+                <AuthForm onSuccess={function (): void {
+                  throw new Error("Function not implemented.");
+                } } onLaunchOnboarding={function (): void {
+                  throw new Error("Function not implemented.");
+                } } />
               </motion.div>
             )}
             {authState === "onboarding" && (

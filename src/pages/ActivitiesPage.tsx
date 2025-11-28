@@ -66,15 +66,7 @@ const ActivitiesPage: React.FC = () => {
       <ActivityDialog
         isOpen={isActivityModalOpen}
         onClose={() => setIsActivityModalOpen(false)}
-        event={
-          selectedActivity
-            ? {
-                ...selectedActivity,
-                start: selectedActivity.startTime,
-                end: selectedActivity.endTime,
-              }
-            : null
-        }
+        event={selectedActivity}
         timeSlot={slotToLegacy(selectedSlot)}
         onSave={handleSaveActivity}
         onDelete={() => {

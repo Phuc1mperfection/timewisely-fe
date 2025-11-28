@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 const PrintableSurveyResults = React.forwardRef<HTMLDivElement>(
-  (props, ref) => {
+  (_props, ref) => {
     const surveyData = {
       age: "18-24",
       gender: "Male",
