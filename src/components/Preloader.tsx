@@ -76,6 +76,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
                   src="/src/assets/icon.svg"
                   alt="Logo"
                   className="w-12 h-12 transition-transform duration-200"
+                  loading="lazy"
                 />
               </div>
             </motion.div>

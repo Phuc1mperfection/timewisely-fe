@@ -107,7 +107,7 @@ const AuthPage: React.FC = () => {
                 transition={{ duration: 0.5 }}
               >
                 <motion.div
-                  className="glass-card p-8 rounded-2xl border border-white/20 shadow-xl bg-white/10 backdrop-blur-lg"
+                  className="glass-card p-8 rounded-2xl border border-white/20 shadow-xl bg-white/10"
                   initial={{ y: 20 }}
                   animate={{ y: 0 }}
                   transition={{ delay: 0.2, duration: 0.5 }}

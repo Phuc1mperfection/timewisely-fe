@@ -1,5 +1,5 @@
 "use client";
-import { useId } from "react";
+import { useId, memo } from "react";
 import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { Container, SingleOrMultiple } from "@tsparticles/engine";
@@ -18,7 +18,7 @@ type ParticlesProps = {
   particleColor?: string;
   particleDensity?: number;
 };
-export const SparklesCore = (props: ParticlesProps) => {
+export const SparklesCore = memo((props: ParticlesProps) => {
   const {
     id,
     className,
@@ -431,4 +431,6 @@ export const SparklesCore = (props: ParticlesProps) => {
       )}
     </motion.div>
   );
-};
+});
+
+SparklesCore.displayName = "SparklesCore";
