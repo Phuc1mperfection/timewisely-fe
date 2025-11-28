@@ -6,17 +6,57 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, Sparkles, Clock, Target } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Plus, Sparkles, Clock, Target, ChevronRight, Home } from "lucide-react";
 import { AISuggestions } from "@/components/dashboard/AISuggestions";
 import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import { useActivities } from "@/hooks/useActivity";
 import { ActivityToastListener } from "@/components/dashboard/ActivityToastListener";
 import { useState } from "react";
-import { ActivityFilterBar } from "@/components/dashboard/ActivityFilterBar";
 import type { Activity } from "@/interfaces/Activity";
-import { DailyMotivationHub1 } from "@/components/dashboard/DailyMotivationHub1";
 import { DailyMotivationHub } from "@/components/dashboard/DailyMotivationHub";
+
+// Stat Card Component for better reusability
+function StatCard({
+  title,
+  value,
+  description,
+  icon: Icon,
+  iconClassName,
+}: {
+  title: string;
+  value: string;
+  description: string;
+  icon: React.ElementType;
+  iconClassName?: string;
+}) {
+  return (
+    <Card className="transition-all duration-200 hover:shadow-md">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        <Icon className={`h-4 w-4 ${iconClassName || "text-primary"}`} />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Breadcrumb Component
+function Breadcrumb() {
+  return (
+    <nav className="flex items-center space-x-1 text-sm text-muted-foreground">
+      <Home className="h-4 w-4" />
+      <ChevronRight className="h-4 w-4" />
+      <span className="font-medium text-foreground">Dashboard</span>
+    </nav>
+  );
+}
 
 export function DashboardContent() {
   const {
@@ -38,9 +78,9 @@ export function DashboardContent() {
     setSuccess,
   } = useActivities();
   const [date, setDate] = useState(new Date());
-  const [search, setSearch] = useState("");
-  const [filterColor, setFilterColor] = useState<string | null>(null);
-  const [filterAllDay, setFilterAllDay] = useState<null | boolean>(null);
+  const [search] = useState("");
+  const [filterColor] = useState<string | null>(null);
+  const [filterAllDay] = useState<null | boolean>(null);
 
   // Filtered activities
   const filteredActivities = activities.filter((a: Activity) => {
@@ -56,148 +96,137 @@ export function DashboardContent() {
     slot ? { start: slot.startTime, end: slot.endTime } : null;
 
   return (
-    <main className="flex-1 flex flex-col">
+    <main className="flex-1 flex flex-col bg-background">
       <ActivityToastListener
         error={error}
         success={success}
         onResetError={() => setError(null)}
         onResetSuccess={() => setSuccess(null)}
       />
-      <div className="p-6 bg-white shadow-sm hidden">
-        <ActivityFilterBar
-          search={search}
-          setSearch={setSearch}
-          filterColor={filterColor}
-          setFilterColor={setFilterColor}
-          filterAllDay={filterAllDay}
-          setFilterAllDay={setFilterAllDay}
-          loading={false}
-        />
-      </div>
-      {/* Top Navigation */}
-      <div className="flex-1 p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold dark:text-white text-gray-900">
-              Dashboard
-            </h1>
-            <CardDescription>
-              Welcome back! Here's your productivity overview.
-            </CardDescription>
+
+      {/* Main Content Container */}
+      <div className="flex-1 container max-w-7xl mx-auto p-6 space-y-6">
+        {/* Header Section */}
+        <div className="space-y-4">
+          <Breadcrumb />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Dashboard
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Welcome back! Here's your productivity overview.
+              </p>
+            </div>
+            <Button
+              onClick={() => {
+                handleSelectSlot({
+                  startTime: new Date(),
+                  endTime: new Date(Date.now() + 3600000),
+                });
+              }}
+              className="w-full sm:w-auto"
+            >
+              <Plus className="h-4 w-4" />
+              New Activity
+            </Button>
           </div>
-          <Button
-            onClick={() => {
-              handleSelectSlot({
-                startTime: new Date(),
-                endTime: new Date(Date.now() + 3600000),
-              });
-            }}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Activity
-          </Button>
         </div>
-      </div>
 
-      <div className="flex-1 p-6 space-y-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className=" shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium ">
-                Today's Schedule
-              </CardTitle>
-              <Clock className="h-4 w-4 text-[var(--wisely-gold)]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold ">3 events</div>
-              <p className="text-xs text-[var(--wisely-gray)]">
-                2 hours of free time
-              </p>
-            </CardContent>
-          </Card>
+        <Separator />
 
-          <Card className=" shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium ">
-                AI Suggestions
-              </CardTitle>
-              <Sparkles className="h-4 w-4 text-[var(--wisely-champagne)]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold ">5 new</div>
-              <p className="text-xs text-[var(--wisely-gray)]">
-                Based on your preferences
-              </p>
-            </CardContent>
-          </Card>
+        {/* Stats Cards Section */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Overview
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <StatCard
+              title="Today's Schedule"
+              value="3 events"
+              description="2 hours of free time"
+              icon={Clock}
+              iconClassName="text-primary"
+            />
+            <StatCard
+              title="AI Suggestions"
+              value="5 new"
+              description="Based on your preferences"
+              icon={Sparkles}
+              iconClassName="text-primary"
+            />
+            <StatCard
+              title="Goals Progress"
+              value="78%"
+              description="This week's completion"
+              icon={Target}
+              iconClassName="text-primary"
+            />
+          </div>
+        </section>
 
-          <Card className=" shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium ">
-                Goals Progress
-              </CardTitle>
-              <Target className="h-4 w-4 text-[var(--wisely-sand)]" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold ">78%</div>
-              <p className="text-xs text-[var(--wisely-gray)]">
-                This week's completion
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        {/* Daily Motivation Hub */}
-        <DailyMotivationHub1 />
-        <DailyMotivationHub />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Calendar */}
-          <Card className="lg:col-span-3 ">
-            <CardHeader>
-              <CardTitle className="">Calendar</CardTitle>
-              <CardDescription className="text-[var(--wisely-gray)]">
-                Click on any time slot to create an activity, or click existing
-                activities to edit them.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[700px]">
-                <ScheduleCalendar
-                  className="modern-calendar"
-                  events={filteredActivities}
-                  onSelectSlot={(slot) =>
-                    handleSelectSlot({
-                      startTime: slot.start,
-                      endTime: slot.end,
-                    })
-                  }
-                  onSelectEvent={handleSelectActivity}
-                  onEventDrop={(args) =>
-                    handleActivityDrop({
-                      activity: args.event,
-                      startTime: args.start,
-                      endTime: args.end,
-                    })
-                  }
-                  onEventResize={(args) =>
-                    handleActivityResize({
-                      activity: args.event,
-                      startTime: args.start,
-                      endTime: args.end,
-                    })
-                  }
-                  eventStyleGetter={activityStyleGetter}
-                  view="day"
-                  date={date}
-                  onNavigate={setDate}
-                />
-              </div>
-            </CardContent>
-          </Card>
+        {/* Daily Motivation Section */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Daily Motivation
+          </h2>
+          <DailyMotivationHub />
+        </section>
 
-          {/* AI Suggestions */}
-          <AISuggestions />
-        </div>
+        {/* Calendar & AI Suggestions Section */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Schedule
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            {/* Calendar */}
+            <Card className="lg:col-span-3">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Calendar</CardTitle>
+                <CardDescription>
+                  Click on any time slot to create an activity, or click existing
+                  activities to edit them.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="h-[600px]">
+                  <ScheduleCalendar
+                    className="modern-calendar"
+                    events={filteredActivities}
+                    onSelectSlot={(slot) =>
+                      handleSelectSlot({
+                        startTime: slot.start,
+                        endTime: slot.end,
+                      })
+                    }
+                    onSelectEvent={handleSelectActivity}
+                    onEventDrop={(args) =>
+                      handleActivityDrop({
+                        activity: args.event,
+                        startTime: args.start,
+                        endTime: args.end,
+                      })
+                    }
+                    onEventResize={(args) =>
+                      handleActivityResize({
+                        activity: args.event,
+                        startTime: args.start,
+                        endTime: args.end,
+                      })
+                    }
+                    eventStyleGetter={activityStyleGetter}
+                    view="day"
+                    date={date}
+                    onNavigate={setDate}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* AI Suggestions */}
+            <AISuggestions />
+          </div>
+        </section>
       </div>
 
       {/* Activity Modal */}

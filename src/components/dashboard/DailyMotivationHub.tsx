@@ -7,10 +7,9 @@ import {
   TrendingUp,
   Coffee,
   HandHeart,
+  RefreshCw,
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useTheme } from "@/hooks/useTheme";
-import { useThemeColors } from "@/hooks/useThemeColors";
+import { useState, useEffect, useCallback } from "react";
 
 interface MotivationalQuote {
   text: string;
@@ -70,7 +69,7 @@ const motivationalQuotes: MotivationalQuote[] = [
     category: "future",
   },
   {
-    text: "Time isn’t the main thing. It’s the only thing",
+    text: "Time isn't the main thing. It's the only thing",
     author: "Miles Davis",
     category: "time",
   },
@@ -96,21 +95,20 @@ const positiveNudges = [
   "Every day is a new opportunity to improve.",
 ];
 
+const categories = [
+  { key: "random", label: "Random", icon: Sparkles },
+  { key: "action", label: "Action", icon: Coffee },
+  { key: "time", label: "Time", icon: Target },
+  { key: "productivity", label: "Productivity", icon: TrendingUp },
+  { key: "motivation", label: "Motivation", icon: HandHeart },
+];
+
 export function DailyMotivationHub() {
-  const [currentQuote, setCurrentQuote] = useState<MotivationalQuote | null>(
-    null
-  );
+  const [currentQuote, setCurrentQuote] = useState<MotivationalQuote | null>(null);
   const [currentNudge, setCurrentNudge] = useState<string>("");
   const [quoteCategory, setQuoteCategory] = useState<string>("random");
-  const { isDark } = useTheme();
-  const { iconColors } = useThemeColors();
 
-  useEffect(() => {
-    getRandomQuote(quoteCategory);
-    getRandomNudge();
-  }, [quoteCategory]);
-
-  const getRandomQuote = (category: string) => {
+  const getRandomQuote = useCallback((category: string) => {
     let filteredQuotes = motivationalQuotes;
 
     if (category !== "random") {
@@ -121,181 +119,78 @@ export function DailyMotivationHub() {
 
     const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
     setCurrentQuote(filteredQuotes[randomIndex]);
-  };
+  }, []);
 
-  const getRandomNudge = () => {
+  const getRandomNudge = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * positiveNudges.length);
     setCurrentNudge(positiveNudges[randomIndex]);
-  };
+  }, []);
+
+  useEffect(() => {
+    getRandomQuote(quoteCategory);
+    getRandomNudge();
+  }, [quoteCategory, getRandomQuote, getRandomNudge]);
+
   return (
-    <Card className=" flex flex-col">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <Sparkles
-            className={`h-5 w-5 ${
-              isDark
-                ? "text-[var(--wisely-yellow)]"
-                : "text-[var(--wisely-gold)]"
-            }`}
-          />
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Sparkles className="h-5 w-5 text-primary" />
           Daily Motivation
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {" "}
         {currentQuote && (
-          <div className="space-y-4">
-            <div className="relative">
-              <Quote
-                className={`absolute -left-1 -top-1 h-5 w-5 ${
-                  isDark
-                    ? "text-[var(--wisely-champagne)]"
-                    : "text-[var(--wisely-gold)]"
-                } opacity-40`}
-              />
-              <p className="pl-6 pt-2 text-base italic">{currentQuote.text}</p>
+          <div className="space-y-3">
+            <div className="relative pl-6">
+              <Quote className="absolute left-0 top-0 h-4 w-4 text-primary/40" />
+              <blockquote className="text-base italic leading-relaxed">
+                {currentQuote.text}
+              </blockquote>
               <p className="text-sm text-muted-foreground text-right mt-2">
                 — {currentQuote.author}
               </p>
             </div>
+
             {currentNudge && (
-              <div className="mt-4 border-t pt-3 border-border/50 relative">
-                <p className="text-sm text-muted-foreground/90 italic pr-8 transition-all duration-300 ease-in-out">
-                  <span
-                    className={`font-semibold ${
-                      isDark
-                        ? "text-[var(--wisely-champagne)]"
-                        : "text-[var(--wisely-gold)]"
-                    }`}
-                  >
-                    Today's Nudge:
-                  </span>{" "}
-                  <span key={currentNudge} className="animate-fadeIn">
+              <div className="flex items-start gap-2 pt-3 border-t">
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-primary">
+                      Today's Nudge:
+                    </span>{" "}
                     {currentNudge}
-                  </span>
-                </p>
+                  </p>
+                </div>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-0 top-3 h-7 w-7 p-1 opacity-50 hover:opacity-100"
+                  className="h-7 w-7 shrink-0"
                   onClick={(e) => {
                     e.stopPropagation();
                     getRandomNudge();
                   }}
                 >
-                  <Sparkles
-                    className={`h-4 w-4 ${
-                      isDark
-                        ? "text-[var(--wisely-yellow)]"
-                        : "text-[var(--wisely-gold)]"
-                    }`}
-                  />
+                  <RefreshCw className="h-3.5 w-3.5" />
                   <span className="sr-only">Refresh nudge</span>
                 </Button>
               </div>
             )}
           </div>
         )}
+
         <div className="flex flex-wrap gap-2 pt-2">
-          <Button
-            size="sm"
-            variant={quoteCategory === "random" ? "default" : "outline"}
-            onClick={() => setQuoteCategory("random")}
-            className={isDark ? "dark:hover:bg-muted/50" : "hover:bg-muted/50"}
-          >
-            <Sparkles
-              className="h-3.5 w-3.5"
-              style={{
-                color:
-                  quoteCategory === "random"
-                    ? isDark
-                      ? "var(--wisely-champagne)"
-                      : "white"
-                    : iconColors.primary,
-              }}
-            />
-            <span>Random</span>
-          </Button>
-
-          <Button
-            size="sm"
-            variant={quoteCategory === "action" ? "default" : "outline"}
-            onClick={() => setQuoteCategory("action")}
-            className={isDark ? "dark:hover:bg-muted/50" : "hover:bg-muted/50"}
-          >
-            <Coffee
-              className="h-3.5 w-3.5"
-              style={{
-                color:
-                  quoteCategory === "action"
-                    ? isDark
-                      ? "var(--wisely-champagne)"
-                      : "white"
-                    : iconColors.primary,
-              }}
-            />
-            <span>Action</span>
-          </Button>
-
-          <Button
-            size="sm"
-            variant={quoteCategory === "time" ? "default" : "outline"}
-            onClick={() => setQuoteCategory("time")}
-            className={isDark ? "dark:hover:bg-muted/50" : "hover:bg-muted/50"}
-          >
-            <Target
-              className="h-3.5 w-3.5"
-              style={{
-                color:
-                  quoteCategory === "time"
-                    ? isDark
-                      ? "var(--wisely-champagne)"
-                      : "white"
-                    : iconColors.secondary,
-              }}
-            />
-            <span>Time</span>
-          </Button>
-
-          <Button
-            size="sm"
-            variant={quoteCategory === "productivity" ? "default" : "outline"}
-            onClick={() => setQuoteCategory("productivity")}
-            className={isDark ? "dark:hover:bg-muted/50" : "hover:bg-muted/50"}
-          >
-            <TrendingUp
-              className="h-3.5 w-3.5"
-              style={{
-                color:
-                  quoteCategory === "productivity"
-                    ? isDark
-                      ? "var(--wisely-champagne)"
-                      : "white"
-                    : iconColors.primary,
-              }}
-            />
-            <span>Productivity</span>
-          </Button>
-
-          <Button
-            size="sm"
-            variant={quoteCategory === "motivation" ? "default" : "outline"}
-            onClick={() => setQuoteCategory("motivation")}
-            className={isDark ? "dark:hover:bg-muted/50" : "hover:bg-muted/50"}
-          >
-            <HandHeart
-              className="h-3.5 w-3.5"
-              style={{
-                color:
-                  quoteCategory === "motivation"
-                    ? isDark
-                      ? "var(--wisely-champagne)"
-                      : "white"
-                    : iconColors.secondary,
-              }}
-            />
-            <span>Motivation</span>
-          </Button>
+          {categories.map(({ key, label, icon: Icon }) => (
+            <Button
+              key={key}
+              size="sm"
+              variant={quoteCategory === key ? "default" : "outline"}
+              onClick={() => setQuoteCategory(key)}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              <span>{label}</span>
+            </Button>
+          ))}
         </div>
       </CardContent>
     </Card>

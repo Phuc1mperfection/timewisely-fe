@@ -7,12 +7,14 @@ import { ModeToggle } from "@/components/mode-toggle";
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full ">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
-        <main className="flex-1 flex flex-col">
-          <header className="flex items-center justify-between p-0.5  border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-4">
-              <SidebarTrigger  />
+        <main className="flex-1 flex flex-col min-w-0">
+          <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger />
+            </div>
+            <div className="flex items-center gap-2">
               <ModeToggle />
             </div>
           </header>
