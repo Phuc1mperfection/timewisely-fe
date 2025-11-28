@@ -1,12 +1,27 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
-const BackgroundWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="relative h-full w-full overflow-hidden">
-      <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
-      {children}
-    </div>
-  );
-};
+const BackgroundWrapper = React.memo(
+  ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) => {
+    return (
+      <div
+        className={cn(
+          "relative h-full w-full overflow-hidden bg-background",
+          className
+        )}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+BackgroundWrapper.displayName = "BackgroundWrapper";
 
 export default BackgroundWrapper;

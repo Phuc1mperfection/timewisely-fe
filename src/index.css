@@ -281,6 +281,16 @@
   }
 }
 
+/* Hide scrollbar for horizontal date strip */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Primary Button Styles */
 .btn-primary {
   background: linear-gradient(90deg,
@@ -391,13 +401,12 @@
       var(--wisely-champagne),
       var(--wisely-gold));
   background-size: 400% 400%;
-  animation: gradient-shift 29s ease infinite;
+  animation: gradient-shift 10s ease infinite;
 }
 
 /* Glassmorphism effects */
 .glass-card {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(177, 24, 24, 0.1);
 }

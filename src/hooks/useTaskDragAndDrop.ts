@@ -8,7 +8,7 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { arrayMove } from "@dnd-kit/sortable";
 import type { DragEndEvent } from "@dnd-kit/core";
 import type { Task } from "@/interfaces";
-import { updateTask } from "@/services/taskServices";
+import { updateTaskOrder } from "@/services/taskServices";
 
 // Custom hook for drag and drop functionality
 export function useTaskDragAndDrop(
@@ -39,17 +39,20 @@ export function useTaskDragAndDrop(
         order: index,
       }));
 
-      // Call the callback if provided
+      // Update local state immediately for smooth UX
       onReorder?.(updatedTasks);
+
+      // Batch update backend with new order using dedicated endpoint
       try {
-        for (const task of updatedTasks) {
-          await updateTask(task.id, { order: task.order });
-        }
+        const taskOrders = updatedTasks.map((task) => ({
+          taskId: task.id,
+          order: task.order,
+        }));
+        await updateTaskOrder(taskOrders);
         console.log("Successfully updated task orders on backend");
       } catch (error) {
         console.error("Failed to update task orders on backend:", error);
         // Note: Local state is already updated, but backend sync failed
-        // You might want to show a toast notification here
       }
     }
   };

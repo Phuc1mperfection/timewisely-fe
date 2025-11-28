@@ -1,15 +1,11 @@
-import { useState, useMemo } from "react";
-import { Plus, Inbox } from "lucide-react";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { useMemo } from "react";
+import { Inbox } from "lucide-react";
+import { startOfToday } from "date-fns";
 import type { Task } from "@/interfaces";
-import { TaskForm } from "@/components/tasks/TaskForm";
-import { TaskList } from "@/components/tasks/TaskList";
 import { useTasks } from "@/hooks/useTasks";
 import { useTaskDragAndDrop } from "@/hooks/useTaskDragAndDrop";
+import { AddTaskButton } from "@/components/tasks/AddTaskButton";
+import { SortableTaskList } from "@/components/tasks/SortableTaskList";
 
 export function InboxTasksPage() {
   const {
@@ -21,8 +17,6 @@ export function InboxTasksPage() {
     deleteTask: deleteTaskAPI,
     updateTasksOrder,
   } = useTasks();
-  const [isAddingTask, setIsAddingTask] = useState(false);
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
 
   // Filter tasks that are not completed (inbox shows all incomplete tasks)
   // Don't sort here - useTasks already sorts by order
@@ -43,35 +37,20 @@ export function InboxTasksPage() {
     >
   ) => {
     await createTaskAPI(taskData);
-    setIsAddingTask(false);
   };
 
   const handleToggleComplete = async (id: string) => {
     await toggleComplete(id);
   };
 
-  const handleEditTask = (task: Task) => {
-    setEditingTaskId(task.id);
+  const handleEditTask = async (id: string, updates: Partial<Task>) => {
+    await updateTaskAPI(id, updates);
   };
 
   const handleDeleteTask = async (id: string) => {
     if (confirm("Are you sure you want to delete this task?")) {
       await deleteTaskAPI(id);
     }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingTaskId(null);
-  };
-
-  const handleUpdateTask = async (
-    id: string,
-    taskData: Omit<
-      Task,
-      "id" | "completedPomodoros" | "completed" | "createdAt"
-    >
-  ) => {
-    await updateTaskAPI(id, taskData);
   };
 
   return (
@@ -89,87 +68,24 @@ export function InboxTasksPage() {
         </div>
 
         {/* Task List */}
-        <DndContext
+        <SortableTaskList
+          tasks={inboxTasks}
           sensors={sensors}
-          collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={inboxTasks.map((task) => task.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <TaskList
-              tasks={inboxTasks}
-              onToggleComplete={handleToggleComplete}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-              loading={loading}
-              emptyMessage="No tasks in your inbox yet. Add some tasks to get started!"
-            />
-          </SortableContext>
-        </DndContext>
+          onToggleComplete={handleToggleComplete}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          loading={loading}
+          emptyMessage="No tasks in your inbox yet. Add some tasks to get started!"
+        />
 
-        {/* Inline Add Task */}
-        {isAddingTask && (
-          <div className="border-t border-border/50 p-4">
-            <TaskForm
-              onSubmit={handleCreateTask}
-              onCancel={() => setIsAddingTask(false)}
-            />
-          </div>
-        )}
-
-        {/* Add Task Button */}
-        {!isAddingTask && (
-          <button
-            onClick={() => setIsAddingTask(true)}
-            className="w-full p-4 text-left text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors flex items-center gap-3 group"
-          >
-            <Plus className="w-5 h-5 group-hover:text-primary transition-colors" />
-            <span>Add a task</span>
-          </button>
-        )}
-
-        {/* Edit Task Dialog */}
-        {editingTaskId && (
-          <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-            onClick={() => setEditingTaskId(null)}
-          >
-            <div
-              className="bg-card rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
-                {(() => {
-                  const task = inboxTasks.find((t) => t.id === editingTaskId);
-                  return task ? (
-                    <TaskForm
-                      initialValues={{
-                        name: task.name,
-                        description: task.description,
-                        type: task.type,
-                        estimatedPomodoros: task.estimatedPomodoros,
-                        priority: task.priority,
-                        category: task.category,
-                        dueDate: new Date(task.dueDate),
-                      }}
-                      onSubmit={async (taskData) => {
-                        if (editingTaskId) {
-                          await handleUpdateTask(editingTaskId, taskData);
-                          setEditingTaskId(null);
-                        }
-                      }}
-                      onCancel={handleCancelEdit}
-                      submitLabel="Update Task"
-                    />
-                  ) : null;
-                })()}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Add Task Section */}
+        <AddTaskButton
+          defaultDate={startOfToday()}
+          onCreateTask={(taskData) =>
+            handleCreateTask({ ...taskData, order: 0 })
+          }
+        />
       </div>
     </div>
   );

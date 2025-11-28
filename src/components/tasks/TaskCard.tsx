@@ -22,6 +22,7 @@ const priorityConfig: Record<
   Priority,
   { color: string; icon: string; label: string }
 > = {
+  urgent: { color: "border-l-purple-500", icon: "🟣", label: "Urgent" },
   high: { color: "border-l-red-500", icon: "🔴", label: "High" },
   medium: { color: "border-l-yellow-500", icon: "🟡", label: "Medium" },
   low: { color: "border-l-green-500", icon: "🟢", label: "Low" },
