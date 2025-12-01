@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { CalendarIcon, Check, Edit2, Trash2, GripVertical } from "lucide-react";
 import { format, isToday, isTomorrow, isBefore, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -15,150 +15,143 @@ interface TaskItemProps {
   onDelete: (id: string) => void;
 }
 
-export function TaskItem({
-  task,
-  onToggleComplete,
-  onEdit,
-  onDelete,
-}: TaskItemProps) {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+export const TaskItem = memo(
+  function TaskItem({
+    task,
+    onToggleComplete,
+    onEdit,
+    onDelete,
+  }: TaskItemProps) {
+    const [isEditing, setIsEditing] = useState(false);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id });
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: task.id });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
 
-  const priorityColors = {
-    high: "bg-red-500",
-    medium: "bg-yellow-500",
-    low: "bg-green-500",
-    urgent: "bg-purple-500",
-  };
+    const priorityColors = {
+      high: "bg-red-500",
+      medium: "bg-yellow-500",
+      low: "bg-green-500",
+      urgent: "bg-purple-500",
+    };
 
-  // Check if task is overdue
-  const isOverdue =
-    task.dueDate &&
-    !task.completed &&
-    isBefore(startOfDay(new Date(task.dueDate)), startOfDay(new Date()));
+    // Check if task is overdue
+    const isOverdue =
+      task.dueDate &&
+      !task.completed &&
+      isBefore(startOfDay(new Date(task.dueDate)), startOfDay(new Date()));
 
-  // Format due date display
-  const formatDueDate = (date: Date) => {
-    if (isToday(date)) {
-      return format(date, "MMM d");
-    } else if (isTomorrow(date)) {
-      return "Tomorrow";
-    } else {
-      return format(date, "MMM d");
+    // Format due date display
+    const formatDueDate = (date: Date) => {
+      if (isToday(date)) {
+        return format(date, "MMM d");
+      } else if (isTomorrow(date)) {
+        return "Tomorrow";
+      } else {
+        return format(date, "MMM d");
+      }
+    };
+
+    // Show inline edit form when editing
+    if (isEditing) {
+      return (
+        <div
+          ref={setNodeRef}
+          style={style}
+          className="p-4 border-b border-border/50"
+        >
+          <TaskEditForm
+            task={task}
+            onSave={(updates) => {
+              onEdit(task.id, updates);
+              setIsEditing(false);
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
+        </div>
+      );
     }
-  };
 
-  // Show inline edit form when editing
-  if (isEditing) {
     return (
       <div
         ref={setNodeRef}
         style={style}
-        className="p-4 border-b border-border/50"
-      >
-        <TaskEditForm
-          task={task}
-          onSave={(updates) => {
-            onEdit(task.id, updates);
-            setIsEditing(false);
-          }}
-          onCancel={() => setIsEditing(false)}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      className={cn(
-        "group flex items-center gap-3 p-4 border-b border-border/50 hover:bg-muted/30 transition-colors",
-        task.completed && "opacity-60",
-        isDragging && "opacity-50 shadow-lg z-50",
-        isOverdue &&
-          "bg-red-50/50 border-red-200/50 dark:bg-red-950/20 dark:border-red-800/50"
-      )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Drag Handle */}
-      <div
-        {...listeners}
-        className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
-      >
-        <GripVertical className="w-4 h-4 text-muted-foreground" />
-      </div>
-
-      {/* Circular Checkbox */}
-      <button
-        onClick={() => onToggleComplete(task.id)}
+        {...attributes}
         className={cn(
-          "w-5 h-5 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center transition-all hover:border-primary",
-          task.completed && "bg-primary border-primary"
+          "group flex items-center gap-3 p-4 border-b border-border/50",
+          task.completed && "opacity-60",
+          isDragging && "opacity-50",
+          isOverdue && "bg-red-50/30 dark:bg-red-950/10"
         )}
       >
-        {task.completed && (
-          <Check className="w-3 h-3 text-primary-foreground" />
-        )}
-      </button>
-
-      {/* Task Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "text-sm font-medium truncate",
-              task.completed && "line-through text-muted-foreground"
-            )}
-          >
-            {task.name}
-          </span>
-          {/* Priority Dot */}
-          <div
-            className={cn(
-              "w-2 h-2 rounded-full",
-              priorityColors[task.priority]
-            )}
-          />
+        {/* Drag Handle */}
+        <div {...listeners} className="cursor-grab active:cursor-grabbing p-1">
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
         </div>
 
-        {/* Metadata */}
-        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-          {task.dueDate && (
+        {/* Circular Checkbox */}
+        <button
+          onClick={() => onToggleComplete(task.id)}
+          className={cn(
+            "w-5 h-5 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center  ",
+            task.completed && "bg-primary border-primary"
+          )}
+        >
+          {task.completed && (
+            <Check className="w-3 h-3 text-primary-foreground" />
+          )}
+        </button>
+
+        {/* Task Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
             <span
               className={cn(
-                "flex items-center gap-1",
-                isOverdue && "text-red-600 dark:text-red-400 font-medium"
+                "text-sm font-medium truncate",
+                task.completed && "line-through text-muted-foreground"
               )}
             >
-              <CalendarIcon className="w-3 h-3" />
-              {formatDueDate(new Date(task.dueDate))}
+              {task.name}
             </span>
-          )}
-          <span className="capitalize">{task.category}</span>
-          <span>{task.estimatedPomodoros} pomodoros</span>
-        </div>
-      </div>
+            {/* Priority Dot */}
+            <div
+              className={cn(
+                "w-2 h-2 rounded-full",
+                priorityColors[task.priority]
+              )}
+            />
+          </div>
 
-      {/* Hover Actions */}
-      {isHovered && (
-        <div className="flex items-center gap-1">
+          {/* Metadata */}
+          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+            {task.dueDate && (
+              <span
+                className={cn(
+                  "flex items-center gap-1",
+                  isOverdue && "text-red-600 dark:text-red-400 font-medium"
+                )}
+              >
+                <CalendarIcon className="w-3 h-3" />
+                {formatDueDate(new Date(task.dueDate))}
+              </span>
+            )}
+            <span className="capitalize">{task.category}</span>
+            <span>{task.estimatedPomodoros} pomodoros</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
           <Button
             variant="ghost"
             size="sm"
@@ -171,12 +164,24 @@ export function TaskItem({
             variant="ghost"
             size="sm"
             onClick={() => onDelete(task.id)}
-            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+            className="h-8 w-8 p-0 text-destructive"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if task properties that affect display change
+    return (
+      prevProps.task.id === nextProps.task.id &&
+      prevProps.task.name === nextProps.task.name &&
+      prevProps.task.completed === nextProps.task.completed &&
+      prevProps.task.dueDate === nextProps.task.dueDate &&
+      prevProps.task.priority === nextProps.task.priority &&
+      prevProps.task.category === nextProps.task.category &&
+      prevProps.task.estimatedPomodoros === nextProps.task.estimatedPomodoros
+    );
+  }
+);
