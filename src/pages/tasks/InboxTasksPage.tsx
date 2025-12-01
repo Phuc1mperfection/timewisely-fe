@@ -5,7 +5,7 @@ import type { Task } from "@/interfaces";
 import { useTasks } from "@/hooks/useTasks";
 import { useTaskDragAndDrop } from "@/hooks/useTaskDragAndDrop";
 import { AddTaskButton } from "@/components/tasks/AddTaskButton";
-import { SortableTaskList } from "@/components/tasks/SortableTaskList";
+import { TaskList } from "@/components/tasks/TaskList";
 
 export function InboxTasksPage() {
   const {
@@ -68,15 +68,16 @@ export function InboxTasksPage() {
         </div>
 
         {/* Task List */}
-        <SortableTaskList
+        <TaskList
           tasks={inboxTasks}
-          sensors={sensors}
-          onDragEnd={handleDragEnd}
           onToggleComplete={handleToggleComplete}
           onEdit={handleEditTask}
           onDelete={handleDeleteTask}
           loading={loading}
           emptyMessage="No tasks in your inbox yet. Add some tasks to get started!"
+          enableDragAndDrop={true}
+          sensors={sensors}
+          onDragEnd={handleDragEnd}
         />
 
         {/* Add Task Section */}

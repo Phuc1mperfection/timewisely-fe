@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Star, CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -54,7 +54,6 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [priority, setPriority] = useState<Priority>(task.priority);
   const [category, setCategory] = useState<Category>(task.category);
   const [dueDate, setDueDate] = useState<Date>(new Date(task.dueDate));
-  const [isFavorite, setIsFavorite] = useState(task.isFavorite || false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -89,7 +88,6 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
       priority,
       category,
       dueDate,
-      isFavorite,
     });
   };
 
@@ -239,24 +237,6 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
             className="w-12 text-xs bg-transparent border-none outline-none text-center [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
         </div>
-
-        {/* Favorite Toggle */}
-        <Button
-          variant="ghost"
-          size="sm"
-          type="button"
-          className="h-7 w-7 p-0 hover:bg-transparent"
-          onClick={() => setIsFavorite(!isFavorite)}
-        >
-          <Star
-            className={cn(
-              "h-4 w-4 transition-colors",
-              isFavorite
-                ? "fill-yellow-400 text-yellow-400"
-                : "text-muted-foreground hover:text-yellow-400"
-            )}
-          />
-        </Button>
       </div>
 
       {/* Action Row */}

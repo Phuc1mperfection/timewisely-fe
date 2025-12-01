@@ -8,12 +8,17 @@ export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Helper function to sort tasks by order
+  const sortTasks = (tasks: Task[]) => {
+    return tasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+  };
+
   const fetchTasks = useCallback(async () => {
     try {
       setLoading(true);
       const data = await taskServices.getTasks();
       // Sort tasks by order
-      const sortedData = data.sort((a, b) => (a.order || 0) - (b.order || 0));
+      const sortedData = sortTasks(data);
       setTasks(sortedData);
     } catch (err) {
       console.error("Failed to fetch tasks:", err);
@@ -28,8 +33,8 @@ export function useTasks() {
       const newTask = await taskServices.createTask(taskData);
       setTasks((prev) => {
         const updated = [newTask, ...prev];
-        // Sort by order after adding
-        return updated.sort((a, b) => (a.order || 0) - (b.order || 0));
+        // Sort after adding
+        return sortTasks(updated);
       });
       success("Task created successfully!");
       return newTask;
@@ -46,8 +51,8 @@ export function useTasks() {
         const updated = prev.map((task) =>
           task.id === id ? updatedTask : task
         );
-        // Sort by order after updating
-        return updated.sort((a, b) => (a.order || 0) - (b.order || 0));
+        // Sort after updating
+        return sortTasks(updated);
       });
       success(
         updatedTask.completed
@@ -66,8 +71,8 @@ export function useTasks() {
         const updated = prev.map((task) =>
           task.id === id ? updatedTask : task
         );
-        // Sort by order after updating
-        return updated.sort((a, b) => (a.order || 0) - (b.order || 0));
+        // Sort after updating
+        return sortTasks(updated);
       });
       success("Task updated successfully!");
       return updatedTask;

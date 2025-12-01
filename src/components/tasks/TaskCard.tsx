@@ -69,14 +69,16 @@ export const TaskCard = memo(
 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2 mb-2">
-              <h3
-                className={cn(
-                  "font-medium text-lg text-card-foreground transition-all",
-                  task.completed && "line-through"
-                )}
-              >
-                {task.name}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3
+                  className={cn(
+                    "font-medium text-lg text-card-foreground transition-all",
+                    task.completed && "line-through"
+                  )}
+                >
+                  {task.name}
+                </h3>
+              </div>
               <div className="flex items-center gap-2 shrink-0">
                 <Badge
                   variant="outline"

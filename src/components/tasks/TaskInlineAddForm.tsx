@@ -28,7 +28,7 @@ import {
   isBefore,
   startOfDay,
 } from "date-fns";
-import { CalendarIcon, Star } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   createCleanDate,
@@ -46,7 +46,6 @@ interface TaskInlineAddFormProps {
     priority: Priority;
     category: Category;
     dueDate: Date;
-    isFavorite?: boolean;
   }) => void;
   onCancel: () => void;
   defaultDate?: Date;
@@ -135,7 +134,6 @@ export function TaskInlineAddForm({
   const [priority, setPriority] = useState<Priority>("medium");
   const [category, setCategory] = useState<Category>("personal");
   const [dueDate, setDueDate] = useState<Date>(createCleanDate(defaultDate));
-  const [isFavorite, setIsFavorite] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -209,7 +207,6 @@ export function TaskInlineAddForm({
       priority,
       category,
       dueDate,
-      isFavorite,
     });
 
     // Form will be unmounted after submit, no need to reset
@@ -364,24 +361,6 @@ export function TaskInlineAddForm({
             className="w-12 text-xs bg-transparent border-none outline-none text-center [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
         </div>
-
-        {/* Favorite Toggle */}
-        <Button
-          variant="ghost"
-          size="sm"
-          type="button"
-          className="h-7 w-7 p-0 hover:bg-transparent"
-          onClick={() => setIsFavorite(!isFavorite)}
-        >
-          <Star
-            className={cn(
-              "h-4 w-4 transition-colors",
-              isFavorite
-                ? "fill-yellow-400 text-yellow-400"
-                : "text-muted-foreground hover:text-yellow-400"
-            )}
-          />
-        </Button>
       </div>
 
       {/* Action Row */}

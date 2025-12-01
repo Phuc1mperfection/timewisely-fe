@@ -24,7 +24,6 @@ export interface Task {
   completed: boolean;
   createdAt: Date;
   order: number;
-  isFavorite?: boolean;
 }
 
 export interface TaskFilters {
@@ -47,5 +46,4 @@ export interface TaskFormData {
   category: Category;
   dueDate: Date;
   order?: number;
-  isFavorite?: boolean;
 }

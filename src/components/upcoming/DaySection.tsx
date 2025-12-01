@@ -2,13 +2,8 @@ import { memo } from "react";
 import { isToday, format } from "date-fns";
 import type { Task, TaskFormData } from "@/interfaces/Task";
 import { DayHeader } from "./DayHeader";
-import { TaskItem } from "./TaskItem";
+import { TaskList } from "@/components/tasks/TaskList";
 import { AddTaskButton } from "@/components/tasks/AddTaskButton";
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 
 interface DaySectionProps {
   date: Date;
@@ -38,26 +33,15 @@ export const DaySection = memo(function DaySection({
       <DayHeader date={date} />
 
       <div className="space-y-1 mt-3">
-        <DndContext
-          sensors={[]}
-          collisionDetection={closestCenter}
-          onDragEnd={() => {}}
-        >
-          <SortableContext
-            items={tasks.map((task) => task.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            {tasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                onToggle={() => onTaskToggle(task.id)}
-                onDelete={() => onTaskDelete(task.id)}
-                onEdit={(updates) => onTaskEdit(task.id, updates)}
-              />
-            ))}
-          </SortableContext>
-        </DndContext>
+        <TaskList
+          tasks={tasks}
+          onToggleComplete={onTaskToggle}
+          onEdit={onTaskEdit}
+          onDelete={onTaskDelete}
+          loading={false}
+          emptyMessage=""
+          enableDragAndDrop={true}
+        />
 
         {/* Add Task Section */}
         <AddTaskButton
