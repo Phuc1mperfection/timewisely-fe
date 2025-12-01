@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CalendarIcon, Check, Edit2, Trash2, GripVertical } from "lucide-react";
-import { format } from "date-fns";
+import { format, isToday, isTomorrow, isBefore, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
@@ -45,6 +45,23 @@ export function TaskItem({
     urgent: "bg-purple-500",
   };
 
+  // Check if task is overdue
+  const isOverdue =
+    task.dueDate &&
+    !task.completed &&
+    isBefore(startOfDay(new Date(task.dueDate)), startOfDay(new Date()));
+
+  // Format due date display
+  const formatDueDate = (date: Date) => {
+    if (isToday(date)) {
+      return format(date, "MMM d");
+    } else if (isTomorrow(date)) {
+      return "Tomorrow";
+    } else {
+      return format(date, "MMM d");
+    }
+  };
+
   // Show inline edit form when editing
   if (isEditing) {
     return (
@@ -73,7 +90,9 @@ export function TaskItem({
       className={cn(
         "group flex items-center gap-3 p-4 border-b border-border/50 hover:bg-muted/30 transition-colors",
         task.completed && "opacity-60",
-        isDragging && "opacity-50 shadow-lg z-50"
+        isDragging && "opacity-50 shadow-lg z-50",
+        isOverdue &&
+          "bg-red-50/50 border-red-200/50 dark:bg-red-950/20 dark:border-red-800/50"
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -122,9 +141,14 @@ export function TaskItem({
         {/* Metadata */}
         <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
           {task.dueDate && (
-            <span className="flex items-center gap-1">
+            <span
+              className={cn(
+                "flex items-center gap-1",
+                isOverdue && "text-red-600 dark:text-red-400 font-medium"
+              )}
+            >
               <CalendarIcon className="w-3 h-3" />
-              {format(new Date(task.dueDate), "MMM d")}
+              {formatDueDate(new Date(task.dueDate))}
             </span>
           )}
           <span className="capitalize">{task.category}</span>

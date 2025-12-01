@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-gold)] max-w-[200px] sm:max-w-[250px]"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30  font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-gold)] max-w-[200px] sm:max-w-[250px]"
                   aria-label="User menu"
                 >
                   <span className="truncate text-sm sm:text-base">
@@ -116,7 +116,7 @@ const Navbar: React.FC = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-48 text-white bg-white/90 border border-white/20 rounded-lg shadow-lg"
+                className="w-48  bg-white/90 border border-white/20 rounded-lg shadow-lg"
               >
                 <DropdownMenuItem
                   onClick={() => {

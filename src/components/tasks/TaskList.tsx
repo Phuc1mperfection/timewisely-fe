@@ -36,7 +36,7 @@ export function TaskList({
 
   if (tasks.length === 0) {
     return (
-      <div className="p-8 text-center">
+      <div>
         <p className="text-muted-foreground">{emptyMessage}</p>
       </div>
     );

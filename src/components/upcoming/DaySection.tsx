@@ -6,12 +6,13 @@ import { TaskList } from "@/components/tasks/TaskList";
 import { AddTaskButton } from "@/components/tasks/AddTaskButton";
 
 interface DaySectionProps {
-  date: Date;
+  date: Date | null;
   tasks: Task[];
   onTaskToggle: (taskId: string) => void;
   onTaskAdd: (taskData: Omit<TaskFormData, "order">) => void;
   onTaskDelete: (taskId: string) => void;
   onTaskEdit: (taskId: string, updates: Partial<Task>) => void;
+  isOverdueSection?: boolean;
 }
 
 export const DaySection = memo(function DaySection({
@@ -21,16 +22,18 @@ export const DaySection = memo(function DaySection({
   onTaskAdd,
   onTaskDelete,
   onTaskEdit,
+  isOverdueSection = false,
 }: DaySectionProps) {
-  const isTodaySection = isToday(date);
-  const sectionId = `day-section-${format(date, "yyyy-MM-dd")}`;
+  const isTodaySection = date ? isToday(date) : false;
+  const sectionId = date
+    ? isTodaySection
+      ? "today-section"
+      : `day-section-${format(date, "yyyy-MM-dd")}`
+    : "overdue-section";
 
   return (
-    <div
-      id={isTodaySection ? "today-section" : sectionId}
-      className="mt-8 first:mt-6"
-    >
-      <DayHeader date={date} />
+    <div id={sectionId} className="mt-8 first:mt-6">
+      <DayHeader date={date} isOverdueSection={isOverdueSection} />
 
       <div className="space-y-1 mt-3">
         <TaskList
@@ -40,16 +43,18 @@ export const DaySection = memo(function DaySection({
           onDelete={onTaskDelete}
           loading={false}
           emptyMessage=""
-          enableDragAndDrop={true}
+          enableDragAndDrop={!isOverdueSection}
         />
 
-        {/* Add Task Section */}
-        <AddTaskButton
-          defaultDate={date}
-          onCreateTask={(taskData) => {
-            onTaskAdd(taskData);
-          }}
-        />
+        {/* Add Task Section - only show for regular date sections */}
+        {!isOverdueSection && date && (
+          <AddTaskButton
+            defaultDate={date}
+            onCreateTask={(taskData) => {
+              onTaskAdd(taskData);
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,12 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { format, startOfToday, addDays, isSameDay, startOfDay } from "date-fns";
+import {
+  format,
+  startOfToday,
+  addDays,
+  isSameDay,
+  startOfDay,
+  isBefore,
+} from "date-fns";
 import { UpcomingHeader } from "@/components/upcoming/UpcomingHeader";
 import { DateStrip } from "@/components/upcoming/DateStrip";
 import { DaySection } from "@/components/upcoming/DaySection";
@@ -30,12 +37,17 @@ export function UpcomingTasksPage() {
   }, [daysToShow]);
 
   // Memoized: Filter upcoming tasks (only recalculate when tasks change)
-  const upcomingTasks = useMemo(() => {
+  const { upcomingTasks, overdueTasks } = useMemo(() => {
     const today = startOfDay(new Date());
-    return tasks.filter((task) => {
+    const upcoming = tasks.filter((task) => {
       const taskDate = startOfDay(new Date(task.dueDate));
       return taskDate >= today && !task.completed;
     });
+    const overdue = tasks.filter((task) => {
+      const taskDate = startOfDay(new Date(task.dueDate));
+      return taskDate < today && !task.completed;
+    });
+    return { upcomingTasks: upcoming, overdueTasks: overdue };
   }, [tasks]);
 
   // Memoized: Group tasks by day (expensive operation)
@@ -182,6 +194,18 @@ export function UpcomingTasksPage() {
         />
 
         <div className="px-6 pb-12">
+          {overdueTasks.length > 0 && (
+            <DaySection
+              key="overdue-section"
+              date={null}
+              tasks={overdueTasks}
+              onTaskToggle={handleTaskToggle}
+              onTaskAdd={() => {}} // Overdue section doesn't allow adding tasks
+              onTaskDelete={handleTaskDelete}
+              onTaskEdit={handleTaskEdit}
+              isOverdueSection={true}
+            />
+          )}
           {tasksByDay.map(({ date, tasks: dayTasks }) => (
             <DaySection
               key={date.toISOString()}
