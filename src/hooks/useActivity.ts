@@ -9,13 +9,21 @@ import type { ActivityApiData } from "@/services/activityServices";
 import { useToast } from "./useToast";
 import type { Activity } from "@/interfaces/Activity";
 
-
 function mapApiToUserActivity(api: ActivityApiData): Activity {
+  // Parse UTC string as local time (ignore UTC offset)
+  // Backend: "2025-12-05T15:00:00Z" → Display as 15:00 (3 PM) in calendar
+  const parseUTCAsLocal = (utcString: string) => {
+    if (!utcString) return new Date();
+    // Remove 'Z' and parse as local time
+    const localString = utcString.replace("Z", "");
+    return new Date(localString);
+  };
+
   return {
-    id: api.id || '',
+    id: api.id || "",
     title: api.title,
-    startTime: new Date(api.startTime),
-    endTime: new Date(api.endTime),
+    startTime: parseUTCAsLocal(api.startTime),
+    endTime: parseUTCAsLocal(api.endTime),
     description: api.description,
     color: api.color,
     allDay: api.allDay,
@@ -26,12 +34,30 @@ function mapApiToUserActivity(api: ActivityApiData): Activity {
 }
 
 function mapUserActivityToApi(activity: Partial<Activity>): ActivityApiData {
+  // Convert local Date to UTC string format
+  // Calendar shows 15:00 → Send as "2025-12-05T15:00:00Z" to backend
+  const formatLocalAsUTC = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+  };
+
   return {
     id: activity.id,
     title: activity.title || "",
     description: activity.description,
-    startTime: activity.startTime instanceof Date ? activity.startTime.toISOString() : "",
-    endTime: activity.endTime instanceof Date ? activity.endTime.toISOString() : "",
+    startTime:
+      activity.startTime instanceof Date
+        ? formatLocalAsUTC(activity.startTime)
+        : "",
+    endTime:
+      activity.endTime instanceof Date
+        ? formatLocalAsUTC(activity.endTime)
+        : "",
     color: activity.color,
     allDay: activity.allDay,
     location: activity.location,
@@ -43,8 +69,13 @@ function mapUserActivityToApi(activity: Partial<Activity>): ActivityApiData {
 export function useActivities() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<{ startTime: Date; endTime: Date } | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+    null
+  );
+  const [selectedSlot, setSelectedSlot] = useState<{
+    startTime: Date;
+    endTime: Date;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -80,7 +111,10 @@ export function useActivities() {
       )
     );
     try {
-      await updateActivity(activityId, mapUserActivityToApi({ ...activity, completed: !activity.completed }));
+      await updateActivity(
+        activityId,
+        mapUserActivityToApi({ ...activity, completed: !activity.completed })
+      );
       toastSuccess(
         !activity.completed
           ? `Activity completed! ${activity.title}`
@@ -110,30 +144,51 @@ export function useActivities() {
     setIsActivityModalOpen(true);
   };
 
-  const handleActivityDrop = async (args: { activity: object; startTime: Date | string; endTime: Date | string }) => {
+  const handleActivityDrop = async (args: {
+    activity: object;
+    startTime: Date | string;
+    endTime: Date | string;
+  }) => {
     const activity = args.activity as Activity;
-    const startTime = typeof args.startTime === "string" ? new Date(args.startTime) : args.startTime;
-    const endTime = typeof args.endTime === "string" ? new Date(args.endTime) : args.endTime;
+    const startTime =
+      typeof args.startTime === "string"
+        ? new Date(args.startTime)
+        : args.startTime;
+    const endTime =
+      typeof args.endTime === "string" ? new Date(args.endTime) : args.endTime;
     // Xác định allDay dựa vào giờ
     let newAllDay = activity.allDay;
     if (
-      startTime.getHours() !== 0 || startTime.getMinutes() !== 0 ||
-      endTime.getHours() !== 23 && endTime.getMinutes() !== 59
+      startTime.getHours() !== 0 ||
+      startTime.getMinutes() !== 0 ||
+      (endTime.getHours() !== 23 && endTime.getMinutes() !== 59)
     ) {
       newAllDay = false;
     }
     if (
-      startTime.getHours() === 0 && startTime.getMinutes() === 0 &&
-      endTime.getHours() === 23 && endTime.getMinutes() === 59
+      startTime.getHours() === 0 &&
+      startTime.getMinutes() === 0 &&
+      endTime.getHours() === 23 &&
+      endTime.getMinutes() === 59
     ) {
       newAllDay = true;
     }
     setLoading(true);
     try {
-      await updateActivity(activity.id, mapUserActivityToApi({ ...activity, startTime, endTime, allDay: newAllDay }));
+      await updateActivity(
+        activity.id,
+        mapUserActivityToApi({
+          ...activity,
+          startTime,
+          endTime,
+          allDay: newAllDay,
+        })
+      );
       setActivities((prev) =>
         prev.map((existingActivity) =>
-          existingActivity.id === activity.id ? { ...existingActivity, startTime, endTime, allDay: newAllDay } : existingActivity
+          existingActivity.id === activity.id
+            ? { ...existingActivity, startTime, endTime, allDay: newAllDay }
+            : existingActivity
         )
       );
       setSuccess("Activity updated");
@@ -150,13 +205,20 @@ export function useActivities() {
     setLoading(true);
     try {
       if (selectedActivity) {
-        await updateActivity(selectedActivity.id, mapUserActivityToApi({ ...selectedActivity, ...activityData }));
+        await updateActivity(
+          selectedActivity.id,
+          mapUserActivityToApi({ ...selectedActivity, ...activityData })
+        );
         await fetchActivities();
         setSuccess("Activity updated");
       } else if (selectedSlot) {
         const startTime = activityData.startTime || selectedSlot.startTime;
         const endTime = activityData.endTime || selectedSlot.endTime;
-        const apiData = mapUserActivityToApi({ ...activityData, startTime, endTime });
+        const apiData = mapUserActivityToApi({
+          ...activityData,
+          startTime,
+          endTime,
+        });
         await createActivity(apiData);
         await fetchActivities();
         setSuccess("Activity created");
@@ -168,23 +230,21 @@ export function useActivities() {
       setLoading(false);
     }
   };
-const handleDeleteActivity = async (activityId: string) => {
-  setLoading(true);
-  try {
-    await deleteActivity(activityId);
-    setActivities((prev) =>
-      prev.filter((activity) => activity.id !== activityId)
-    );
-    setSuccess("Activity deleted");
-    setIsActivityModalOpen(false);
-  } catch {
-    setError("Failed to delete activity");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+  const handleDeleteActivity = async (activityId: string) => {
+    setLoading(true);
+    try {
+      await deleteActivity(activityId);
+      setActivities((prev) =>
+        prev.filter((activity) => activity.id !== activityId)
+      );
+      setSuccess("Activity deleted");
+      setIsActivityModalOpen(false);
+    } catch {
+      setError("Failed to delete activity");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const activityStyleGetter = (activity: object) => {
     const userActivity = activity as Activity;
