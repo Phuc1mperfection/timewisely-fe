@@ -1,4 +1,4 @@
-import UserDropdownSvg from "@/assets/user-dropdown.svg";
+import UserDropdownSvg from "@/assets/icons/user-dropdown.svg";
 
 const UserDropdownIcon = () => <UserDropdownSvg />;
 

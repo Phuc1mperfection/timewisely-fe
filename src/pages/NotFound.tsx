@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import ClockFaceFunny from "@/assets/clock-face-funny.svg";
+import ClockFaceFunny from "@/assets/icons/clock-face-funny.svg";
 import { Button } from "@/components/ui/button";
 
 const NotFound = () => {

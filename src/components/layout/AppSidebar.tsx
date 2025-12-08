@@ -36,7 +36,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import Logo from "@/assets/icon.svg"; // Adjust the path as necessary
+import Logo from "@/assets/logos/icon.svg";
 
 const mainMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
