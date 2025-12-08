@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
     <motion.header
       className="
         fixed top-14 left-1/2 transform -translate-x-1/2 
-        z-50 backdrop-blur-md rounded-full shadow-lg border
+        z-50 backdrop-blur-md rounded-full border
         bg-white/60 text-gray-900 border-gray-300
         dark:bg-black/60 dark:text-white dark:border-zinc-800
         w-full max-w-2xl px-4 sm:px-6 lg:px-8
@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
           >
             <div className="p-1.5 rounded-full bg-gradient-to-r from-orange-600 to-orange-100">
               <img
-                src="/src/assets/icon.svg"
+                src="/src/assets/logos/icon.svg"
                 alt="Logo"
                 className="w-9 h-9 transition-transform duration-200"
               />
@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30  font-semibold shadow-sm transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-[var(--wisely-gold)] max-w-[200px] sm:max-w-[250px]"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30  font-semibold  max-w-[200px] sm:max-w-[250px]"
                   aria-label="User menu"
                 >
                   <span className="truncate text-sm sm:text-base">
@@ -116,13 +116,13 @@ const Navbar: React.FC = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-48  bg-white/90 border border-white/20 rounded-lg shadow-lg"
+                className="w-48  bg-white/90 border border-white/20 rounded-lg text-black"
               >
                 <DropdownMenuItem
                   onClick={() => {
                     navigate("app/dashboard");
                   }}
-                  className="hover:bg-[var(--wisely-gold)]/10 hover:cursor-pointer text-md"
+                  className="hover:bg-[var(--wisely-gold)]/10 hover:cursor-pointer text-md "
                 >
                   Dashboard
                 </DropdownMenuItem>
@@ -140,7 +140,7 @@ const Navbar: React.FC = () => {
           ) : (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <button
-                className="btn-primary px-3 py-1.5 rounded-2xl text-white font-medium shadow-md"
+                className="btn-primary px-3 py-1.5 rounded-2xl text-white font-medium "
                 onClick={() => {
                   navigate("/auth");
                 }}
@@ -191,7 +191,7 @@ const Navbar: React.FC = () => {
             </a>
             <div className="flex justify-center pt-2">
               <button
-                className="w-full max-w-xs mx-auto btn-primary px-6 py-3 rounded-xl text-white font-medium shadow-md"
+                className="w-full max-w-xs mx-auto btn-primary px-6 py-3 rounded-xl text-white font-medium "
                 onClick={() => {
                   setIsMenuOpen(false);
                   navigate("/auth");

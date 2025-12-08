@@ -5,7 +5,7 @@ import {
   useTransform,
   useSpring,
   useVelocity,
-} from "motion/react"; 
+} from "motion/react";
 import backgroundImg from "@/assets/images/productive-background.jpg";
 interface ScrollAnimationSectionProps {
   title: string;

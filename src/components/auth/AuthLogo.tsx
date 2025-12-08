@@ -13,7 +13,7 @@ const AuthLogo = () => (
       transition={{ type: "spring", stiffness: 300 }}
     >
       <img
-        src={"/src/assets/icon.svg"}
+        src={"/src/assets/logos/icon.svg"}
         alt="Logo"
         className="w-24 h-24 transition-transform duration-200 hover:scale-110 hover:cursor-grab"
       />

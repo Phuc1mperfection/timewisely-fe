@@ -73,7 +73,7 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
               {/* Inner background - Circle */}
               <div className="absolute inset-2 bg-orange-500/40 rounded-full rotate-45 flex items-center justify-center">
                 <img
-                  src="/src/assets/icon.svg"
+                  src="/src/assets/logos/icon.svg"
                   alt="Logo"
                   className="w-12 h-12 transition-transform duration-200"
                   loading="lazy"
