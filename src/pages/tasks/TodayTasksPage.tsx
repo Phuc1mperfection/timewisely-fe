@@ -16,7 +16,7 @@ export function TodayTasksPage() {
     deleteTask: deleteTaskAPI,
     updateTasksOrder,
     createTask: createTaskAPI,
-  } = useTasks();
+  } = useTasks("todo"); // Only show TODO_ONLY and BOTH tasks
 
   // Filter tasks for today only
   const filteredTasks = useMemo(() => {

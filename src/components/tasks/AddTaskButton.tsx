@@ -5,6 +5,7 @@ import type { Task } from "@/interfaces";
 
 interface AddTaskButtonProps {
   defaultDate?: Date;
+  context?: "pomodoro" | "todo"; // Context for smart defaults
   onCreateTask: (
     taskData: Omit<
       Task,
@@ -15,6 +16,7 @@ interface AddTaskButtonProps {
 
 export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
   defaultDate,
+  context = "todo", // Default to todo context
   onCreateTask,
 }) => {
   const [isAddingTask, setIsAddingTask] = useState(false);
@@ -24,6 +26,7 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
       {isAddingTask ? (
         <TaskInlineAddForm
           defaultDate={defaultDate}
+          context={context}
           onSubmit={(taskData) => {
             onCreateTask(taskData);
             setIsAddingTask(false);

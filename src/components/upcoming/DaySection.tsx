@@ -48,7 +48,7 @@ export const DaySection = memo(
       <div
         ref={setNodeRef}
         id={sectionId}
-                className={cn(
+        className={cn(
           "mt-8 first:mt-6 transition-colors rounded-lg",
           isOver && !isOverdueSection && "bg-muted/50 ring-2 ring-primary/20"
         )}
@@ -74,6 +74,7 @@ export const DaySection = memo(
           {/* Add Task Section - only show for regular date sections */}
           {!isOverdueSection && date && (
             <AddTaskButton
+              context="todo"
               defaultDate={date}
               onCreateTask={(taskData) => {
                 onTaskAdd(taskData);
@@ -86,15 +87,22 @@ export const DaySection = memo(
   },
   (prevProps, nextProps) => {
     // Custom comparison for memo optimization
-    // Only re-render if tasks array changes or key props change
+    // Re-render if tasks array or any task property changes
     return (
       prevProps.tasks.length === nextProps.tasks.length &&
-      prevProps.tasks.every(
-        (task, index) =>
-          task.id === nextProps.tasks[index]?.id &&
-          task.completed === nextProps.tasks[index]?.completed &&
-          task.name === nextProps.tasks[index]?.name
-      ) &&
+      prevProps.tasks.every((task, index) => {
+        const nextTask = nextProps.tasks[index];
+        return (
+          task.id === nextTask?.id &&
+          task.name === nextTask?.name &&
+          task.completed === nextTask?.completed &&
+          task.priority === nextTask?.priority &&
+          task.category === nextTask?.category &&
+          task.type === nextTask?.type &&
+          task.estimatedPomodoros === nextTask?.estimatedPomodoros &&
+          task.dueDate === nextTask?.dueDate
+        );
+      }) &&
       prevProps.date?.getTime() === nextProps.date?.getTime() &&
       prevProps.isOverdueSection === nextProps.isOverdueSection
     );

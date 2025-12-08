@@ -34,6 +34,7 @@ import {
   createCleanDate,
   clampPomodoroEstimate,
   validatePomodoroEstimate,
+  cleanSmartKeywords,
 } from "@/lib/taskUtils";
 import type { Priority, Category, TaskType } from "@/interfaces";
 
@@ -49,6 +50,7 @@ interface TaskInlineAddFormProps {
   }) => void;
   onCancel: () => void;
   defaultDate?: Date;
+  context?: "pomodoro" | "todo"; // Context for smart defaults
 }
 
 const PRIORITY_COLORS = {
@@ -103,33 +105,17 @@ function parseSmartPriority(text: string): Priority | null {
   return null;
 }
 
-// Clean smart keywords from text
-function cleanSmartKeywords(text: string): string {
-  let cleaned = text;
-
-  // Remove date keywords
-  cleaned = cleaned.replace(
-    /\b(today|tomorrow|tmr|monday|mon|tuesday|tue|wednesday|wed|thursday|thu|friday|fri|saturday|sat|sunday|sun)\b/gi,
-    ""
-  );
-
-  // Remove priority keywords
-  cleaned = cleaned.replace(/\b(p1|p2|p3|p4|urgent|high|medium|low)\b/gi, "");
-
-  // Clean up extra spaces
-  cleaned = cleaned.replace(/\s+/g, " ").trim();
-
-  return cleaned;
-}
-
 export function TaskInlineAddForm({
   onSubmit,
   onCancel,
   defaultDate,
+  context = "todo", // Default to todo context
 }: TaskInlineAddFormProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [type, setType] = useState<TaskType>("both");
+  const [type, setType] = useState<TaskType>(
+    context === "pomodoro" ? "POMODORO_ONLY" : "TODO_ONLY"
+  );
   const [estimatedPomodoros, setEstimatedPomodoros] = useState("1");
   const [priority, setPriority] = useState<Priority>("medium");
   const [category, setCategory] = useState<Category>("personal");
@@ -148,12 +134,25 @@ export function TaskInlineAddForm({
     }
   }, [name]);
 
-  // Click outside to cancel
+  // Click outside to cancel (but ignore clicks on Popover/Select content)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (formRef.current && !formRef.current.contains(event.target as Node)) {
-        onCancel();
+      const target = event.target as Node;
+
+      // Ignore if clicking inside form
+      if (formRef.current && formRef.current.contains(target)) {
+        return;
       }
+
+      // Ignore if clicking on Popover content (rendered in Portal outside form)
+      const isClickingPopover = (target as Element).closest(
+        '[role="dialog"], [role="menu"], [data-radix-popper-content-wrapper]'
+      );
+      if (isClickingPopover) {
+        return;
+      }
+
+      onCancel();
     };
 
     // Add a small delay to prevent immediate trigger
@@ -176,7 +175,7 @@ export function TaskInlineAddForm({
     const lastWord = words[words.length - 1];
 
     const smartDate = parseSmartDate(lastWord);
-    if (smartDate) setDueDate(smartDate);
+    if (smartDate) setDueDate(createCleanDate(smartDate));
 
     const smartPriority = parseSmartPriority(lastWord);
     if (smartPriority) setPriority(smartPriority);
@@ -224,7 +223,7 @@ export function TaskInlineAddForm({
         onChange={handleNameChange}
         onKeyDown={handleKeyDown}
         placeholder="Task name"
-        className="min-h-[44px] max-h-[200px] resize-none border-0 focus-visible:ring-0 px-0 text-base leading-relaxed"
+        className="min-h-[44px] max-h-[200px] resize-none text-base leading-relaxed"
         autoFocus
       />
 
@@ -329,13 +328,29 @@ export function TaskInlineAddForm({
 
         {/* Task Type Dropdown */}
         <Select value={type} onValueChange={(v) => setType(v as TaskType)}>
-          <SelectTrigger className="h-7 w-24 text-xs px-2">
+          <SelectTrigger className="h-7 w-32 text-xs px-2">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="both">🔄 Both</SelectItem>
-            <SelectItem value="todo">✓ To-Do</SelectItem>
-            <SelectItem value="pomodoro">🍅 Pomodoro</SelectItem>
+            <SelectItem value="BOTH">
+              <span className="flex items-center gap-1">
+                🔄 <span>Both</span>
+                <span className="text-[10px] text-muted-foreground">
+                  (Recommended)
+                </span>
+              </span>
+            </SelectItem>
+            <SelectItem value="TODO_ONLY">
+              <span className="flex items-center gap-1">
+                ✓ <span>Todo Only</span>
+              </span>
+            </SelectItem>
+            <SelectItem value="POMODORO_ONLY">
+              <span className="flex items-center gap-1.5">
+                <span className="text-base">🍅</span>
+                <span>Pomodoro Only</span>
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
 

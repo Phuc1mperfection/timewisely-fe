@@ -32,7 +32,7 @@ const PomodoroPage: React.FC = () => {
   // State to show/hide completed tasks
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
 
-  // Load all tasks (both completed and incomplete)
+  // Load Pomodoro tasks only (POMODORO_ONLY + BOTH)
   const {
     tasks: allTasks,
     loading: loadingTasks,
@@ -41,7 +41,7 @@ const PomodoroPage: React.FC = () => {
     updateTask: modifyTask,
     toggleComplete: toggleCompletion,
     deleteTask: removeTask,
-  } = useTasks();
+  } = useTasks("pomodoro"); // Filter for Pomodoro context
 
   // Filter tasks based on showCompletedTasks state
   const tasks = showCompletedTasks
@@ -240,7 +240,7 @@ const PomodoroPage: React.FC = () => {
       const newTask = await addTask({
         name: newTaskName.trim(),
         description: "",
-        type: "both",
+        type: "POMODORO_ONLY", // Create as Pomodoro-only task
         estimatedPomodoros: newTaskEstPomodoros,
         priority: "medium",
         category: "other",

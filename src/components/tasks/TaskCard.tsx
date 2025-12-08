@@ -22,10 +22,10 @@ const priorityConfig: Record<
   Priority,
   { color: string; icon: string; label: string }
 > = {
-  urgent: { color: "border-l-purple-500", icon: "🟣", label: "Urgent" },
-  high: { color: "border-l-red-500", icon: "🔴", label: "High" },
+  urgent: { color: "border-l-red-500", icon: "🔴", label: "Urgent" },
+  high: { color: "border-l-orange-500", icon: "🟠", label: "High" },
   medium: { color: "border-l-yellow-500", icon: "🟡", label: "Medium" },
-  low: { color: "border-l-green-500", icon: "🟢", label: "Low" },
+  low: { color: "border-l-blue-500", icon: "🔵", label: "Low" },
 };
 
 const categoryColors: Record<string, string> = {
@@ -150,7 +150,7 @@ export const TaskCard = memo(
                 {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
               </Badge>
 
-              {(task.type === "pomodoro" || task.type === "both") && (
+              {(task.type === "POMODORO_ONLY" || task.type === "BOTH") && (
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <span className="text-base">🍅</span>
                   <span>
@@ -160,11 +160,11 @@ export const TaskCard = memo(
               )}
 
               <Badge variant="secondary" className="text-xs">
-                {task.type === "pomodoro"
-                  ? "Pomodoro Only"
-                  : task.type === "todo"
-                  ? "Todo Only"
-                  : "Both"}
+                {task.type === "POMODORO_ONLY"
+                  ? "🍅 Pomodoro Only"
+                  : task.type === "TODO_ONLY"
+                  ? "✓ Todo Only"
+                  : "🔄 Both"}
               </Badge>
             </div>
           </div>

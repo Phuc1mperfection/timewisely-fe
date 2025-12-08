@@ -35,7 +35,7 @@ export function UpcomingTasksPage() {
     updateTask: updateTaskAPI,
     toggleComplete,
     deleteTask: deleteTaskAPI,
-  } = useTasks();
+  } = useTasks("todo"); // Only show TODO_ONLY and BOTH tasks
 
   const [selectedDate, setSelectedDate] = useState(startOfToday());
   const [daysToShow, setDaysToShow] = useState(10); // Start with 60 days (2 months)

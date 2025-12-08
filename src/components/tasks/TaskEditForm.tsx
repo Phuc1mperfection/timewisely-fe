@@ -31,17 +31,17 @@ interface TaskEditFormProps {
 }
 
 const PRIORITY_COLORS = {
-  low: "text-blue-500",
-  medium: "text-yellow-500",
-  high: "text-orange-500",
   urgent: "text-red-500",
+  high: "text-orange-500",
+  medium: "text-yellow-500",
+  low: "text-blue-500",
 };
 
 const PRIORITY_LABELS = {
-  low: "P4",
-  medium: "P3",
-  high: "P2",
   urgent: "P1",
+  high: "P2",
+  medium: "P3",
+  low: "P4",
 };
 
 export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
@@ -100,7 +100,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
         onChange={(e) => setName(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Task name"
-        className="min-h-[44px] max-h-[200px] resize-none border-0 focus-visible:ring-0 px-0 text-base leading-relaxed"
+        className="min-h-[44px] max-h-[200px] resize-none text-base leading-relaxed"
         autoFocus
       />
 
@@ -205,13 +205,25 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
 
         {/* Task Type Dropdown */}
         <Select value={type} onValueChange={(v) => setType(v as TaskType)}>
-          <SelectTrigger className="h-7 w-24 text-xs px-2">
+          <SelectTrigger className="h-7 w-32 text-xs px-2">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="both">🔄 Both</SelectItem>
-            <SelectItem value="todo">✓ To-Do</SelectItem>
-            <SelectItem value="pomodoro">🍅 Pomodoro</SelectItem>
+            <SelectItem value="BOTH">
+              <span className="flex items-center gap-1">
+                🔄 <span>Both</span>
+              </span>
+            </SelectItem>
+            <SelectItem value="TODO_ONLY">
+              <span className="flex items-center gap-1">
+                ✓ <span>Todo Only</span>
+              </span>
+            </SelectItem>
+            <SelectItem value="POMODORO_ONLY">
+              <span className="flex items-center gap-1">
+                🍅 <span>Pomodoro Only</span>
+              </span>
+            </SelectItem>
           </SelectContent>
         </Select>
 

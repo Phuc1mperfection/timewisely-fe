@@ -16,7 +16,7 @@ export function InboxTasksPage() {
     toggleComplete,
     deleteTask: deleteTaskAPI,
     updateTasksOrder,
-  } = useTasks();
+  } = useTasks("todo"); // Only show TODO_ONLY and BOTH tasks
 
   // Filter tasks that are not completed (inbox shows all incomplete tasks)
   // Don't sort here - useTasks already sorts by order

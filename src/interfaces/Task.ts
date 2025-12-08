@@ -1,4 +1,5 @@
-﻿export type TaskType = "pomodoro" | "todo" | "both";
+﻿export type TaskType = "TODO_ONLY" | "POMODORO_ONLY" | "BOTH";
+export type TaskContext = "pomodoro" | "todo"; // For UI context
 export type Priority = "low" | "medium" | "high" | "urgent";
 export type Category =
   | "work"

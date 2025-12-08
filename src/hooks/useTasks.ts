@@ -1,12 +1,28 @@
-﻿import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback, useMemo } from "react";
 import { useToast } from "@/hooks/useToast";
 import type { Task, TaskFormData } from "@/interfaces";
 import * as taskServices from "@/services/taskServices";
 
-export function useTasks() {
+type TaskFilterContext = "pomodoro" | "todo" | "all";
+
+export function useTasks(filterContext: TaskFilterContext = "all") {
   const { success, handleError } = useToast();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Filter tasks based on context
+  const tasks = useMemo(() => {
+    if (filterContext === "all") return allTasks;
+
+    if (filterContext === "pomodoro") {
+      return allTasks.filter(
+        (t) => t.type === "POMODORO_ONLY" || t.type === "BOTH"
+      );
+    }
+
+    // filterContext === "todo"
+    return allTasks.filter((t) => t.type === "TODO_ONLY" || t.type === "BOTH");
+  }, [allTasks, filterContext]);
 
   // Helper function to sort tasks by order
   const sortTasks = (tasks: Task[]) => {
@@ -19,7 +35,7 @@ export function useTasks() {
       const data = await taskServices.getTasks();
       // Sort tasks by order
       const sortedData = sortTasks(data);
-      setTasks(sortedData);
+      setAllTasks(sortedData);
     } catch (err) {
       console.error("Failed to fetch tasks:", err);
       // Simple error handling without toast to avoid dependency issues
@@ -31,7 +47,7 @@ export function useTasks() {
   const createTask = async (taskData: TaskFormData) => {
     try {
       const newTask = await taskServices.createTask(taskData);
-      setTasks((prev) => {
+      setAllTasks((prev) => {
         const updated = [newTask, ...prev];
         // Sort after adding
         return sortTasks(updated);
@@ -47,7 +63,7 @@ export function useTasks() {
   const toggleComplete = async (id: string) => {
     try {
       const updatedTask = await taskServices.toggleTaskComplete(id);
-      setTasks((prev) => {
+      setAllTasks((prev) => {
         const updated = prev.map((task) =>
           task.id === id ? updatedTask : task
         );
@@ -67,7 +83,7 @@ export function useTasks() {
   const updateTask = async (id: string, taskData: Partial<TaskFormData>) => {
     try {
       const updatedTask = await taskServices.updateTask(id, taskData);
-      setTasks((prev) => {
+      setAllTasks((prev) => {
         const updated = prev.map((task) =>
           task.id === id ? updatedTask : task
         );
@@ -90,7 +106,7 @@ export function useTasks() {
   const deleteTask = async (id: string) => {
     try {
       await taskServices.deleteTask(id);
-      setTasks((prev) => prev.filter((task) => task.id !== id));
+      setAllTasks((prev) => prev.filter((task) => task.id !== id));
       success("Task deleted successfully!");
     } catch (err) {
       handleError(err, "Failed to delete task", "Delete Task");
@@ -98,7 +114,7 @@ export function useTasks() {
   };
 
   const updateTasksOrder = useCallback((reorderedTasks: Task[]) => {
-    setTasks(reorderedTasks);
+    setAllTasks(reorderedTasks);
   }, []);
 
   return {

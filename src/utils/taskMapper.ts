@@ -19,12 +19,8 @@ export interface BackendTask {
 // Task mapper utility class following SRP
 export class TaskMapper {
   static mapTypeToBackend(type: string): string {
-    const mapping: Record<string, string> = {
-      pomodoro: "POMODORO_ONLY",
-      todo: "TODO_ONLY",
-      both: "BOTH",
-    };
-    return mapping[type] || type.toUpperCase();
+    // Already uppercase from frontend (TODO_ONLY, POMODORO_ONLY, BOTH)
+    return type;
   }
 
   static mapPriorityToBackend(priority: string): string {
@@ -40,8 +36,7 @@ export class TaskMapper {
       id: task.id?.toString() || "",
       name: task.name || "",
       description: task.description || "",
-      type: (task.type?.toLowerCase().replace("_only", "") ||
-        "todo") as Task["type"],
+      type: (task.type || "TODO_ONLY") as Task["type"], // Keep uppercase from backend
       estimatedPomodoros: task.estimatedPomodoros || 0,
       completedPomodoros: task.completedPomodoros || 0,
       priority: (task.priority?.toLowerCase() || "medium") as Task["priority"],

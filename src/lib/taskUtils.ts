@@ -60,3 +60,26 @@ export function clampPomodoroEstimate(value: string | number): number {
   if (isNaN(numValue)) return 0.1;
   return Math.min(Math.max(numValue, 0.1), 20);
 }
+
+/**
+ * Remove smart keywords (date and priority) from task name
+ * @param text - The text to clean
+ * @returns Cleaned text without smart keywords
+ */
+export function cleanSmartKeywords(text: string): string {
+  let cleaned = text;
+
+  // Remove date keywords
+  cleaned = cleaned.replace(
+    /\b(today|tomorrow|tmr|monday|mon|tuesday|tue|wednesday|wed|thursday|thu|friday|fri|saturday|sat|sunday|sun)\b/gi,
+    ""
+  );
+
+  // Remove priority keywords
+  cleaned = cleaned.replace(/\b(p1|p2|p3|p4|urgent|high|medium|low)\b/gi, "");
+
+  // Clean up extra spaces
+  cleaned = cleaned.replace(/\s+/g, " ").trim();
+
+  return cleaned;
+}
