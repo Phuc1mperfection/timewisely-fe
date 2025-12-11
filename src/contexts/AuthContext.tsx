@@ -107,9 +107,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const userData = await loginService(email, password);
-      // Lưu token nếu backend trả về
-      if (userData.token) localStorage.setItem("token", userData.token);
+      const loginResult = await loginService(email, password);
+
+      // 1. Lưu token
+      if (loginResult.token) {
+        localStorage.setItem("token", loginResult.token);
+      }
+
+      // 2. Gọi /auth/me để lấy user đầy đủ (có id)
+      const userData = await getCurrentUser();
       setUser(userData);
       if (userData.hasCompletedSurvey !== undefined) {
         localStorage.setItem(
@@ -117,6 +123,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           String(userData.hasCompletedSurvey)
         );
       }
+
+      // 3. Đợi React re-render để NotificationProvider kịp mount và connect WebSocket
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       return userData;
     } finally {
       setLoading(false);
@@ -130,15 +140,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   ) => {
     setLoading(true);
     try {
-      const userData = await registerService(email, fullName, password);
-      if (userData.token) localStorage.setItem("token", userData.token);
+      const regResult = await registerService(email, fullName, password);
+      if (regResult.token) {
+        localStorage.setItem("token", regResult.token);
+      }
+
+      const userData = await getCurrentUser();
       setUser(userData);
+
       if (userData.hasCompletedSurvey !== undefined) {
         localStorage.setItem(
           "hasCompletedSurvey",
           String(userData.hasCompletedSurvey)
         );
       }
+
       return userData;
     } finally {
       setLoading(false);

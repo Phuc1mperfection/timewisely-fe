@@ -41,9 +41,6 @@ const DEFAULT_SETTINGS: NotificationSettings = {
 
 const STORAGE_KEY = "notificationSettings";
 
-/**
- * Load settings từ localStorage
- */
 export const loadNotificationSettings = (): NotificationSettings => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -65,9 +62,7 @@ export const loadNotificationSettings = (): NotificationSettings => {
   }
 };
 
-/**
- * Save settings vào localStorage
- */
+
 export const saveNotificationSettings = (
   settings: NotificationSettings
 ): void => {
@@ -78,17 +73,13 @@ export const saveNotificationSettings = (
   }
 };
 
-/**
- * Reset về default settings
- */
+
 export const resetNotificationSettings = (): NotificationSettings => {
   saveNotificationSettings(DEFAULT_SETTINGS);
   return DEFAULT_SETTINGS;
 };
 
-/**
- * Check nếu notification type được enable
- */
+
 export const isNotificationTypeEnabled = (
   type: "taskReminder" | "activityReminder" | "overdueAlert" | "morningDigest"
 ): boolean => {
@@ -96,17 +87,13 @@ export const isNotificationTypeEnabled = (
   return settings.enabled && settings.reminders[type];
 };
 
-/**
- * Check nếu sound được enable
- */
+
 export const isSoundEnabled = (): boolean => {
   const settings = loadNotificationSettings();
   return settings.enabled && settings.sound.enabled;
 };
 
-/**
- * Get volume (0-1 cho Web Audio API)
- */
+
 export const getVolume = (): number => {
   const settings = loadNotificationSettings();
   return settings.sound.volume / 100; // Convert 0-100 → 0-1

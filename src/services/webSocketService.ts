@@ -7,7 +7,7 @@ export class WebSocketService {
   private isConnected = false;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
-  private reconnectDelay = 3000; // 3 seconds
+  private reconnectDelay = 3000; 
   private messageCallback: ((message: NotificationMessage) => void) | null =
     null;
   private connectionStatusCallback: ((isConnected: boolean) => void) | null =
@@ -17,17 +17,14 @@ export class WebSocketService {
     onMessage: (message: NotificationMessage) => void,
     onConnectionChange?: (isConnected: boolean) => void
   ): void {
-    if (this.isConnected) {
-      console.log("WebSocket already connected");
-      return;
-    }
-
     this.messageCallback = onMessage;
     this.connectionStatusCallback = onConnectionChange || null;
 
     const token = localStorage.getItem("token");
     if (!token) {
-      console.error("No authentication token found");
+      setTimeout(() => {
+        this.connect(onMessage, onConnectionChange);
+      }, 1000);
       return;
     }
 
@@ -40,7 +37,6 @@ export class WebSocketService {
       webSocketFactory: () => new SockJS(wsUrl) as WebSocket,
 
       connectHeaders: {},
-
 
       heartbeatIncoming: 10000,
       heartbeatOutgoing: 10000,
@@ -109,20 +105,23 @@ export class WebSocketService {
     }
 
     this.reconnectAttempts++;
-  
+
+    setTimeout(() => {
+      if (this.client) {
+        this.client.activate();
+      }
+    }, this.reconnectDelay);
   }
 
   disconnect(): void {
     if (this.client) {
-      console.log("Disconnecting from WebSocket...");
       this.client.deactivate();
       this.client = null;
-      this.isConnected = false;
-      this.messageCallback = null;
-      this.connectionStatusCallback = null;
-      this.reconnectAttempts = 0;
-      console.log("✅ WebSocket disconnected");
     }
+    this.isConnected = false;
+    this.messageCallback = null;
+    this.connectionStatusCallback = null;
+    this.reconnectAttempts = 0;
   }
 
   getIsConnected(): boolean {

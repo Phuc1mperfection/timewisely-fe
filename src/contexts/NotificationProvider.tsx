@@ -14,7 +14,7 @@ import {
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const [notifications, setNotifications] = useState<NotificationResponse[]>(
     []
@@ -180,35 +180,43 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     [notifications]
   );
 
-  useEffect(() => {
-    if (!user?.id) {
-      webSocketService.disconnect();
-      setIsConnected(false);
-      setNotifications([]);
-      setUnreadCount(0);
-      return;
-    }
+useEffect(() => {
+  // Đợi AuthProvider load xong đã
+  if (authLoading) {
+    return;
+  }
 
-    if (Notification.permission === "default") {
-      Notification.requestPermission().then((permission) => {
-        console.log("Notification permission:", permission);
-      });
-    }
+  // Nếu không có user => disconnect & clear state
+  if (!user?.id) {
+    webSocketService.disconnect();
+    setIsConnected(false);
+    setNotifications([]);
+    setUnreadCount(0);
+    return;
+  }
 
-    // Fetch notifications from API immediately
-    fetchNotifications();
-
-    // Connect WebSocket immediately
-    webSocketService.connect(handleNewNotification, (connected) => {
-      setIsConnected(connected);
+  // Có user rồi: xin quyền browser notification
+  if (Notification.permission === "default") {
+    Notification.requestPermission().then((permission) => {
+      console.log("Notification permission:", permission);
     });
+  }
 
-    return () => {
-      webSocketService.disconnect();
-      setIsConnected(false);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  // Lấy notifications từ API
+  fetchNotifications();
+
+  // Kết nối WebSocket
+  webSocketService.connect(handleNewNotification, (connected) => {
+    setIsConnected(connected);
+  });
+
+  // Cleanup khi user đổi hoặc unmount
+  return () => {
+    webSocketService.disconnect();
+    setIsConnected(false);
+  };
+}, [user?.id, authLoading, fetchNotifications, handleNewNotification]);
+
 
   const contextValue = useMemo<NotificationContextType>(
     () => ({
