@@ -25,6 +25,10 @@ export interface Task {
   completed: boolean;
   createdAt: Date;
   order: number;
+  // Reminder fields
+  reminderEnabled?: boolean;
+  reminderMinutesBefore?: number;
+  lastReminderSentAt?: Date | null;
 }
 
 export interface TaskFilters {

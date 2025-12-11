@@ -3,6 +3,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "../layout/AppSidebar";
 import { Outlet } from "react-router-dom";
 import { ModeToggle } from "@/components/mode-toggle";
+import { NotificationBell } from "@/components/notifications";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,8 +13,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 flex flex-col">
           <header className="flex items-center justify-between p-0.5  border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center space-x-4">
-              <SidebarTrigger  />
+              <SidebarTrigger />
               <ModeToggle />
+            </div>
+            <div className="flex items-center gap-2 mr-4">
+              <NotificationBell />
             </div>
           </header>
           {/* Render nested route content */}

@@ -1,5 +1,5 @@
 ﻿import apiClient from "./apiClient";
-import type { Task, TaskFormData } from "@/interfaces";
+import type { Task, TaskFormData, UpdateReminderRequest } from "@/interfaces";
 import { TaskMapper } from "@/utils/taskMapper";
 
 // Task API service - handles only API communication
@@ -49,6 +49,17 @@ export class TaskApiService {
     };
     await apiClient.put("/tasks/order", payload);
   }
+
+  static async updateTaskReminder(
+    taskId: string,
+    settings: UpdateReminderRequest
+  ): Promise<Task> {
+    const response = await apiClient.patch(
+      `/tasks/${taskId}/reminder`,
+      settings
+    );
+    return TaskMapper.mapTaskFromBackend(response.data);
+  }
 }
 
 // Backward compatibility exports
@@ -59,3 +70,4 @@ export const updateTask = TaskApiService.updateTask;
 export const toggleTaskComplete = TaskApiService.toggleTaskComplete;
 export const deleteTask = TaskApiService.deleteTask;
 export const updateTaskOrder = TaskApiService.updateTaskOrder;
+export const updateTaskReminder = TaskApiService.updateTaskReminder;

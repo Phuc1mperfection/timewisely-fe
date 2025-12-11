@@ -13,6 +13,7 @@ import {
   type UserSettings,
   type StartPomodoroRequest,
 } from "@/services/pomodoroServices";
+import { soundService } from "@/services/soundService";
 
 interface UsePomodoroSessionReturn {
   // Session state
@@ -50,7 +51,6 @@ export const usePomodoroSession = (
 ): UsePomodoroSessionReturn => {
   const { success, info, handleError } = useToast();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const isCompletingRef = useRef<boolean>(false); // Prevent double refresh
   const onSessionComplete = options?.onSessionComplete;
 
@@ -61,37 +61,9 @@ export const usePomodoroSession = (
   const [error, setError] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
 
-  // Initialize audio
-  useEffect(() => {
-    audioRef.current = new Audio();
-    audioRef.current.volume = 0.5;
-  }, []);
-
-  // Play notification sound
+  // Play notification sound using soundService
   const playNotificationSound = useCallback(() => {
-    try {
-      const AudioContextClass = window.AudioContext || window.AudioContext;
-      const audioContext = new AudioContextClass();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      oscillator.frequency.value = 800;
-      oscillator.type = "sine";
-
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        0.01,
-        audioContext.currentTime + 0.5
-      );
-
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.5);
-    } catch (err) {
-      console.error("Failed to play notification sound:", err);
-    }
+    soundService.playPomodoro();
   }, []);
 
   // Load user settings
@@ -139,26 +111,21 @@ export const usePomodoroSession = (
     }
   }, []); // Empty deps - function is stable
 
-  // Initial load - only once on mount
   useEffect(() => {
     loadSettings();
     refreshSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty array = run only once on mount
+  }, [loadSettings, refreshSession]); // Empty array = run only once on mount
 
-  // Timer countdown logic - only runs when session is RUNNING
   useEffect(() => {
     if (session?.status === "RUNNING" && timeLeft > 0) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            // Timer completed - use flag to prevent double call
             if (isCompletingRef.current) {
               return 0;
             }
             isCompletingRef.current = true;
 
-            // Play sound and show notification
             playNotificationSound();
             const sessionType = session?.sessionType;
             if (sessionType === "FOCUS") {
@@ -167,12 +134,10 @@ export const usePomodoroSession = (
               info("Break Over! ⏰ Ready to focus again?");
             }
 
-            // Complete the session (call backend API to mark as complete)
             if (session) {
               const completedSession = { ...session }; // Store session before clearing
               completeSession(session.id)
                 .then(() => {
-                  // Trigger callback before refreshing
                   if (onSessionComplete) {
                     onSessionComplete(completedSession);
                   }
@@ -206,7 +171,6 @@ export const usePomodoroSession = (
         clearInterval(intervalRef.current);
       }
     };
-    // refreshSession is stable (empty deps), safe to omit
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     session?.status,
@@ -228,7 +192,6 @@ export const usePomodoroSession = (
         setTimeLeft(newSession.remainingTime);
         success("Focus session started! 🍅");
       } catch (err) {
-        // ✨ Clean code: One line to handle all error types
         const errorMessage = handleError(
           err,
           "Failed to start session",
@@ -242,7 +205,6 @@ export const usePomodoroSession = (
     [success, handleError]
   );
 
-  // Pause session
   const pause = useCallback(async () => {
     if (!session) return;
 
@@ -264,7 +226,6 @@ export const usePomodoroSession = (
     }
   }, [session, info, handleError]);
 
-  // Resume session
   const resume = useCallback(async () => {
     if (!session) return;
 
@@ -287,7 +248,6 @@ export const usePomodoroSession = (
     }
   }, [session, success, handleError]);
 
-  // Complete session
   const complete = useCallback(async () => {
     if (!session) {
       return;
@@ -302,11 +262,9 @@ export const usePomodoroSession = (
       playNotificationSound();
       success("Session completed! 🎉");
 
-      // Clear session state
       setSession(null);
       setTimeLeft(0);
 
-      // Refresh to check for new session or clear state
       await refreshSession();
     } catch (err) {
       const errorMessage = handleError(
@@ -320,7 +278,6 @@ export const usePomodoroSession = (
     }
   }, [session, success, handleError, playNotificationSound, refreshSession]);
 
-  // Cancel session
   const cancel = useCallback(async () => {
     if (!session) return;
 
@@ -329,7 +286,6 @@ export const usePomodoroSession = (
       setError(null);
       await cancelSession(session.id);
 
-      // Clear session state completely to reset UI to initial state
       setSession(null);
       setTimeLeft(0);
       info("Session cancelled");
@@ -345,7 +301,6 @@ export const usePomodoroSession = (
     }
   }, [session, info, handleError]);
 
-  // Computed values
   const isRunning = session?.status === "RUNNING";
   const totalTime = session
     ? session.duration * 60 // Convert minutes to seconds (backend uses 'duration')
