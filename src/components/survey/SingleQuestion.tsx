@@ -1,6 +1,10 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OptionButton } from "./OptionButton";
+import {
+  SwipeCardStack,
+  type SwipeCardData,
+} from "@/components/onboarding/SwipeCard";
 import type { SurveyQuestion } from "@/services/onboardingservices";
 
 interface SingleQuestionProps {
@@ -79,6 +83,39 @@ export const SingleQuestion = ({
             className="mt-4 p-4 text-base"
           />
         );
+
+      case "swipe-cards": {
+        // Convert cards data to SwipeCardData format
+        const cards: SwipeCardData[] =
+          question.cards?.map((card) => ({
+            id: card.id,
+            title: card.title,
+            emoji: card.emoji,
+            category: card.category,
+            description: card.description,
+            image: card.image,
+          })) || [];
+
+        return (
+          <div className="mt-6">
+            <SwipeCardStack
+              cards={cards}
+              onSwipe={(direction, cardId) => {
+                console.log(`Swiped ${direction} on ${cardId}`);
+              }}
+              onComplete={(likedCards) => {
+                onChange(likedCards);
+                // Auto-advance after completing swipe cards
+                if (onAutoAdvance) {
+                  setTimeout(() => {
+                    onAutoAdvance();
+                  }, 500);
+                }
+              }}
+            />
+          </div>
+        );
+      }
 
       default:
         return null;

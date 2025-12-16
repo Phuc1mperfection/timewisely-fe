@@ -18,6 +18,7 @@ import { ActivityList } from "@/components/activities/ActivityLists";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import type { View } from "react-big-calendar";
 import type { Activity } from "@/interfaces/Activity";
+import { AISuggestions } from "@/components/dashboard/AISuggestions";
 
 const CalendarPage: React.FC = () => {
   const { loading, getCurrentUser } = useAuth();
@@ -279,6 +280,7 @@ const CalendarPage: React.FC = () => {
                     }
                   }}
                 />
+                <AISuggestions/>
               </CardContent>
             </Card>
           </TabsContent>

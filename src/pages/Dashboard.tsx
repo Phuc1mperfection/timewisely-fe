@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Plus, Sparkles, Clock, Target } from "lucide-react";
-import { AISuggestions } from "@/components/dashboard/AISuggestions";
 import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";
 import { useActivities } from "@/hooks/useActivity";
@@ -149,10 +148,9 @@ export function DashboardContent() {
         </div>
         {/* Daily Motivation Hub */}
         <DailyMotivationHub1 />
-        <DailyMotivationHub />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className=" gap-6">
           {/* Calendar */}
-          <Card className="lg:col-span-3 ">
+          <Card className=" ">
             <CardHeader>
               <CardTitle className="">Calendar</CardTitle>
               <CardDescription className="text-[var(--wisely-gray)]">
@@ -195,9 +193,8 @@ export function DashboardContent() {
             </CardContent>
           </Card>
 
-          {/* AI Suggestions */}
-          <AISuggestions />
         </div>
+        <DailyMotivationHub />
       </div>
 
       {/* Activity Modal */}

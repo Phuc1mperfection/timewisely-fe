@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from "./apiClient";
 
 export type SurveyData = Record<string, unknown>;
 
@@ -7,11 +7,21 @@ export interface QuestionCondition {
   showIfEquals: string;
 }
 
+export interface SwipeCard {
+  id: string;
+  title: string;
+  emoji: string;
+  category: string;
+  description: string;
+  image?: string;
+}
+
 export interface SurveyQuestion {
   key: string;
   label: string;
   type: string;
   options?: string[] | null;
+  cards?: SwipeCard[];
   required: boolean;
   placeholder?: string | null;
   condition?: QuestionCondition;
@@ -28,20 +38,20 @@ export interface SurveyResponse {
 
 export const completeOnboarding = async (surveyData: SurveyData) => {
   // Gửi survey lên backend với key answers
-  await apiClient.post('/onboarding/complete', { answers: surveyData });
+  await apiClient.post("/onboarding/complete", { answers: surveyData });
 };
 
 export const fetchSurveyQuestions = async (): Promise<SurveyQuestion[]> => {
-  const res = await apiClient.get('/onboarding/questions');
+  const res = await apiClient.get("/onboarding/questions");
   return res.data;
 };
 
 export const fetchMySurvey = async (): Promise<SurveyResponse> => {
   try {
-    const res = await apiClient.get('/onboarding/survey/me');
+    const res = await apiClient.get("/onboarding/survey/me");
     return res.data;
   } catch (error) {
-    console.error('Error fetching survey data:', error);
+    console.error("Error fetching survey data:", error);
     throw error;
   }
 };

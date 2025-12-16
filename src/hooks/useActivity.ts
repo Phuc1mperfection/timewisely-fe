@@ -10,20 +10,18 @@ import { useToast } from "./useToast";
 import type { Activity } from "@/interfaces/Activity";
 
 function mapApiToUserActivity(api: ActivityApiData): Activity {
-  // Parse UTC string as local time (ignore UTC offset)
-  // Backend: "2025-12-05T15:00:00Z" → Display as 15:00 (3 PM) in calendar
-  const parseUTCAsLocal = (utcString: string) => {
-    if (!utcString) return new Date();
-    // Remove 'Z' and parse as local time
-    const localString = utcString.replace("Z", "");
-    return new Date(localString);
+  // Backend now returns LocalDateTime as ISO string without timezone
+  // e.g., "2025-12-16T06:00:00"
+  const parseLocalDateTime = (dateTimeString: string) => {
+    if (!dateTimeString) return new Date();
+    return new Date(dateTimeString);
   };
 
   return {
     id: api.id || "",
     title: api.title,
-    startTime: parseUTCAsLocal(api.startTime),
-    endTime: parseUTCAsLocal(api.endTime),
+    startTime: parseLocalDateTime(api.startTime),
+    endTime: parseLocalDateTime(api.endTime),
     description: api.description,
     color: api.color,
     allDay: api.allDay,
@@ -34,16 +32,15 @@ function mapApiToUserActivity(api: ActivityApiData): Activity {
 }
 
 function mapUserActivityToApi(activity: Partial<Activity>): ActivityApiData {
-  // Convert local Date to UTC string format
-  // Calendar shows 15:00 → Send as "2025-12-05T15:00:00Z" to backend
-  const formatLocalAsUTC = (date: Date) => {
+
+  const formatLocalDateTime = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const seconds = String(date.getSeconds()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
   };
 
   return {
@@ -52,11 +49,11 @@ function mapUserActivityToApi(activity: Partial<Activity>): ActivityApiData {
     description: activity.description,
     startTime:
       activity.startTime instanceof Date
-        ? formatLocalAsUTC(activity.startTime)
+        ? formatLocalDateTime(activity.startTime)
         : "",
     endTime:
       activity.endTime instanceof Date
-        ? formatLocalAsUTC(activity.endTime)
+        ? formatLocalDateTime(activity.endTime)
         : "",
     color: activity.color,
     allDay: activity.allDay,
@@ -98,6 +95,16 @@ export function useActivities() {
 
   useEffect(() => {
     fetchActivities();
+
+    // Listen for activity added events from other components
+    const handleActivityAdded = () => {
+      fetchActivities();
+    };
+    window.addEventListener("activityAdded", handleActivityAdded);
+
+    return () => {
+      window.removeEventListener("activityAdded", handleActivityAdded);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

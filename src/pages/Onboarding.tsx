@@ -37,20 +37,40 @@ const Onboarding = () => {
   const { success } = useToast();
   const { setUser } = useAuth();
 
+  // Shuffle array utility (Fisher-Yates algorithm)
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
   // Fetch survey questions when the component mounts
   useEffect(() => {
     fetchSurveyQuestions().then((data) => {
-      setQuestions(data);
+      // Shuffle swipe cards and limit to 10 cards
+      const processedQuestions = data.map((q) => {
+        if (q.type === "swipe-cards" && q.cards && q.cards.length > 0) {
+          const shuffledCards = shuffleArray(q.cards);
+          const limitedCards = shuffledCards.slice(0, 10); // Show only 10 random cards
+          return { ...q, cards: limitedCards };
+        }
+        return q;
+      });
+
+      setQuestions(processedQuestions);
 
       // Initialize form data with empty values based on question types
       const initialFormData: Record<string, string | string[]> = {};
-      data.forEach((q) => {
+      processedQuestions.forEach((q) => {
         initialFormData[q.key] = q.type === "checkbox" ? [] : "";
       });
       setFormData(initialFormData);
 
       // Filter questions based on initial conditions
-      updateVisibleQuestions(data, initialFormData);
+      updateVisibleQuestions(processedQuestions, initialFormData);
     });
   }, []);
 
