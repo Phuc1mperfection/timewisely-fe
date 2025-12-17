@@ -143,6 +143,7 @@ export function AISuggestions() {
 
       return `${formatTime(startTime)} - ${formatTime(endTime)}`;
     } catch (err) {
+      console.error(err);
       return formatDuration(duration);
     }
   };
@@ -342,9 +343,7 @@ function SuggestionCard({
               >
                 {suggestion.category}
               </span>
-              <span className="px-2 py-0.5 bg-gradient-to-r from-amber-400 to-yellow-400 text-white rounded-full font-semibold">
-                {Math.round(suggestion.score * 100)}% match
-              </span>
+
               {isAI && (
                 <span className="px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium">
                   AI
