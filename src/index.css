@@ -2,9 +2,9 @@
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
 @custom-variant light (&:is(:not(.dark) *));
-
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @theme {
-  --font-display: "Satoshi", "sans-serif";
+  --font-display:"Cormorant Garamond", "serif" ;
 }
 
 @theme inline {
@@ -100,7 +100,7 @@
   --primary-glow: hsl(45 80% 70%);
   /* Gradient system - Gold theme */
   --gradient-primary: linear-gradient(135deg, hsl(43 74% 49%), hsl(45 100% 85%));
-  --gradient-hero: linear-gradient(180deg, #2b210f, #5c4417, #d7a838, #fff2c1);
+  --gradient-hero: linear-gradient(180deg, #d4af37, #000);
   --gradient-subtle: linear-gradient(180deg, hsl(45 100% 98%), hsl(45 80% 92%));
   --gradient-glow: radial-gradient(ellipse at center, hsl(45 100% 70% / 0.3), transparent 70%);
   --gradient-gold: linear-gradient(135deg, #d4af37, #f4e5b2, #d4af37);

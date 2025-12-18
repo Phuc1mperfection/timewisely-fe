@@ -10,12 +10,7 @@ import AuthToggle from "./AuthToggle";
 import { useNavigate } from "react-router-dom";
 import LoadingSkeleton from "./LoadingSkeleton";
 
-interface AuthFormProps {
-  onSuccess: () => void;
-  onLaunchOnboarding: () => void;
-}
-
-const AuthForm: React.FC<AuthFormProps> = () => {
+const AuthForm: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -79,7 +74,6 @@ const AuthForm: React.FC<AuthFormProps> = () => {
     try {
       if (provider === "google") {
         loginWithGoogle();
-        // The redirect will happen automatically from the loginWithGoogle function
       }
     } catch (err) {
       console.error(err);
@@ -108,20 +102,16 @@ const AuthForm: React.FC<AuthFormProps> = () => {
     >
       <AuthFormHeader isLogin={isLogin} />
       <SocialLogin isLoading={isLoading} onSocial={handleSocialLogin} />
-      {/* Divider */}
       <motion.div
         className="relative mb-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        <div className="absolute inset-0 flex items-center">
+        <div className="absolute inset-0 flex items-center ">
           <div className="w-full border-t border-white/20" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-transparent text-white/60">
-            or continue with email
-          </span>
         </div>
       </motion.div>
       {/* Form */}

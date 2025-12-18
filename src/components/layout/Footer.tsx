@@ -3,13 +3,11 @@ import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Mail, ArrowRight } from "lucide-react";
 
 const FooterSection = () => (
-  <footer className="relative z-10 bg-white  text-foreground dark:bg-black">
-    {" "}
-    <div className="container mx-auto px-6 pt-16 pb-8">
-      {" "}
+  <footer className="relative z-10 bg-white text-foreground dark:bg-black w-full h-full flex items-center justify-center">
+    <div className="max-w-5xl w-full px-8">
       {/* Top Footer Section */}
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-[var(--wisely-champagne)]/20"
+        className="grid grid-cols-4 gap-6 pb-8 border-b border-[var(--wisely-champagne)]/20"
         initial={{
           opacity: 0,
           y: 20,
@@ -23,7 +21,6 @@ const FooterSection = () => (
           delay: 0.2,
         }}
       >
-        {" "}
         {/* Logo and Description */}
         <div className="flex flex-col space-y-4">
           {" "}
@@ -200,12 +197,11 @@ const FooterSection = () => (
             href="#"
             className="text-[var(--wisely-gray)] hover:text-[var(--wisely-gold)] transition-colors"
           >
-            {" "}
-            <Mail size={18} /> <span className="sr-only">Email</span>{" "}
-          </a>{" "}
-        </div>{" "}
-      </motion.div>{" "}
-    </div>{" "}
+            <Mail size={18} /> <span className="sr-only">Email</span>
+          </a>
+        </div>
+      </motion.div>
+    </div>
   </footer>
 );
 

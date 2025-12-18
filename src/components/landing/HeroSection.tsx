@@ -45,7 +45,7 @@ const HeroSection = memo(() => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-full flex items-center justify-center overflow-hidden">
       {/* Background */}
       <div
         className={`absolute inset-0 -z-10 transition-opacity duration-700 ${
@@ -69,7 +69,7 @@ const HeroSection = memo(() => {
         )}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left column - Content */}
           <div className="text-center lg:text-left">

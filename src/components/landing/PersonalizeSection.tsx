@@ -5,7 +5,7 @@ const PersonalizationSection = memo(() => {
   return (
     <section
       id="about"
-      className="py-24 bg-gradient-to-r from-yellow-600 via-orange-700 to-orange-600 relative overflow-hidden"
+      className="w-full h-full bg-gradient-to-r from-yellow-600 via-orange-700 to-orange-600 relative overflow-hidden flex items-center justify-center"
     >
       {/* Background decorative elements */}
       <div className="absolute inset-0">
@@ -13,7 +13,7 @@ const PersonalizationSection = memo(() => {
         <div className="floating-shape absolute bottom-20 right-20 w-24 h-24 bg-white/10 rounded-lg blur-xl" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left column - Content */}
           <div className="text-white">

@@ -1,4 +1,12 @@
-import { useState, useEffect, lazy, Suspense, useMemo, memo } from "react";
+import {
+  useState,
+  useEffect,
+  lazy,
+  Suspense,
+  useMemo,
+  memo,
+  useRef,
+} from "react";
 import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Preloader } from "@/components/Preloader";
@@ -12,11 +20,11 @@ const FeaturesSection = lazy(
 const ScrollAnimationSection = lazy(
   () => import("@/components/landing/ScrollAnimationSection")
 );
-const StorylineSection = lazy(() =>
-  import("@/components/landing/StorylineSection").then((module) => ({
-    default: module.StorylineSection,
-  }))
-);
+// const StorylineSection = lazy(() =>
+//   import("@/components/landing/StorylineSection").then((module) => ({
+//     default: module.StorylineSection,
+//   }))
+// );
 const PersonalizationSection = lazy(
   () => import("@/components/landing/PersonalizeSection")
 );
@@ -33,48 +41,68 @@ SectionLoader.displayName = "SectionLoader";
 
 const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionsRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLDivElement>(null);
 
+  const [scrollTween, setScrollTween] = useState<gsap.core.Tween | null>(null);
   const handlePreloaderComplete = () => {
     setIsLoading(false);
   };
 
   useEffect(() => {
-    if (!isLoading) {
-      gsap.registerPlugin(ScrollTrigger);
+    if (isLoading) return;
 
-      // Scroll-triggered section reveals with performance optimization
-      const sections = gsap.utils.toArray<HTMLElement>(".section-reveal");
-      const animations: gsap.core.Tween[] = [];
+    gsap.registerPlugin(ScrollTrigger);
 
-      sections.forEach((section) => {
-        const animation = gsap.fromTo(
-          section,
-          { opacity: 0, y: 100 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 80%",
-              end: "bottom 20%",
-              toggleActions: "play none none reverse",
-              // Performance optimizations
-              fastScrollEnd: true,
-              preventOverlaps: true,
-            },
-          }
-        );
-        animations.push(animation);
+    const container = containerRef.current;
+    const sectionsContainer = sectionsRef.current;
+    if (!container || !sectionsContainer) return;
+
+    const getScrollAmount = () => {
+      const sectionsWidth = sectionsContainer.scrollWidth;
+      return -(sectionsWidth - window.innerWidth);
+    };
+
+    const tween = gsap.to(sectionsContainer, {
+      x: getScrollAmount,
+      ease: "none",
+      scrollTrigger: {
+        trigger: container,
+        start: "top top",
+        end: () => `+=${sectionsContainer.scrollWidth - window.innerWidth}`,
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    setScrollTween(tween);
+
+    // Track Hero section visibility for navbar
+    const heroSection = heroSectionRef.current;
+    if (heroSection) {
+      ScrollTrigger.create({
+        trigger: heroSection,
+        start: "left center",
+        end: "right center",
+        containerAnimation: tween,
+        onEnter: () => setShowNavbar(true),
+        onLeave: () => setShowNavbar(false),
+        onEnterBack: () => setShowNavbar(true),
+        onLeaveBack: () => setShowNavbar(false),
       });
-
-      // Cleanup function
-      return () => {
-        animations.forEach((anim) => anim.kill());
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      };
     }
+
+    // rất quan trọng khi dùng lazy/Suspense
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+      setScrollTween(null);
+    };
   }, [isLoading]);
 
   // Memoize features array to prevent recreation on every render
@@ -123,40 +151,70 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="">
-      {/* Animated background elements */}
-      <Navbar />
+    <div className="overflow-hidden">
+      <div
+        style={{
+          opacity: showNavbar ? 1 : 0,
+          pointerEvents: showNavbar ? "auto" : "none",
+          transition: "opacity transition-all duration-300 ease-in-out 0.5 ",
+        }}
+      >
+        <Navbar />
+      </div>
 
-      {/* Hero Section */}
-      <HeroSection />
+      {/* Horizontal Scroll Container */}
+      <div ref={containerRef} className="relative h-screen overflow-hidden">
+        <div
+          ref={sectionsRef}
+          className="flex h-screen"
+          style={{ width: "fit-content" }}
+        >
+          {/* Hero Section */}
+          <div
+            ref={heroSectionRef}
+            className="horizontal-section flex-shrink-0 w-screen h-screen"
+          >
+            <HeroSection />
+          </div>
 
-      {/* Scroll Animation Section */}
-      <Suspense fallback={<SectionLoader />}>
-        <ScrollAnimationSection
-          title="Time is your most valuable asset"
-          subtitle="Our powerful tools help you make the most of every minute"
-        />
-      </Suspense>
+          {/* Scroll Animation Section */}
+          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center">
+            <Suspense fallback={<SectionLoader />}>
+              <ScrollAnimationSection
+                title="Time is your most valuable asset"
+                containerAnimation={scrollTween}
+              />
+            </Suspense>
+          </div>
 
-      {/* Features Grid */}
-      <Suspense fallback={<SectionLoader />}>
-        <FeaturesSection features={features} />
-      </Suspense>
+          {/* Features Section */}
+          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center overflow-y-auto">
+            <Suspense fallback={<SectionLoader />}>
+              <FeaturesSection features={features} />
+            </Suspense>
+          </div>
 
-      {/* Storyline Section */}
-      <Suspense fallback={<SectionLoader />}>
-        <StorylineSection />
-      </Suspense>
+          {/* <div className="horizontal-section flex-shrink-0 w-screen h-screen">
+  <Suspense fallback={<SectionLoader />}>
+    <StorylineSection />
+  </Suspense>
+</div> */}
 
-      {/* Personalize Section */}
-      <Suspense fallback={<SectionLoader />}>
-        <PersonalizationSection />
-      </Suspense>
+          {/* Personalize Section */}
+          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center">
+            <Suspense fallback={<SectionLoader />}>
+              <PersonalizationSection />
+            </Suspense>
+          </div>
 
-      {/* Footer */}
-      <Suspense fallback={<SectionLoader />}>
-        <FooterSection />
-      </Suspense>
+          {/* Footer */}
+          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center">
+            <Suspense fallback={<SectionLoader />}>
+              <FooterSection />
+            </Suspense>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

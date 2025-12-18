@@ -51,7 +51,7 @@ FeatureCard.displayName = "FeatureCard";
 
 const FeaturesSection = memo(({ features }: { features: any[] }) => {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
   const intelligentPlanningRef = useRef(null);
   const intelligentPlanningInView = useInView(intelligentPlanningRef, {
@@ -182,75 +182,25 @@ const FeaturesSection = memo(({ features }: { features: any[] }) => {
     <section
       ref={sectionRef}
       id="features"
-      className="mx-auto px-6 py-16 relative z-10 bg-white dark:bg-[#000]"
+      className="w-full h-full flex items-center justify-center px-8 relative z-10 bg-white dark:bg-[#000]"
     >
-      <motion.div
-        className="text-center mb-12"
-        initial={headerAnimationVariants.initial}
-        animate={headerAnimationVariants.animate}
-        transition={headerAnimationVariants.transition}
-      >
-        <h2 className="text-4xl font-bold text-foreground mb-4">
-          Everything you need to manage time wisely
-        </h2>
-        <p className="text-[var(--wisely-gray)] max-w-2xl mx-auto text-lg">
-          From smart scheduling to AI-powered suggestions, TimeWisely has all
-          the tools you need to optimize your daily routine.
-        </p>
-      </motion.div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {renderedFeatureCards}
+      <div className="max-w-6xl w-full">
+        <motion.div
+          className="text-center mb-8"
+          initial={headerAnimationVariants.initial}
+          animate={headerAnimationVariants.animate}
+          transition={headerAnimationVariants.transition}
+        >
+          <h2 className="text-4xl font-bold text-foreground mb-4">
+            Everything you need to manage time wisely
+          </h2>
+          <p className="text-[var(--wisely-gray)] max-w-2xl mx-auto text-lg">
+            From smart scheduling to AI-powered suggestions, TimeWisely has all
+            the tools you need to optimize your daily routine.
+          </p>
+        </motion.div>
+        <div className="grid grid-cols-3 gap-6">{renderedFeatureCards}</div>
       </div>
-
-      <motion.div
-        ref={intelligentPlanningRef}
-        className="mt-20 reveal"
-        initial={intelligentPlanningVariants.initial}
-        animate={intelligentPlanningVariants.animate}
-        transition={intelligentPlanningVariants.transition}
-      >
-        <div className=" p-8 lg:p-12 rounded-3xl border border-white/20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={
-                intelligentPlanningInView
-                  ? { opacity: 1, x: 0 }
-                  : { opacity: 0, x: -40 }
-              }
-              transition={{ duration: 0.7, delay: 0.3 }}
-            >
-              <h3 className="text-3xl font-bold mb-6 text-[var(--wisely-dark)]">
-                Experience the Power of
-                <span className="text-[var(--wisely-gold)]">
-                  {" "}
-                  Intelligent Planning
-                </span>
-              </h3>
-              <p className="text-lg text-gray-600 mb-8">
-                Our AI analyzes your work patterns, energy levels, and
-                preferences to create personalized schedules that maximize your
-                productivity while maintaining work-life balance.
-              </p>
-              <ul className="space-y-4">{renderedListItems}</ul>
-            </motion.div>
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, x: 40 }}
-              animate={
-                intelligentPlanningInView
-                  ? { opacity: 1, x: 0 }
-                  : { opacity: 0, x: 40 }
-              }
-              transition={{ duration: 0.7, delay: 0.5 }}
-            >
-              <div className=" p-6 rounded-2xl border border-white/20">
-                <div className="space-y-4">{renderedScheduleItems}</div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
     </section>
   );
 });
