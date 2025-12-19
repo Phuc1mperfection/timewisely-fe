@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import backgroundImg from "@/assets/images/productive-background.jpg";
+import backgroundImg from "@/assets/images/productive-background.png";
 
 interface ScrollAnimationSectionProps {
   title: string;
