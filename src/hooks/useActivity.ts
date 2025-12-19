@@ -32,7 +32,6 @@ function mapApiToUserActivity(api: ActivityApiData): Activity {
 }
 
 function mapUserActivityToApi(activity: Partial<Activity>): ActivityApiData {
-
   const formatLocalDateTime = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -257,7 +256,7 @@ export function useActivities() {
     const userActivity = activity as Activity;
     return {
       style: {
-        backgroundColor: userActivity.color || "#8b5cf6",
+        backgroundColor: userActivity.color || "#D4AF37",
         border: "none",
         borderRadius: "6px",
         color: "white",

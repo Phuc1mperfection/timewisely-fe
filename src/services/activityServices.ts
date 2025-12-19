@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from "./apiClient";
 
 export interface ActivityApiData {
   id?: string;
@@ -7,19 +7,21 @@ export interface ActivityApiData {
   startTime: string;
   endTime: string;
   color?: string;
-  allDay?: boolean; 
+  allDay?: boolean;
   location?: string;
   goalTag?: string;
   completed?: boolean;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const getActivities = async () => {
-  const res = await apiClient.get('/activities');
+  const res = await apiClient.get("/activities");
   return res.data;
 };
 
 export const createActivity = async (data: ActivityApiData) => {
-  const res = await apiClient.post('/activities', data);
+  const res = await apiClient.post("/activities", data);
   return res.data;
 };
 

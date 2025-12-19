@@ -27,7 +27,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
   }) => {
     // Memoize color options
     const colorOptions = React.useMemo(
-      () => ["#8b5cf6", "#5eead4", "#f9a8d4", "#fde68a", "#1e1e2f", "#6b7280"],
+      () => ["#D4AF37", "#5eead4", "#f9a8d4",  "#1e1e2f", "#6b7280"],
       []
     );
 
@@ -53,7 +53,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
             )}
             style={{
               background:
-                "linear-gradient(90deg,#8b5cf6,#5eead4,#f9a8d4,#fde699,#1e1e2f,#6b7280)",
+                "linear-gradient(90deg,#D4AF37,#5eead4,#f9a8d4,#fde699,#1e1e2f,#6b7280)",
             }}
             onClick={() => setFilterColor(null)}
             title="All colors"
