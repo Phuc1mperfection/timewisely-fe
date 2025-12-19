@@ -37,7 +37,7 @@ const FooterSection = () => (
             </div>{" "}
             <span className="font-bold text-xl text-[var(--wisely-dark)] dark:text-white">
               {" "}
-              Time.Wisely{" "}
+              TimeWisely{" "}
             </span>{" "}
           </div>{" "}
           <p className="text-sm text-[var(--wisely-gray)] pr-4">

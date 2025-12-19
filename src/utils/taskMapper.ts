@@ -14,9 +14,9 @@ export interface BackendTask {
   isCompleted?: boolean;
   createdAt?: string | Date;
   order?: number;
+  goalCategory?: string;
 }
 
-// Task mapper utility class following SRP
 export class TaskMapper {
   static mapTypeToBackend(type: string): string {
     // Already uppercase from frontend (TODO_ONLY, POMODORO_ONLY, BOTH)
@@ -45,6 +45,7 @@ export class TaskMapper {
       completed: task.isCompleted || false,
       createdAt: task.createdAt ? new Date(task.createdAt) : new Date(),
       order: task.order || 0,
+      goalCategory: task.goalCategory,
     };
   }
 
@@ -57,6 +58,7 @@ export class TaskMapper {
       priority: this.mapPriorityToBackend(taskData.priority),
       category: this.mapCategoryToBackend(taskData.category),
       dueDate: taskData.dueDate.toISOString(),
+      goalCategory: taskData.goalCategory,
     };
   }
 
@@ -79,6 +81,8 @@ export class TaskMapper {
     if (taskData.dueDate !== undefined)
       payload.dueDate = taskData.dueDate.toISOString();
     if (taskData.order !== undefined) payload.order = taskData.order;
+    if (taskData.goalCategory !== undefined)
+      payload.goalCategory = taskData.goalCategory;
 
     return payload;
   }

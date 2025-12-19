@@ -27,6 +27,7 @@ import {
   CheckCircle,
   ListTodo,
   Inbox,
+  Target
 } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -44,6 +45,7 @@ const mainMenuItems = [
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
   // { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
   { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
+  { title: "Goals", url: "/dashboard/goals", icon: Target },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
 ];

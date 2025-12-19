@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthForm from "@/components/auth/AuthForm";
 import AuthLogo from "@/components/auth/AuthLogo";
 import HomeNavigation from "@/components/auth/HomeNavigation";
 import { useToast } from "@/hooks/useToast";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 const AuthPage: React.FC = () => {
   const location = useLocation();
@@ -30,9 +31,24 @@ const AuthPage: React.FC = () => {
       navigate("/auth", { replace: true, state: {} });
     }
   }, [location, navigate, error]);
-
+const sparkles = useMemo(
+    () => (
+      <SparklesCore
+        background="transparent"
+        minSize={0.4}
+        maxSize={1}
+        particleDensity={10}
+        className="absolute inset-0 z-0"
+        particleColor="#ffffff"
+      />
+    ),
+    []
+  );
   return (
+    
     <div className="min-h-screen auth-gradient-bg relative overflow-hidden flex flex-col">
+          {sparkles}
+
       <div className="absolute top-6 left-6 z-20">
         <HomeNavigation variant="home" />
       </div>

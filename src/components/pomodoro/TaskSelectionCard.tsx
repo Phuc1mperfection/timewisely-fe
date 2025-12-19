@@ -8,6 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -15,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TaskEditDialog } from "./TaskEditDialog";
 import type { Task } from "@/interfaces";
+import type { PersonalGoal } from "@/interfaces/Goal";
 import type { UserSettings } from "@/services/pomodoroServices";
 
 interface TaskSelectionCardProps {
@@ -31,10 +39,13 @@ interface TaskSelectionCardProps {
   setNewTaskName: (name: string) => void;
   newTaskEstPomodoros: number;
   setNewTaskEstPomodoros: (pomodoros: number) => void;
+  newTaskGoalCategory: string;
+  setNewTaskGoalCategory: (category: string) => void;
+  userGoals: PersonalGoal[];
   isCreatingTask: boolean;
   settings: UserSettings | null;
   isLoading: boolean;
-  currentSessionTaskId: string | undefined; // Task ID of active session (running or paused)
+  currentSessionTaskId: string | undefined;
   onStart: () => void;
   onCreateTask: () => void;
   onCancelAddTask: () => void;
@@ -46,7 +57,8 @@ interface TaskSelectionCardProps {
   onEditTask: (
     taskId: string,
     name: string,
-    estimatedPomodoros: number
+    estimatedPomodoros: number,
+    goalCategory?: string
   ) => void;
   onDeleteTask: (taskId: string) => void;
   onCancelSession: () => void; // Cancel current session
@@ -66,6 +78,9 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
   setNewTaskName,
   newTaskEstPomodoros,
   setNewTaskEstPomodoros,
+  newTaskGoalCategory,
+  setNewTaskGoalCategory,
+  userGoals,
   isCreatingTask,
   settings,
   isLoading,
@@ -185,12 +200,10 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                     onChange={(e) => {
                       const value = parseFloat(e.target.value);
                       if (isNaN(value)) {
-                        // Nếu gõ linh tinh (NaN) hoặc xóa hết, reset về 0.1
                         setNewTaskEstPomodoros(0.1);
                         return;
                       }
 
-                      // Chỉ giới hạn min/max khi đang gõ, không làm tròn
                       setNewTaskEstPomodoros(
                         Math.min(Math.max(value, 0.1), 20)
                       );
@@ -223,6 +236,32 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                     min)
                   </span>
                 </div>
+              </div>
+
+              {/* Goal Selector */}
+              <div className="space-y-2">
+                <Label htmlFor="newTaskGoal">Linked Goal (Optional)</Label>
+                <Select
+                  value={newTaskGoalCategory || "none"}
+                  onValueChange={(v) =>
+                    setNewTaskGoalCategory(v === "none" ? "" : v)
+                  }
+                >
+                  <SelectTrigger id="newTaskGoal">
+                    <SelectValue placeholder="🎯 No Goal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">🚫 No Goal</SelectItem>
+                    {userGoals.map((goal) => (
+                      <SelectItem key={goal.id} value={goal.category}>
+                        🎯 {goal.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Completed Pomodoro sessions will count towards this goal
+                </p>
               </div>
 
               <div className="flex gap-2 pt-2">

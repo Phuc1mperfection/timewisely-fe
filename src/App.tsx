@@ -22,6 +22,7 @@ import { UpcomingTasksPage } from "./pages/tasks/UpcomingTasksPage";
 import { CompletedTasksPage } from "./pages/tasks/CompletedTasksPage";
 import { InboxTasksPage } from "./pages/tasks/InboxTasksPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import GoalsPage from "./pages/GoalsPage";
 
 const queryClient = new QueryClient();
 
@@ -79,7 +80,7 @@ function App() {
                     element={<CompletedTasksPage />}
                   />
                   <Route path="pomodoro" element={<PomodoroPage />} />
-                  <Route path="goals" element={<div>Goals Page</div>} />
+                  <Route path="goals" element={<GoalsPage />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="settings" element={<SettingsPage />} />
                   {/* ...thêm các page con khác tại đây */}

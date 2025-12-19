@@ -1,4 +1,4 @@
-import { motion } from "motion/react"; // Ensure you have motion/react installed
+import { motion } from "motion/react"; 
 
 const AuthLogo = () => (
   <motion.div
@@ -18,7 +18,7 @@ const AuthLogo = () => (
         className="w-24 h-24 transition-transform duration-200 hover:scale-110 hover:cursor-grab"
       />
     </motion.div>
-    <h1 className="text-3xl text-amber-50">TimeWisely</h1>
+    <h1 className="text-7xl mb-4 font-logo">TimeWisely</h1>
     <p className="text-white/50">Smart time management for everyone</p>
   </motion.div>
 );

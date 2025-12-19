@@ -9,11 +9,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Trash2, MapPin, Goal, SquareMenu, Clock4 } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import type { Activity } from "@/interfaces/Activity";
+import type { PersonalGoal } from "@/interfaces/Goal";
+import { getUserGoals } from "@/services/goalServices";
 import {
   Popover,
   PopoverContent,
@@ -142,6 +151,8 @@ export function ActivityDialog({
   const [end, setEnd] = useState<Date | null>(null);
   const [location, setLocation] = useState("");
   const [goalTag, setGoalTag] = useState("");
+  const [userGoals, setUserGoals] = useState<PersonalGoal[]>([]);
+  const [isLoadingGoals, setIsLoadingGoals] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [customColorLabel, setCustomColorLabel] = useState("");
   const [showMore, setShowMore] = useState(false);
@@ -158,6 +169,24 @@ export function ActivityDialog({
     ],
     []
   );
+
+  // Fetch user's goals for dropdown
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        setIsLoadingGoals(true);
+        const goals = await getUserGoals();
+        setUserGoals(goals);
+      } catch (error) {
+        console.error("Failed to fetch goals:", error);
+      } finally {
+        setIsLoadingGoals(false);
+      }
+    };
+    if (isOpen) {
+      fetchGoals();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (event) {
@@ -388,15 +417,42 @@ export function ActivityDialog({
                   className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
                 />
               </div>
-              <div className="space-y-2 gap-2 flex justify-between">
-                <Goal>Goal Tag</Goal>
-                <Input
-                  id="goalTag"
-                  value={goalTag}
-                  onChange={(e) => setGoalTag(e.target.value)}
-                  placeholder="Enter goal tag"
-                  className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] border-0"
-                />
+              <div className="space-y-2">
+                <Label htmlFor="goalTag" className="flex items-center gap-2">
+                  <Goal className="h-4 w-4" />
+                  Link to Goal
+                </Label>
+                <Select
+                  value={goalTag || undefined}
+                  onValueChange={(value) =>
+                    setGoalTag(value === "none" ? "" : value)
+                  }
+                  disabled={isLoadingGoals}
+                >
+                  <SelectTrigger className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)]">
+                    <SelectValue placeholder="Select a goal (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      <span className="text-muted-foreground">No goal</span>
+                    </SelectItem>
+                    {userGoals.map((goal) => (
+                      <SelectItem key={goal.id} value={goal.category}>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{goal.title}</span>
+                          <span className="text-xs text-muted-foreground">
+                            ({goal.category})
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {goalTag && (
+                  <p className="text-xs text-muted-foreground">
+                    This activity will count towards your goal progress
+                  </p>
+                )}
               </div>
 
               <button

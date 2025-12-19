@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   clampPomodoroEstimate,
   validatePomodoroEstimate,
 } from "@/lib/taskUtils";
@@ -14,6 +21,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { getUserGoals } from "@/services/goalServices";
+import type { PersonalGoal } from "@/interfaces/Goal";
 import type { Task } from "@/interfaces";
 import type { UserSettings } from "@/services/pomodoroServices";
 
@@ -21,7 +30,12 @@ interface TaskEditDialogProps {
   task: Task | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (taskId: string, name: string, estimatedPomodoros: number) => void;
+  onSave: (
+    taskId: string,
+    name: string,
+    estimatedPomodoros: number,
+    goalCategory?: string
+  ) => void;
   settings: UserSettings | null;
 }
 
@@ -34,18 +48,34 @@ export const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
 }) => {
   const [editName, setEditName] = useState("");
   const [editEstimate, setEditEstimate] = useState(1);
+  const [userGoals, setUserGoals] = useState<PersonalGoal[]>([]);
+  const [goalCategory, setGoalCategory] = useState<string>("");
+
+  // Fetch user goals on mount
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const goals = await getUserGoals();
+        setUserGoals(goals);
+      } catch (error) {
+        console.error("Failed to fetch goals:", error);
+      }
+    };
+    fetchGoals();
+  }, []);
 
   // Sync state when task changes
   useEffect(() => {
     if (task) {
       setEditName(task.name);
       setEditEstimate(task.estimatedPomodoros || 1);
+      setGoalCategory(task.goalCategory || "");
     }
   }, [task]);
 
   const handleSave = () => {
     if (task && editName.trim()) {
-      onSave(task.id, editName.trim(), editEstimate);
+      onSave(task.id, editName.trim(), editEstimate, goalCategory || undefined);
       onClose();
     }
   };
@@ -107,6 +137,29 @@ export const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             </div>
             <p className="text-xs text-muted-foreground">
               Micro-tasks: 0.1-0.9 • Real tasks: whole numbers only
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-goal">Linked Goal (Optional)</Label>
+            <Select
+              value={goalCategory || "none"}
+              onValueChange={(v) => setGoalCategory(v === "none" ? "" : v)}
+            >
+              <SelectTrigger id="edit-goal">
+                <SelectValue placeholder="🎯 No Goal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">🚫 No Goal</SelectItem>
+                {userGoals.map((goal) => (
+                  <SelectItem key={goal.id} value={goal.category}>
+                    🎯 {goal.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Completed Pomodoro sessions will count towards this goal's
+              progress
             </p>
           </div>
           <div className="space-y-2">

@@ -36,6 +36,8 @@ import {
   validatePomodoroEstimate,
   cleanSmartKeywords,
 } from "@/lib/taskUtils";
+import { getUserGoals } from "@/services/goalServices";
+import type { PersonalGoal } from "@/interfaces/Goal";
 import type { Priority, Category, TaskType } from "@/interfaces";
 
 interface TaskInlineAddFormProps {
@@ -47,6 +49,7 @@ interface TaskInlineAddFormProps {
     priority: Priority;
     category: Category;
     dueDate: Date;
+    goalCategory?: string;
   }) => void;
   onCancel: () => void;
   defaultDate?: Date;
@@ -121,9 +124,22 @@ export function TaskInlineAddForm({
   const [category, setCategory] = useState<Category>("personal");
   const [dueDate, setDueDate] = useState<Date>(createCleanDate(defaultDate));
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [userGoals, setUserGoals] = useState<PersonalGoal[]>([]);
+  const [goalCategory, setGoalCategory] = useState<string>("");
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const goals = await getUserGoals();
+        setUserGoals(goals);
+      } catch (error) {
+        console.error("Failed to fetch goals:", error);
+      }
+    };
+    fetchGoals();
+  }, []);
 
   // Auto-expand textarea
   useEffect(() => {
@@ -206,9 +222,9 @@ export function TaskInlineAddForm({
       priority,
       category,
       dueDate,
+      goalCategory: goalCategory || undefined,
     });
 
-    // Form will be unmounted after submit, no need to reset
   };
 
   return (
@@ -326,20 +342,29 @@ export function TaskInlineAddForm({
           </SelectContent>
         </Select>
 
+        <Select
+          value={goalCategory || "none"}
+          onValueChange={(v) => setGoalCategory(v === "none" ? "" : v)}
+        >
+          <SelectTrigger className="h-7 w-36 text-xs px-2">
+            <SelectValue placeholder="🎯 No Goal" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">🚫 No Goal</SelectItem>
+            {userGoals.map((goal) => (
+              <SelectItem key={goal.id} value={goal.category}>
+                🎯 {goal.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         {/* Task Type Dropdown */}
         <Select value={type} onValueChange={(v) => setType(v as TaskType)}>
           <SelectTrigger className="h-7 w-32 text-xs px-2">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="BOTH">
-              <span className="flex items-center gap-1">
-                🔄 <span>Both</span>
-                <span className="text-[10px] text-muted-foreground">
-                  (Recommended)
-                </span>
-              </span>
-            </SelectItem>
             <SelectItem value="TODO_ONLY">
               <span className="flex items-center gap-1">
                 ✓ <span>Todo Only</span>

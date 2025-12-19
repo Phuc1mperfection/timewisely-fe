@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SparklesCore } from "./ui/sparkles";
-
+import { ReactTyped } from "react-typed";
 interface PreloaderProps {
   onComplete: () => void;
 }
@@ -9,11 +9,11 @@ interface PreloaderProps {
 export const Preloader = ({ onComplete }: PreloaderProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 800);
-    }, 3000); 
+      setTimeout(onComplete, 1000); 
+    }, 32000); 
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -31,57 +31,31 @@ export const Preloader = ({ onComplete }: PreloaderProps) => {
     ),
     []
   );
-
-  return (
+return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-hero dark:bg-hero"
+          exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }} 
+          transition={{ duration: 1, ease: [0.43, 0.13, 0.23, 0.96] }} 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black" 
         >
           {sparkles}
           <div className="text-center space-y-8 relative z-10">
-            {/* Animated circular icon */}
             <motion.div
-              animate={{
-                rotateY: [0, 180, 180],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: 1,
-                ease: "easeInOut",
-              }}
-              className="mx-auto w-32 h-32 relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-accent via-[var(--primary-glow)] to-primary rounded-full animate-glow"></div>
-              <div className="absolute inset-2 bg-orange-500/20 rounded-full rotate-45 flex items-center justify-center">
-                <img
-                  src="/src/assets/logos/icon.svg"
-                  alt="Logo"
-                  className="w-12 h-12 transition-transform duration-200"
-                  loading="lazy"
-                />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5,
-               }}
+              transition={{ delay: 0.2, duration: 0.8 }}
               className="space-y-4"
             >
-
-              {/* <motion.p
-                animate={{ opacity: [0.4, 0.8, 0.4] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="text-orange-200/60 font-medium tracking-widest uppercase text-sm"
-              >
-                Loading Experience...
-              </motion.p> */}
+              <ReactTyped
+                strings={["TimeWisely"]} 
+                typeSpeed={60}            
+                backSpeed={50}
+                startDelay={500}          
+                showCursor={false}         
+                className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white tracking-wider font-logo"
+              />
             </motion.div>
           </div>
         </motion.div>

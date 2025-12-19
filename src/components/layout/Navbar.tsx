@@ -60,9 +60,7 @@ const Navbar: React.FC = () => {
                 className="w-9 h-9 transition-transform duration-200"
               />
             </div>
-            {/* <span className="text-2xl text-white tracking-tight font-[Open_Sans]">
-              Time.Wisely
-            </span> */}
+    
           </button>
         </div>
 

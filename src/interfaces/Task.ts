@@ -25,7 +25,7 @@ export interface Task {
   completed: boolean;
   createdAt: Date;
   order: number;
-  // Reminder fields
+  goalCategory?: string; 
   reminderEnabled?: boolean;
   reminderMinutesBefore?: number;
   lastReminderSentAt?: Date | null;
@@ -50,5 +50,6 @@ export interface TaskFormData {
   priority: Priority;
   category: Category;
   dueDate: Date;
+  goalCategory?: string; 
   order?: number;
 }

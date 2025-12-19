@@ -8,6 +8,8 @@ import {
   resetFocusCount,
 } from "@/services/pomodoroServices";
 import type { StartPomodoroRequest } from "@/services/pomodoroServices";
+import { getUserGoals } from "@/services/goalServices";
+import type { PersonalGoal } from "@/interfaces/Goal";
 import { PomodoroHeader } from "@/components/pomodoro/PomodoroHeader";
 import { PomodoroTimerCard } from "@/components/pomodoro/PomodoroTimerCard";
 import { TaskSelectionCard } from "@/components/pomodoro/TaskSelectionCard";
@@ -23,10 +25,14 @@ const PomodoroPage: React.FC = () => {
     "FOCUS" | "SHORT_BREAK" | "LONG_BREAK"
   >("FOCUS");
 
+  // Goal selection state
+  const [userGoals, setUserGoals] = useState<PersonalGoal[]>([]);
+
   // Add task form state
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskEstPomodoros, setNewTaskEstPomodoros] = useState<number>(1);
+  const [newTaskGoalCategory, setNewTaskGoalCategory] = useState<string>("");
   const [isCreatingTask, setIsCreatingTask] = useState(false);
 
   // State to show/hide completed tasks
@@ -47,6 +53,19 @@ const PomodoroPage: React.FC = () => {
   const tasks = showCompletedTasks
     ? allTasks
     : allTasks.filter((task) => !task.completed);
+
+  // Fetch user goals for linking
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const goals = await getUserGoals();
+        setUserGoals(goals);
+      } catch (err) {
+        console.error("Failed to fetch goals:", err);
+      }
+    };
+    fetchGoals();
+  }, []);
 
   const {
     session,
@@ -245,6 +264,7 @@ const PomodoroPage: React.FC = () => {
         priority: "medium",
         category: "other",
         dueDate: new Date(),
+        goalCategory: newTaskGoalCategory || undefined,
       });
 
       if (newTask) {
@@ -255,6 +275,7 @@ const PomodoroPage: React.FC = () => {
         // Reset form
         setNewTaskName("");
         setNewTaskEstPomodoros(1);
+        setNewTaskGoalCategory("");
         setIsAddingTask(false);
         // Refresh task list
         await fetchTasks();
@@ -269,6 +290,7 @@ const PomodoroPage: React.FC = () => {
   const handleCancelAddTask = () => {
     setNewTaskName("");
     setNewTaskEstPomodoros(1);
+    setNewTaskGoalCategory("");
     setIsAddingTask(false);
   };
 
@@ -281,12 +303,14 @@ const PomodoroPage: React.FC = () => {
   const handleEditTask = async (
     taskId: string,
     name: string,
-    estimatedPomodoros: number
+    estimatedPomodoros: number,
+    goalCategory?: string
   ) => {
     try {
       await modifyTask(taskId, {
         name,
         estimatedPomodoros,
+        goalCategory,
       });
       await fetchTasks(); // Refresh task list
       success("Task updated successfully!");
@@ -297,18 +321,20 @@ const PomodoroPage: React.FC = () => {
   };
   const handleDeleteTask = async (taskId: string) => {
     try {
-      // If deleting the currently selected task, clear selection
-      if (selectedTaskId === taskId) {
-        setSelectedTaskId(undefined);
-      }
-
-      // If there's an active session using this task, cancel it
+      // If there's an active session using this task, cancel it FIRST
       if (session && session.taskId === taskId) {
         await cancel(); // Cancel the session first
         info("Session cancelled because the task was deleted");
       }
 
+      // If deleting the currently selected task, clear selection
+      if (selectedTaskId === taskId) {
+        setSelectedTaskId(undefined);
+        setCustomTask(""); // Also clear custom task
+      }
+
       await removeTask(taskId);
+      await fetchTasks(); // Force refresh task list
       // Toast already handled in removeTask hook
     } catch (error) {
       // Error handled in removeTask hook
@@ -517,6 +543,9 @@ const PomodoroPage: React.FC = () => {
             setNewTaskName={setNewTaskName}
             newTaskEstPomodoros={newTaskEstPomodoros}
             setNewTaskEstPomodoros={setNewTaskEstPomodoros}
+            newTaskGoalCategory={newTaskGoalCategory}
+            setNewTaskGoalCategory={setNewTaskGoalCategory}
+            userGoals={userGoals}
             isCreatingTask={isCreatingTask}
             settings={settings}
             isLoading={isLoading}
