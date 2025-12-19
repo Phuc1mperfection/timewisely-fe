@@ -15,7 +15,6 @@ interface SoundSettings {
 }
 
 class SoundService {
-  private audioContext: AudioContext | null = null;
   private enabled: boolean = true;
   private volume: number = 0.5; // 0-1
   private notificationSound: NotificationSoundType = "default";
@@ -23,7 +22,6 @@ class SoundService {
 
   constructor() {
     this.loadSettings();
-    this.initializeAudio();
   }
 
   private loadSettings(): void {
@@ -47,53 +45,77 @@ class SoundService {
     localStorage.setItem("soundSettings", JSON.stringify(settings));
   }
 
-  private initializeAudio(): void {
-    try {
-      const AudioContextClass =
-        window.AudioContext || window.webkitAudioContext;
-      this.audioContext = new AudioContextClass();
-    } catch (error) {
-      console.error("Failed to initialize Web Audio API:", error);
-    }
-  }
-
-  private playBeep(
-    frequency: number,
-    duration: number,
+  private fallbackBeep(
+    frequency: number = 3000,
+    duration: number = 0.3,
     type: OscillatorType = "sine"
   ): void {
-    if (!this.audioContext) {
-      console.warn("❌ AudioContext not initialized");
-      return;
-    }
-
-    console.log(`🎶 Playing beep: ${frequency}Hz for ${duration}s`);
-
+    // Simple beep using AudioContext as fallback
     try {
-      if (this.audioContext.state === "suspended") {
-        console.log("⏸️ AudioContext suspended, resuming...");
-        this.audioContext.resume();
-      }
-
-      const oscillator = this.audioContext.createOscillator();
-      const gainNode = this.audioContext.createGain();
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
 
       oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
+      gainNode.connect(audioContext.destination);
 
       oscillator.frequency.value = frequency;
       oscillator.type = type;
 
-      gainNode.gain.setValueAtTime(this.volume, this.audioContext.currentTime);
+      gainNode.gain.setValueAtTime(this.volume, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(
         0.01,
-        this.audioContext.currentTime + duration
+        audioContext.currentTime + duration
       );
 
-      oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + duration);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
     } catch (error) {
-      console.error("Failed to play beep:", error);
+      console.error("Fallback beep failed:", error);
+    }
+  }
+
+  private playAudioFile(audioSrc: string): void {
+    console.log("🔊 Trying to load audio file:", audioSrc);
+    try {
+      const audio = new Audio(audioSrc);
+      audio.volume = this.volume;
+      audio.currentTime = 0; // Reset về đầu
+
+      audio.play().catch((error) => {
+        console.warn("🎵 Audio play failed:", audioSrc, error.message);
+        // Try alternative extension
+        const altSrc = audioSrc.replace(".mp3", ".wav").replace(".wav", ".mp3");
+        if (altSrc !== audioSrc) {
+          console.log("🔄 Trying alternative extension:", altSrc);
+          this.tryPlayAudio(altSrc);
+        } else {
+          console.warn("🔊 No alternative extension, using beep fallback");
+          this.fallbackBeep();
+        }
+      });
+    } catch (error) {
+      console.error("🎵 Audio creation failed:", error);
+      this.fallbackBeep(); // Fallback
+    }
+  }
+
+  private tryPlayAudio(audioSrc: string): void {
+    try {
+      const audio = new Audio(audioSrc);
+      audio.volume = this.volume;
+      audio.currentTime = 0;
+      audio.play().catch(() => {
+        console.warn(
+          "Alternative audio file not found, using beep fallback:",
+          audioSrc
+        );
+        this.fallbackBeep();
+      });
+    } catch (error) {
+      console.error("Alternative audio creation failed:", error);
+      this.fallbackBeep();
     }
   }
 
@@ -102,7 +124,6 @@ class SoundService {
       enabled: this.enabled,
       volume: this.volume,
       notificationSound: this.notificationSound,
-      audioContextState: this.audioContext?.state,
     });
 
     if (!this.enabled) {
@@ -110,57 +131,61 @@ class SoundService {
       return;
     }
 
-    try {
-      switch (this.notificationSound) {
-        case "bell":
-          // Single bell chime (higher pitch, longer)
-          this.playBeep(1200, 0.4, "sine");
-          break;
-        case "chime":
-          // Triple chime (descending)
-          this.playBeep(880, 0.15, "sine");
-          setTimeout(() => this.playBeep(784, 0.15, "sine"), 150);
-          setTimeout(() => this.playBeep(659, 0.2, "sine"), 300);
-          break;
-        case "default":
-        default:
-          // Double beep (original)
-          this.playBeep(800, 0.15, "sine");
-          setTimeout(() => this.playBeep(1000, 0.15, "sine"), 150);
-          break;
-      }
-    } catch (error) {
-      console.error("Error playing notification sound:", error);
+    // Play different notification sounds based on type
+    switch (this.notificationSound) {
+      case "bell":
+        this.playBellSound();
+        break;
+      case "chime":
+        this.playChimeSound();
+        break;
+      case "default":
+      default:
+        this.playDefaultNotificationSound();
+        break;
     }
   }
 
   playPomodoro(): void {
     if (!this.enabled) return;
 
-    try {
-      switch (this.pomodoroSound) {
-        case "alarm":
-          // Urgent alarm (rapid beeps)
-          for (let i = 0; i < 3; i++) {
-            setTimeout(() => this.playBeep(1000, 0.1, "square"), i * 120);
-          }
-          break;
-        case "gong":
-          // Deep gong (low frequency)
-          this.playBeep(200, 0.5, "sine");
-          setTimeout(() => this.playBeep(150, 0.5, "sine"), 100);
-          break;
-        case "default":
-        default:
-          // C-E-G chord (original)
-          this.playBeep(523, 0.2, "sine");
-          setTimeout(() => this.playBeep(659, 0.2, "sine"), 200);
-          setTimeout(() => this.playBeep(784, 0.3, "sine"), 400);
-          break;
-      }
-    } catch (error) {
-      console.error("Error playing pomodoro sound:", error);
+    // Play different pomodoro sounds based on type
+    switch (this.pomodoroSound) {
+      case "alarm":
+        this.playAlarmSound();
+        break;
+      case "gong":
+        this.playGongSound();
+        break;
+      case "default":
+      default:
+        this.playDefaultPomodoroSound();
+        break;
     }
+  }
+
+  private playBellSound(): void {
+    this.playAudioFile("/sounds/notification-bell.mp3");
+  }
+
+  private playChimeSound(): void {
+    this.playAudioFile("/sounds/notification-chime.mp3");
+  }
+
+  private playDefaultNotificationSound(): void {
+    this.playAudioFile("/sounds/notification-default.mp3");
+  }
+
+  private playAlarmSound(): void {
+    this.playAudioFile("/sounds/pomodoro-alarm.mp3");
+  }
+
+  private playGongSound(): void {
+    this.playAudioFile("/sounds/pomodoro-gong.mp3");
+  }
+
+  private playDefaultPomodoroSound(): void {
+    this.playAudioFile("/sounds/pomodoro-default.mp3");
   }
 
   setEnabled(enabled: boolean): void {
@@ -194,27 +219,12 @@ class SoundService {
 
   testNotification(): void {
     console.log("🧪 Testing notification sound...");
-    this.ensureAudioContextRunning();
     this.playNotification();
   }
 
   testPomodoro(): void {
     console.log("🧪 Testing pomodoro sound...");
-    this.ensureAudioContextRunning();
     this.playPomodoro();
-  }
-
-  /**
-   * Force AudioContext to resume if suspended
-   * Call this on user interaction (button click, etc.)
-   */
-  private ensureAudioContextRunning(): void {
-    if (this.audioContext && this.audioContext.state === "suspended") {
-      console.log("⏯️ Resuming suspended AudioContext...");
-      this.audioContext.resume().then(() => {
-        console.log("✅ AudioContext resumed successfully");
-      });
-    }
   }
 }
 

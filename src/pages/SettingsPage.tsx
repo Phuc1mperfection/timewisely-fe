@@ -9,6 +9,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,7 +24,12 @@ import {
   resetNotificationSettings,
   type NotificationSettings,
 } from "@/services/notificationSettings";
-import { soundService, type PomodoroSoundType } from "@/services/soundService";
+import {
+  soundService,
+  type PomodoroSoundType,
+  type NotificationSoundType,
+} from "@/services/soundService";
+import { Slider } from "@/components/ui/slider";
 
 export const SettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<NotificationSettings>(
@@ -31,6 +37,16 @@ export const SettingsPage: React.FC = () => {
   );
   const [pomodoroSound, setPomodoroSound] = useState<PomodoroSoundType>(
     soundService.getSettings().pomodoroSound
+  );
+  const [notificationSound, setNotificationSound] =
+    useState<NotificationSoundType>(
+      soundService.getSettings().notificationSound
+    );
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(
+    soundService.getSettings().enabled
+  );
+  const [soundVolume, setSoundVolume] = useState<number>(
+    soundService.getSettings().volume * 100 // Convert to 0-100 for slider
   );
 
   useEffect(() => {
@@ -59,6 +75,30 @@ export const SettingsPage: React.FC = () => {
   const handlePomodoroSoundChange = (sound: PomodoroSoundType) => {
     setPomodoroSound(sound);
     soundService.setPomodoroSound(sound);
+  };
+
+  const handleNotificationSoundChange = (sound: NotificationSoundType) => {
+    setNotificationSound(sound);
+    soundService.setNotificationSound(sound);
+  };
+
+  const handleSoundEnabledChange = (enabled: boolean) => {
+    setSoundEnabled(enabled);
+    soundService.setEnabled(enabled);
+  };
+
+  const handleVolumeChange = (volume: number[]) => {
+    const vol = volume[0];
+    setSoundVolume(vol);
+    soundService.setVolume(vol / 100); // Convert back to 0-1
+  };
+
+  const handleTestNotificationSound = () => {
+    soundService.testNotification();
+  };
+
+  const handleTestPomodoroSound = () => {
+    soundService.testPomodoro();
   };
 
   return (
@@ -216,6 +256,102 @@ export const SettingsPage: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Sound Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Volume2 className="size-5" />
+            Sound Settings
+          </CardTitle>
+          <CardDescription>Control sound playback and volume</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Sound Enabled */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="sound-enabled" className="text-base">
+                Enable Sound
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Play sounds for notifications and pomodoro
+              </p>
+            </div>
+            <Switch
+              id="sound-enabled"
+              checked={soundEnabled}
+              onCheckedChange={handleSoundEnabledChange}
+            />
+          </div>
+
+          {/* Volume Control */}
+          <div className="space-y-2">
+            <Label htmlFor="sound-volume" className="text-base">
+              Volume: {soundVolume}%
+            </Label>
+            <Slider
+              id="sound-volume"
+              min={0}
+              max={100}
+              step={5}
+              value={[soundVolume]}
+              onValueChange={handleVolumeChange}
+              disabled={!soundEnabled}
+              className="w-full"
+            />
+            <p className="text-xs text-muted-foreground">
+              Adjust the volume level for all sounds
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Notification Sound Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Volume2 className="size-5" />
+            Notification Sound
+          </CardTitle>
+          <CardDescription>
+            Choose sound to play when receiving notifications
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="notification-sound">Sound Type</Label>
+            <Select
+              value={notificationSound}
+              onValueChange={handleNotificationSoundChange}
+            >
+              <SelectTrigger id="notification-sound">
+                <SelectValue placeholder="Select sound" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">
+                  🔕 Default (Double Beep)
+                </SelectItem>
+                <SelectItem value="bell">🔔 Bell (Single Chime)</SelectItem>
+                <SelectItem value="chime">🎵 Chime (Triple Tone)</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTestNotificationSound}
+                disabled={!soundEnabled}
+              >
+                <Play className="size-4 mr-1" />
+                Test Sound
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Click to preview the selected notification sound
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Pomodoro Sound Settings */}
       <Card>
         <CardHeader>
@@ -245,9 +381,20 @@ export const SettingsPage: React.FC = () => {
                 <SelectItem value="gong">🔊 Gong (Deep Resonance)</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
-              Test sound on pomodoro timer completion
-            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleTestPomodoroSound}
+                disabled={!soundEnabled}
+              >
+                <Play className="size-4 mr-1" />
+                Test Sound
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Click to preview the selected pomodoro sound
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

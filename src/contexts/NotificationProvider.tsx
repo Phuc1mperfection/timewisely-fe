@@ -4,6 +4,7 @@ import { NotificationStatus, NotificationChannel } from "@/interfaces";
 import { NotificationApiService } from "@/services/notificationServices";
 import { webSocketService } from "@/services/webSocketService";
 import { loadNotificationSettings } from "@/services/notificationSettings";
+import { soundService } from "@/services/soundService";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 import {
@@ -91,6 +92,11 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
           icon: "/favicon.ico",
           tag: message.notificationId,
         });
+      }
+
+      // Play notification sound if enabled
+      if (soundService.getSettings().enabled) {
+        soundService.playNotification();
       }
     },
     [user]
@@ -180,43 +186,42 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     [notifications]
   );
 
-useEffect(() => {
-  // Đợi AuthProvider load xong đã
-  if (authLoading) {
-    return;
-  }
+  useEffect(() => {
+    // Đợi AuthProvider load xong đã
+    if (authLoading) {
+      return;
+    }
 
-  // Nếu không có user => disconnect & clear state
-  if (!user?.id) {
-    webSocketService.disconnect();
-    setIsConnected(false);
-    setNotifications([]);
-    setUnreadCount(0);
-    return;
-  }
+    // Nếu không có user => disconnect & clear state
+    if (!user?.id) {
+      webSocketService.disconnect();
+      setIsConnected(false);
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
 
-  // Có user rồi: xin quyền browser notification
-  if (Notification.permission === "default") {
-    Notification.requestPermission().then((permission) => {
-      console.log("Notification permission:", permission);
+    // Có user rồi: xin quyền browser notification
+    if (Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        console.log("Notification permission:", permission);
+      });
+    }
+
+    // Lấy notifications từ API
+    fetchNotifications();
+
+    // Kết nối WebSocket
+    webSocketService.connect(handleNewNotification, (connected) => {
+      setIsConnected(connected);
     });
-  }
 
-  // Lấy notifications từ API
-  fetchNotifications();
-
-  // Kết nối WebSocket
-  webSocketService.connect(handleNewNotification, (connected) => {
-    setIsConnected(connected);
-  });
-
-  // Cleanup khi user đổi hoặc unmount
-  return () => {
-    webSocketService.disconnect();
-    setIsConnected(false);
-  };
-}, [user?.id, authLoading, fetchNotifications, handleNewNotification]);
-
+    // Cleanup khi user đổi hoặc unmount
+    return () => {
+      webSocketService.disconnect();
+      setIsConnected(false);
+    };
+  }, [user?.id, authLoading, fetchNotifications, handleNewNotification]);
 
   const contextValue = useMemo<NotificationContextType>(
     () => ({
