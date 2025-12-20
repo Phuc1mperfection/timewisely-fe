@@ -111,8 +111,7 @@ const AuthForm: React.FC = () => {
         <div className="absolute inset-0 flex items-center ">
           <div className="w-full border-t border-white/20" />
         </div>
-        <div className="relative flex justify-center text-sm">
-        </div>
+        <div className="relative flex justify-center text-sm"></div>
       </motion.div>
       {/* Form */}
       <motion.form
@@ -168,6 +167,17 @@ const AuthForm: React.FC = () => {
           showPassword={showPassword}
           onTogglePassword={() => setShowPassword((s) => !s)}
         />
+        {isLogin && (
+          <div className="text-right">
+            <button
+              type="button"
+              onClick={() => navigate("/auth/forgot-password")}
+              className="text-sm text-white/80 hover:text-white transition-colors duration-200 underline-offset-4 hover:underline"
+            >
+              Forgot password?
+            </button>
+          </div>
+        )}
         <motion.button
           type="submit"
           className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-yellow-500 to-mint-400 text-white font-semibold hover:from-yellow-600 hover:to-mint-500 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-mint-400 focus:ring-opacity-50"

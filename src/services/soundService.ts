@@ -155,7 +155,7 @@ class SoundService {
         this.playAlarmSound();
         break;
       case "gong":
-        this.playGongSound();
+        this.playWaterdropSound();
         break;
       case "default":
       default:
@@ -180,8 +180,8 @@ class SoundService {
     this.playAudioFile("/sounds/pomodoro-alarm.mp3");
   }
 
-  private playGongSound(): void {
-    this.playAudioFile("/sounds/pomodoro-gong.mp3");
+  private playWaterdropSound(): void {
+    this.playAudioFile("/sounds/pomodoro-waterdrop.mp3");
   }
 
   private playDefaultPomodoroSound(): void {

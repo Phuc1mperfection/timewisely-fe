@@ -23,6 +23,9 @@ import { CompletedTasksPage } from "./pages/tasks/CompletedTasksPage";
 import { InboxTasksPage } from "./pages/tasks/InboxTasksPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import GoalsPage from "./pages/GoalsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import VerifyOtpPage from "./pages/VerifyOtpPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +47,18 @@ function App() {
                       <Auth />
                     </PrivateRoute>
                   }
+                />
+                <Route
+                  path="/auth/forgot-password"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route
+                  path="/auth/forgot-password/otp"
+                  element={<VerifyOtpPage />}
+                />
+                <Route
+                  path="/auth/reset-password"
+                  element={<ResetPasswordPage />}
                 />
                 <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route

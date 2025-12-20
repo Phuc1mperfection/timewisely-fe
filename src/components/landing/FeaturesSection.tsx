@@ -53,11 +53,6 @@ const FeaturesSection = memo(({ features }: { features: any[] }) => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
-  const intelligentPlanningRef = useRef(null);
-  const intelligentPlanningInView = useInView(intelligentPlanningRef, {
-    once: true,
-    amount: 0.1,
-  });
 
   // Memoize header animation variants
   const headerAnimationVariants = useMemo(
@@ -69,59 +64,9 @@ const FeaturesSection = memo(({ features }: { features: any[] }) => {
     [isInView]
   );
 
-  // Memoize intelligent planning animation variants
-  const intelligentPlanningVariants = useMemo(
-    () => ({
-      initial: { opacity: 0, y: 40 },
-      animate: intelligentPlanningInView
-        ? { opacity: 1, y: 0 }
-        : { opacity: 0, y: 40 },
-      transition: { duration: 0.7, delay: 0.2 },
-    }),
-    [intelligentPlanningInView]
-  );
 
-  // Memoize feature list items animations
-  const featureListItems = useMemo(
-    () => [
-      {
-        text: "Automatic task prioritization",
-        color: "bg-yellow-500",
-        delay: 0.5,
-      },
-      { text: "Energy-based scheduling", color: "bg-orange-600", delay: 0.6 },
-      { text: "Smart break recommendations", color: "bg-teal-500", delay: 0.7 },
-    ],
-    []
-  );
 
-  // Memoize schedule items animations
-  const scheduleItems = useMemo(
-    () => [
-      {
-        title: "Deep Work Session",
-        time: "25 min",
-        bgClass: "bg-gradient-to-r from-yellow-500/10 to-orange-600/10",
-        textClass: "text-yellow-600",
-        delay: 0.7,
-      },
-      {
-        title: "Creative Break",
-        time: "5 min",
-        bgClass: "bg-gradient-to-r from-teal-500/10 to-cyan-500/10",
-        textClass: "text-teal-600",
-        delay: 0.8,
-      },
-      {
-        title: "Team Meeting",
-        time: "30 min",
-        bgClass: "bg-gradient-to-r from-amber-400/10 to-rose-500/10",
-        textClass: "yellow-600",
-        delay: 0.9,
-      },
-    ],
-    []
-  );
+
 
   // Memoize rendered feature cards
   const renderedFeatureCards = useMemo(
@@ -132,51 +77,6 @@ const FeaturesSection = memo(({ features }: { features: any[] }) => {
     [features]
   );
 
-  // Memoize rendered list items
-  const renderedListItems = useMemo(
-    () =>
-      featureListItems.map((item, index) => (
-        <motion.li
-          key={index}
-          className="flex items-center"
-          initial={{ opacity: 0, x: -20 }}
-          animate={
-            intelligentPlanningInView
-              ? { opacity: 1, x: 0 }
-              : { opacity: 0, x: -20 }
-          }
-          transition={{ delay: item.delay }}
-        >
-          <div className={`w-2 h-2 ${item.color} rounded-full mr-4`} />
-          <span className="text-gray-700">{item.text}</span>
-        </motion.li>
-      )),
-    [featureListItems, intelligentPlanningInView]
-  );
-
-  // Memoize rendered schedule items
-  const renderedScheduleItems = useMemo(
-    () =>
-      scheduleItems.map((item, index) => (
-        <motion.div
-          key={index}
-          className={`flex items-center justify-between p-3 ${item.bgClass} rounded-lg`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={
-            intelligentPlanningInView
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 20 }
-          }
-          transition={{ delay: item.delay }}
-        >
-          <span className={`font-medium ${item.textClass}`}>{item.title}</span>
-          <span className={`text-sm ${item.textClass} font-medium`}>
-            {item.time}
-          </span>
-        </motion.div>
-      )),
-    [scheduleItems, intelligentPlanningInView]
-  );
 
   return (
     <section

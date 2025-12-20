@@ -73,3 +73,25 @@ export const handleOAuthCallback = async (
   });
   return res.data;
 };
+
+// Password Reset Functions
+export const requestPasswordReset = async (email: string) => {
+  const res = await apiClient.post("/auth/forgot-password", { email });
+  return res.data;
+};
+
+export const verifyOtp = async (email: string, otp: string) => {
+  const res = await apiClient.post("/auth/verify-otp", { email, otp });
+  return res.data;
+};
+
+export const resetPassword = async (
+  resetToken: string,
+  newPassword: string
+) => {
+  const res = await apiClient.post("/auth/reset-password", {
+    resetToken,
+    newPassword,
+  });
+  return res.data;
+};
