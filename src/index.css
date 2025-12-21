@@ -77,6 +77,11 @@ html, body {
   --border: oklch(0.88 0.02 85);
   --input: oklch(0.88 0.02 85);
   --ring: oklch(0.65 0.15 85);
+  --progress-background: oklch(0.96 0.01 85);
+  /* Goal Progress Colors */
+  --progress-high: 160 84% 39%; /* Emerald-300 for 70%+ */
+  --progress-medium: 48 96% 53%; /* Amber-400 for 30-70% */
+  --progress-low: 346 77% 49%; /* Rose-400 for <30% */
   --chart-1: oklch(0.7 0.18 85);
   --chart-2: oklch(0.75 0.15 60);
   --chart-3: oklch(0.8 0.12 100);
@@ -179,6 +184,7 @@ html, body {
   --border: oklch(0.3 0.02 85);
   --input: oklch(0.28 0.02 85);
   --ring: oklch(0.7 0.15 85);
+  --progress-background: oklch(0.22 0.02 85);
   --chart-1: oklch(0.7 0.18 85);
   --chart-2: oklch(0.75 0.15 60);
   --chart-3: oklch(0.8 0.12 100);
@@ -194,9 +200,9 @@ html, body {
   --sidebar-ring: oklch(0.7 0.15 85);
   
   /* Goal Progress Colors */
-  --progress-high: 134 239 172; /* Emerald-300 for 70%+ */
-  --progress-medium: 251 191 36; /* Amber-400 for 30-70% */
-  --progress-low: 251 113 133; /* Rose-400 for <30% */
+  --progress-high: 160 84% 39%; /* Emerald-300 for 70%+ */
+  --progress-medium: 48 96% 53%; /* Amber-400 for 30-70% */
+  --progress-low: 346 77% 49%; /* Rose-400 for <30% */
   
   /* Goal Tag Colors */
   --goal-fitness: 239 68 68; /* Red */

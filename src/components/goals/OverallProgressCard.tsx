@@ -26,8 +26,15 @@ export function OverallProgressCard({ overall }: OverallProgressCardProps) {
   const isComplete = percent >= 100;
 
   const chartData = [
-    { name: "completed", value: percent },
-    { name: "remaining", value: Math.max(0, 100 - percent) },
+    {
+      name: "completed",
+      value: percent,
+    },
+
+    {
+      name: "remaining",
+      value: Math.max(0, 100 - percent),
+    },
   ];
 
   return (
@@ -71,7 +78,7 @@ export function OverallProgressCard({ overall }: OverallProgressCardProps) {
                   stroke="none"
                 >
                   <Cell fill="url(#progressGradient)" />
-                  <Cell fill="#f2f2f2" />
+                  <Cell fill="var(--progress-background)" />
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
@@ -83,7 +90,6 @@ export function OverallProgressCard({ overall }: OverallProgressCardProps) {
               </span>
               <span className="text-xs text-muted-foreground">Complete</span>
             </div>
-
             {/* Celebration effect for 100% */}
             {isComplete && (
               <div className="absolute -top-2 -right-2">
@@ -91,7 +97,6 @@ export function OverallProgressCard({ overall }: OverallProgressCardProps) {
               </div>
             )}
           </div>
-
           {/* Stats */}
           <div className="flex-1 space-y-3">
             <div>
@@ -102,7 +107,6 @@ export function OverallProgressCard({ overall }: OverallProgressCardProps) {
                 Average goal completion rate
               </p>
             </div>
-
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold text-foreground">
                 {overall.completedGoals}
@@ -114,12 +118,13 @@ export function OverallProgressCard({ overall }: OverallProgressCardProps) {
                 goals completed
               </span>
             </div>
-
             {/* Progress Bar */}
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <div
-                style={{ width: `${Math.min(percent, 100)}%` }}
-                className={`h-full bg-gradient-to-r ${gradientClass} rounded-full transition-all duration-500`}
+                style={{
+                  width: `${Math.min(percent, 100)}%`, }}
+                className={`h-full bg-gradient-to-r ${gradientClass}
+      rounded-full transition-all duration-500`}
               />
             </div>
           </div>
