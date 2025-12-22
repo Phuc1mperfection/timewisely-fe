@@ -13,5 +13,5 @@ export interface Activity {
   placeType?: string;
   latitude?: number;
   longitude?: number;
-  type?: "activity" | "task";
+  type?: "activity" | "task" | "google";
 }

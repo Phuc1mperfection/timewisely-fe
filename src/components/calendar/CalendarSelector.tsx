@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/collapsible";
 
 interface CalendarSelectorProps {
-  selectedCalendarId: string; // Giữ lại để tương thích với code cũ
-  onCalendarChange: (calendarId: string) => void; // Giữ lại để tương thích với code cũ
+  selectedCalendarId: string;
+  onCalendarChange: (calendarId: string) => void;
   className?: string;
   // Thêm props mới cho việc chọn nhiều calendar
   selectedCalendarIds?: string[];
@@ -39,24 +39,21 @@ export const CalendarSelector: React.FC<CalendarSelectorProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(true);
 
-  // State nội bộ để theo dõi các calendar được chọn
   const [selectedIds, setSelectedIds] = useState<string[]>(selectedCalendarIds);
 
-  // Các màu mặc định cho calendars
   const colorMap: Record<string, string> = {
-    "1": "#9FC5E8", // Xanh dương nhạt
-    "2": "#B6D7A8", // Xanh lá nhạt
-    "3": "#FFD966", // Vàng
-    "4": "#F4CCCC", // Đỏ nhạt
-    "5": "#D5A6BD", // Tím nhạt
-    "6": "#A4C2F4", // Xanh dương
-    "7": "#A2C4C9", // Xanh lục
-    "8": "#FFB347", // Cam
-    "9": "#D7B5A6", // Nâu nhạt
-    "10": "#B4A7D6", // Tím
+    "1": "#9FC5E8",
+    "2": "#B6D7A8",
+    "3": "#FFD966",
+    "4": "#F4CCCC",
+    "5": "#D5A6BD",
+    "6": "#A4C2F4",
+    "7": "#A2C4C9",
+    "8": "#FFB347",
+    "9": "#D7B5A6",
+    "10": "#B4A7D6",
   };
 
-  // Fetch available calendars when component mounts
   useEffect(() => {
     const loadCalendars = async () => {
       try {
@@ -109,9 +106,7 @@ export const CalendarSelector: React.FC<CalendarSelectorProps> = ({
     };
 
     loadCalendars();
-  }, [
-
-  ]);
+  }, []);
 
   // Hàm xử lý khi checkbox được thay đổi
   const handleCalendarToggle = (calendarId: string) => {

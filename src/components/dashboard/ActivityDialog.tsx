@@ -33,10 +33,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 interface ActivityDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  event?: Activity | null;
+  // allow partial so calendar can reuse without full Activity shape
+  event?: Partial<Activity> | null;
   timeSlot?: { start: Date; end: Date } | null;
-  onSave: (eventData: Partial<Activity>) => void;
-  onDelete: () => void;
+  // onSave may be async for calendar operations
+  onSave: (eventData: Partial<Activity>) => Promise<void> | void;
+  // optional onDelete may be async
+  onDelete?: () => Promise<void> | void;
 }
 
 // DateTimePicker component
@@ -145,7 +148,7 @@ export function ActivityDialog({
 }: ActivityDialogProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [color, setColor] = useState("#8b5cf6");
+  const [color, setColor] = useState("#D4AF37");
   const [allDay, setAllDay] = useState(false); // Thêm state allDay
   const [start, setStart] = useState<Date | null>(null);
   const [end, setEnd] = useState<Date | null>(null);
@@ -160,7 +163,7 @@ export function ActivityDialog({
 
   const colorOptions = useMemo(
     () => [
-      { label: "yellow", value: "#8b5cf6" }, // Primary
+      { label: "yellow", value: "#D4AF37" }, // Primary
       { label: "Mint", value: "#5eead4" }, // Accent
       { label: "Pink", value: "#f9a8d4" }, // Accent
       { label: "Yellow", value: "#fde68a" }, // Highlight only
@@ -190,12 +193,12 @@ export function ActivityDialog({
 
   useEffect(() => {
     if (event) {
-      setTitle(event.title);
+      setTitle(event.title ?? "");
       setDescription(event.description || "");
-      setColor(event.color || "#8b5cf6");
+      setColor(event.color || "#D4AF37");
       setAllDay(event.allDay || false);
-      setStart(event.startTime);
-      setEnd(event.endTime);
+      setStart(event.startTime ?? null);
+      setEnd(event.endTime ?? null);
       setLocation(event.location || "");
       setGoalTag(event.goalTag || "");
       setCompleted(event.completed || false);
@@ -253,34 +256,46 @@ export function ActivityDialog({
     []
   );
 
-  const handleSave = () => {
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleSave = async () => {
     if (!title.trim() || !start || !end) return;
-    onSave({
-      title: title.trim(),
-      description: description.trim(),
-      color,
-      allDay,
-      startTime: start,
-      endTime: end,
-      location,
-      goalTag,
-      completed,
-    });
-    setTitle("");
-    setDescription("");
-    setAllDay(false);
-    setStart(null);
-    setEnd(null);
-    setLocation("");
-    setGoalTag("");
-    setCompleted(false);
-    setShowMore(false);
+    try {
+      setSaving(true);
+      await onSave({
+        title: title.trim(),
+        description: description.trim(),
+        color,
+        allDay,
+        startTime: start,
+        endTime: end,
+        location,
+        goalTag,
+        completed,
+      });
+      // reset local state only after successful save
+      setTitle("");
+      setDescription("");
+      setAllDay(false);
+      setStart(null);
+      setEnd(null);
+      setLocation("");
+      setGoalTag("");
+      setCompleted(false);
+      setShowMore(false);
+      onClose();
+    } catch (err) {
+      console.error("ActivityDialog: save failed", err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleClose = () => {
     setTitle("");
     setDescription("");
-    setColor("#8b5cf6");
+    setColor("#D4AF37");
     setAllDay(false);
     setStart(null);
     setEnd(null);
@@ -464,14 +479,25 @@ export function ActivityDialog({
             </>
           )}
           <div className="flex justify-between pt-4">
-            {event && (
+            {event && onDelete && (
               <Button
                 variant="destructive"
-                onClick={onDelete}
+                onClick={async () => {
+                  try {
+                    setDeleting(true);
+                    await onDelete();
+                    onClose();
+                  } catch (err) {
+                    console.error("ActivityDialog: delete failed", err);
+                  } finally {
+                    setDeleting(false);
+                  }
+                }}
                 className="flex items-center space-x-2"
+                disabled={deleting}
               >
                 <Trash2 className="w-4 h-4" />
-                <span>Delete</span>
+                <span>{deleting ? "Deleting" : "Delete"}</span>
               </Button>
             )}
 
@@ -485,10 +511,16 @@ export function ActivityDialog({
               </Button>
               <Button
                 onClick={handleSave}
-                disabled={!title.trim()}
+                disabled={!title.trim() || saving}
                 className="bg-[var(--wisely-gold)] hover:bg-yellow-600 text-white"
               >
-                {event ? "Update" : "Create"}
+                {saving
+                  ? event
+                    ? "Updating..."
+                    : "Creating..."
+                  : event
+                  ? "Update"
+                  : "Create"}
               </Button>
             </div>
           </div>

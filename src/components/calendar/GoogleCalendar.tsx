@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useCallback, useEffect } from "react";
-import { Calendar, momentLocalizer, Views } from "react-big-calendar";
-import moment from "moment";
+import { Views } from "react-big-calendar";
+// moment not needed in this file (ScheduleCalendar provides localization)
 import {
   getAllEvents,
   createEvent,
@@ -8,14 +9,25 @@ import {
   deleteEvent,
   // syncCalendarEvents removed as it's no longer needed
 } from "@/services/calendarServices";
-import type { CalendarEvent } from "@/services/calendarServices";
+// CalendarEvent type intentionally not imported — we normalize responses ourselves
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/contexts/useAuth";
 import { Loader, Plus, AlertCircle } from "lucide-react"; // Added AlertCircle
-import CalendarEventModal from "./CalendarEventModal";
+import { CustomToolbar } from "@/components/dashboard/CustomToolbar";
+import { ScheduleCalendar } from "@/components/dashboard/Calendar";
+import {
+  addDays,
+  addWeeks,
+  addMonths,
+  startOfWeek,
+  endOfWeek,
+  format,
+} from "date-fns";
+import type { View } from "react-big-calendar";
+import { ActivityDialog } from "@/components/dashboard/ActivityDialog";
 import ConnectGoogleButton from "./ConnectGoogleButton";
 import CalendarSelector from "./CalendarSelector"; // Import CalendarSelector
-const localizer = momentLocalizer(moment);
+// localizer is provided by ScheduleCalendar
 
 interface TransformedEvent {
   id?: string; // Make id optional to match EventData in CalendarEventModal
@@ -27,21 +39,12 @@ interface TransformedEvent {
   colorId?: string;
   calendarId?: string;
   calendarName?: string;
+  allDay?: boolean;
   originalEvent?: unknown; // Changed from CalendarEvent to unknown to match EventData
 }
 
 // Backend event format (from EventDto)
-interface BackendEvent {
-  id: string;
-  summary: string;
-  description?: string;
-  location?: string;
-  colorId?: string;
-  startDateTime: string; // ISO string
-  endDateTime: string; // ISO string
-  isAllDay?: boolean;
-  status?: string;
-}
+// BackendEvent interface not required here
 
 const GoogleCalendar: React.FC = () => {
   const [events, setEvents] = useState<TransformedEvent[]>([]);
@@ -59,191 +62,146 @@ const GoogleCalendar: React.FC = () => {
   const { user } = useAuth();
   const { success, error } = useToast();
 
+  // Helpers for RFC3339 local datetime without 'Z' and user's timezone
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  const toLocalRFC3339 = (d: Date) => {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return (
+      d.getFullYear() +
+      "-" +
+      pad(d.getMonth() + 1) +
+      "-" +
+      pad(d.getDate()) +
+      "T" +
+      pad(d.getHours()) +
+      ":" +
+      pad(d.getMinutes()) +
+      ":" +
+      pad(d.getSeconds())
+    );
+  };
+
+  // Controlled view/date for react-big-calendar (so external controls work)
+  const [view, setView] = useState<View>(Views.WEEK as View);
+  const [date, setDate] = useState<Date>(new Date());
+
+  const getLabel = (v: View, d: Date) => {
+    try {
+      if (v === Views.MONTH) return format(d, "MMMM yyyy");
+      if (v === Views.WEEK) {
+        const start = startOfWeek(d, { weekStartsOn: 1 });
+        const end = endOfWeek(d, { weekStartsOn: 1 });
+        return `${format(start, "MMM d")} - ${format(end, "MMM d, yyyy")}`;
+      }
+      if (v === Views.DAY) return format(d, "PPP");
+      return format(d, "MMM yyyy");
+    } catch (e) {
+      console.error("Error formatting label:", e);
+      return "";
+    }
+  };
+
+  const handleNavigate = (action: string) => {
+    if (action === "TODAY") {
+      setDate(new Date());
+      return;
+    }
+    if (action === "PREV") {
+      if (view === Views.MONTH) setDate((d) => addMonths(d, -1));
+      else if (view === Views.WEEK) setDate((d) => addWeeks(d, -1));
+      else if (view === Views.DAY) setDate((d) => addDays(d, -1));
+      else setDate((d) => addMonths(d, -1));
+      return;
+    }
+    if (action === "NEXT") {
+      if (view === Views.MONTH) setDate((d) => addMonths(d, 1));
+      else if (view === Views.WEEK) setDate((d) => addWeeks(d, 1));
+      else if (view === Views.DAY) setDate((d) => addDays(d, 1));
+      else setDate((d) => addMonths(d, 1));
+      return;
+    }
+  };
+
   // Kiểm tra xem người dùng đăng nhập bằng Google (OAuth) hay không
   const isGoogleUser =
     user?.googleConnected ||
     user?.googleCalendarSynced ||
     (user?.email && user?.email.includes("@gmail.com"));
-
+  // Fetch events helper — calls backend service and normalizes results
   const fetchEvents = useCallback(async () => {
+    setLoading(true);
+    setApiError(null);
     try {
-      console.log("Fetching events for all selected calendars");
-      setApiError(null);
-      setLoading(true);
+      const res = await getAllEvents({ maxResults: 250 });
 
-      // Lấy ngày hiện tại
-      const now = new Date();
+      // Normalize different backend shapes: either an array or { items: [...] }
+      const items: any[] = Array.isArray(res) ? res : res?.items || [];
 
-      // Lấy ngày đầu tiên của tháng hiện tại
-      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const transformedEvents: TransformedEvent[] = items
+        .filter((ev) => {
+          return (
+            ev &&
+            (ev.id || ev.eventId) &&
+            (ev.summary || ev.title) &&
+            ((ev.start && (ev.start.dateTime || ev.startDateTime)) ||
+              ev.startDateTime ||
+              ev.start)
+          );
+        })
+        .map((ev) => {
+          // Support both Google-style and backend DTO fields
+          const startStr = ev.start?.dateTime || ev.startDateTime || ev.start;
+          const endStr = ev.end?.dateTime || ev.endDateTime || ev.end;
+          const startDate = startStr ? new Date(startStr) : new Date();
+          const endDate = endStr
+            ? new Date(endStr)
+            : new Date(startDate.getTime() + 60 * 60 * 1000);
 
-      // Lấy ngày cuối cùng của tháng tiếp theo
-      const lastDayOfNextMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() + 2,
-        0
-      );
+          // Determine all-day: Google all-day events use start.date (no time)
+          const isDateOnly = Boolean(ev.start && ev.start.date);
+          const isExplicitAllDay = Boolean(
+            ev.isAllDay || ev.isAllDayEvent || ev.allDay
+          );
 
-      // Format thành ISO string
-      const timeMin = firstDayOfMonth.toISOString();
-      const timeMax = lastDayOfNextMonth.toISOString();
+          // Multi-day heuristic: duration >= 24h and both times at midnight
+          const durationMs = endDate.getTime() - startDate.getTime();
+          const isMultiDay = durationMs >= 24 * 60 * 60 * 1000;
+          const startIsMidnight =
+            startDate.getHours() === 0 &&
+            startDate.getMinutes() === 0 &&
+            startDate.getSeconds() === 0;
+          const endIsMidnight =
+            endDate.getHours() === 0 &&
+            endDate.getMinutes() === 0 &&
+            endDate.getSeconds() === 0;
 
-      console.log("Date range for events:", {
-        timeMin,
-        timeMax,
-        firstDayOfMonth: firstDayOfMonth.toLocaleString(),
-        lastDayOfNextMonth: lastDayOfNextMonth.toLocaleString(),
-        selectedCalendarIds,
-      });
+          const allDay =
+            isDateOnly ||
+            isExplicitAllDay ||
+            (isMultiDay && startIsMidnight && endIsMidnight);
 
-      try {
-        // Sử dụng getAllEvents để lấy events từ tất cả calendar
-        console.log("Fetching all events from all calendars");
-
-        const response = await getAllEvents({
-          timeMin,
-          timeMax,
-          maxResults: 100,
-        });
-        console.log("Raw event data:", response);
-
-        // Check if response is in the backend format or Google API format
-        let transformedEvents: TransformedEvent[] = [];
-
-        if (Array.isArray(response)) {
-          console.log("Processing response as direct array of events");
-
-          // Lọc events nếu có selectedCalendarIds
-          let filteredEvents = response;
-          if (selectedCalendarIds.length > 0) {
-            console.log(
-              `Filtering events for ${selectedCalendarIds.length} selected calendars`
-            );
-            filteredEvents = response.filter(
-              (event: BackendEvent & { calendarId?: string }) =>
-                !event.calendarId ||
-                selectedCalendarIds.includes(event.calendarId)
-            );
-            console.log(
-              `Filtered from ${response.length} to ${filteredEvents.length} events`
-            );
-          }
-
-          // Backend returns array of events directly
-          transformedEvents = filteredEvents
-            .filter((event: BackendEvent) => {
-              // Log any problematic events
-              if (!event || !event.id || !event.summary) {
-                console.warn("Invalid event detected:", event);
-                return false;
-              }
-              return true;
-            })
-            .map(
-              (
-                event: BackendEvent & {
-                  calendarId?: string;
-                  calendarName?: string;
-                }
-              ) => ({
-                id: event.id,
-                title: event.summary,
-                start: new Date(event.startDateTime),
-                end: new Date(event.endDateTime),
-                description: event.description,
-                location: event.location,
-                colorId: event.colorId,
-                calendarId: event.calendarId,
-                calendarName: event.calendarName,
-                originalEvent: {
-                  id: event.id,
-                  summary: event.summary,
-                  description: event.description,
-                  location: event.location,
-                  colorId: event.colorId,
-                  calendarId: event.calendarId,
-                  calendarName: event.calendarName,
-                  start: { dateTime: event.startDateTime },
-                  end: { dateTime: event.endDateTime },
-                },
-              })
-            );
-
-          console.log("Converted backend events:", transformedEvents);
-        } else if (
-          response &&
-          response.items &&
-          Array.isArray(response.items)
-        ) {
-          console.log("Processing response with items array format");
-          // Google API format response (items array)
-          transformedEvents = response.items
-            .filter((event: CalendarEvent) => {
-              const valid =
-                event &&
-                event.id &&
-                event.summary &&
-                event.start &&
-                event.start.dateTime &&
-                event.end &&
-                event.end.dateTime;
-
-              if (!valid) {
-                console.warn("Invalid Google Calendar event detected:", event);
-                return false;
-              }
-              return true;
-            })
-            .map((event: CalendarEvent) => ({
-              id: event.id,
-              title: event.summary,
-              start: new Date(event.start.dateTime),
-              end: new Date(event.end.dateTime),
-              description: event.description,
-              location: event.location,
-              colorId: event.colorId,
-              originalEvent: event,
-            }));
-        } else {
-          // Empty or unrecognized response
-          console.warn("No events or unrecognized data format:", response);
-          console.log("Response type:", typeof response);
-          console.log("Response properties:", Object.keys(response || {}));
-          setApiError("Received unexpected data format from server");
-        }
-
-        console.log("Transformed events:", transformedEvents);
-        setEvents(transformedEvents);
-      } catch (err) {
-        // This catches any error thrown by getEvents function
-        console.error("Failed to fetch events:", err);
-
-        // Extract more error details if available
-        const errObj = err as {
-          message?: string;
-          response?: { status?: number; data?: unknown };
-        };
-        console.error("Error details:", {
-          message: errObj.message,
-          status: errObj.response?.status,
-          responseData: errObj.response?.data,
+          return {
+            id: ev.id || ev.eventId || "",
+            title: ev.summary || ev.title || "",
+            start: startDate,
+            end: endDate,
+            description: ev.description,
+            location: ev.location,
+            colorId: ev.colorId,
+            calendarId: ev.calendarId,
+            calendarName: ev.calendarName,
+            allDay,
+            originalEvent: ev,
+          } as TransformedEvent;
         });
 
-        // Set a specific error message for network errors (likely CORS)
-        let errorMessage = "Failed to load calendar events";
-
-        if (err instanceof Error) {
-          if (err.message === "Network Error") {
-            errorMessage =
-              "Network error: This may be due to CORS restrictions or the server is not responding.";
-          } else {
-            errorMessage = `Error: ${err.message}`;
-          }
-        }
-
-        setApiError(errorMessage);
-        error(errorMessage);
-      }
+      setEvents(transformedEvents);
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+      let errorMessage = "Failed to load calendar events";
+      if (err instanceof Error) errorMessage = err.message || errorMessage;
+      setApiError(errorMessage);
+      error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -292,8 +250,8 @@ const GoogleCalendar: React.FC = () => {
         originalEvent: {
           id: "",
           summary: "",
-          start: { dateTime: start.toISOString() },
-          end: { dateTime: end.toISOString() },
+          start: { dateTime: toLocalRFC3339(start), timeZone },
+          end: { dateTime: toLocalRFC3339(end), timeZone },
         },
       });
       setModalMode("create");
@@ -302,78 +260,7 @@ const GoogleCalendar: React.FC = () => {
     []
   );
 
-  const handleSelectEvent = useCallback((event: TransformedEvent) => {
-    setSelectedEvent(event);
-    setModalMode("edit");
-    setModalOpen(true);
-  }, []);
-
-  const handleSaveEvent = useCallback(
-    async (eventData: {
-      id?: string;
-      title: string;
-      description?: string;
-      start: Date;
-      end: Date;
-      location?: string;
-      colorId?: string;
-      calendarId?: string;
-      calendarName?: string;
-      originalEvent?: unknown;
-    }) => {
-      try {
-        // Format event for the API
-        const formattedEvent = {
-          summary: eventData.title,
-          description: eventData.description,
-          start: {
-            dateTime: eventData.start.toISOString(),
-          },
-          end: {
-            dateTime: eventData.end.toISOString(),
-          },
-          location: eventData.location,
-        };
-
-        if (modalMode === "create") {
-          await createEvent(formattedEvent, selectedCalendarId);
-          success("Event created successfully");
-        } else if (eventData.id) {
-          // Check if id exists
-          await updateEvent(eventData.id, formattedEvent);
-          success("Event updated successfully");
-        } else {
-          error("Cannot update event: missing ID");
-        }
-
-        setModalOpen(false);
-        fetchEvents(); // Refresh events
-      } catch (err) {
-        console.error("Failed to save event:", err);
-        error(
-          modalMode === "create"
-            ? "Failed to create event"
-            : "Failed to update event"
-        );
-      }
-    },
-    [modalMode, fetchEvents, success, error, selectedCalendarId]
-  );
-
-  const handleDeleteEvent = useCallback(
-    async (eventId: string) => {
-      try {
-        await deleteEvent(eventId);
-        success("Event deleted successfully");
-        setModalOpen(false);
-        fetchEvents(); // Refresh events
-      } catch (err) {
-        console.error("Failed to delete event:", err);
-        error("Failed to delete event");
-      }
-    },
-    [fetchEvents, success, error]
-  );
+  // (handlers moved to ActivityDialog onSave/onDelete usage)
 
   // Sử dụng biến isGoogleUser đã tạo ở trên để kiểm tra trạng thái kết nối
   if (!isGoogleUser) {
@@ -420,12 +307,21 @@ const GoogleCalendar: React.FC = () => {
               }}
             />
           </div>
-          <button
-            onClick={fetchEvents}
-            className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
-          >
-            Refresh Events
-          </button>
+          <div className="flex items-center gap-3">
+            <CustomToolbar
+              label={getLabel(view, date)}
+              onNavigate={(action) => handleNavigate(action as any)}
+              onView={(v) => setView(v as View)}
+              views={["month", "week", "day", "agenda"]}
+              view={view}
+            />
+            <button
+              onClick={fetchEvents}
+              className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors"
+            >
+              Refresh Events
+            </button>
+          </div>
         </div>
       </div>
 
@@ -434,47 +330,84 @@ const GoogleCalendar: React.FC = () => {
           <Loader className="w-10 h-10 animate-spin yellow-500" />
         </div>
       ) : events.length > 0 ? (
-        <Calendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 600 }}
-          selectable
-          onSelectEvent={handleSelectEvent}
-          onSelectSlot={handleSelectSlot}
-          views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
-          defaultView={Views.WEEK}
-          className="modern-calendar"
-          tooltipAccessor={(event) => {
-            const title = event.title;
-            const time = `${event.start.toLocaleTimeString()} - ${event.end.toLocaleTimeString()}`;
-            const description = event.description || "";
-            const location = event.location ? `📍 ${event.location}` : "";
-            const calendar = event.calendarName
-              ? `📅 ${event.calendarName}`
-              : "";
-            return `${title}\n${time}\n${description}\n${location}\n${calendar}`;
+        // Adapter: map TransformedEvent -> Activity and reuse ScheduleCalendar
+        <ScheduleCalendar
+          events={events.map((ev) => ({
+            id: ev.id || "",
+            title: ev.title,
+            startTime: ev.start,
+            endTime: ev.end,
+            description: ev.description,
+            color: ev.colorId || "#D4AF37",
+            allDay: ev.allDay || false,
+            location: ev.location,
+            type: "google",
+          }))}
+          onSelectSlot={({ start, end }) => handleSelectSlot({ start, end })}
+          onSelectEvent={(activity: any) => {
+            const act = activity as any;
+            setSelectedEvent({
+              id: act.id,
+              title: act.title,
+              description: act.description,
+              start: act.startTime,
+              end: act.endTime,
+              location: act.location,
+              colorId: act.color,
+              originalEvent: undefined,
+            });
+            setModalMode("edit");
+            setModalOpen(true);
           }}
-          eventPropGetter={(event) => {
-            const colorId = event.colorId || "1";
-            // Chọn màu dựa trên colorId
-            const colorMap: Record<string, string> = {
-              "1": "#9FC5E8", // Xanh dương nhạt
-              "2": "#B6D7A8", // Xanh lá nhạt
-              "3": "#FFD966", // Vàng
-              "4": "#F4CCCC", // Đỏ nhạt
-              "5": "#D5A6BD", // Tím nhạt
-              "6": "#A4C2F4", // Xanh dương
-              "7": "#A2C4C9", // Xanh lục
-              "8": "#FFB347", // Cam
-              "9": "#D7B5A6", // Nâu nhạt
-              "10": "#B4A7D6", // Tím
-            };
-            const defaultColor = "#9FC5E8"; // Màu mặc định
+          onEventDrop={async ({ event, start, end }) => {
+            const ev = event as any;
+            if (!ev?.id) {
+              error("Cannot move event: missing ID");
+              return;
+            }
+            try {
+              const formattedEvent: any = {
+                summary: ev.title,
+                description: ev.description,
+                start: { dateTime: toLocalRFC3339(new Date(start)), timeZone },
+                end: { dateTime: toLocalRFC3339(new Date(end)), timeZone },
+                location: ev.location,
+              };
+              await updateEvent(ev.id, formattedEvent);
+              success("Event moved");
+              await fetchEvents();
+            } catch (err) {
+              console.error("Failed to move event:", err);
+              error("Failed to move event");
+            }
+          }}
+          onEventResize={async ({ event, start, end }) => {
+            const ev = event as any;
+            if (!ev?.id) {
+              error("Cannot resize event: missing ID");
+              return;
+            }
+            try {
+              const formattedEvent: any = {
+                summary: ev.title,
+                description: ev.description,
+                start: { dateTime: toLocalRFC3339(new Date(start)), timeZone },
+                end: { dateTime: toLocalRFC3339(new Date(end)), timeZone },
+                location: ev.location,
+              };
+              await updateEvent(ev.id, formattedEvent);
+              success("Event resized");
+              await fetchEvents();
+            } catch (err) {
+              console.error("Failed to resize event:", err);
+              error("Failed to resize event");
+            }
+          }}
+          eventStyleGetter={(activity: any) => {
+            const color = (activity && activity.color) || "#FFD966";
             return {
               style: {
-                backgroundColor: colorMap[colorId] || defaultColor,
+                backgroundColor: color,
                 borderRadius: "4px",
                 opacity: 0.8,
                 border: "0px",
@@ -482,6 +415,21 @@ const GoogleCalendar: React.FC = () => {
               },
             };
           }}
+          view={view}
+          onView={(v) => setView(v as View)}
+          date={date}
+          onNavigate={(d) => setDate(new Date(d))}
+          onEventDelete={async (activityId: string) => {
+            try {
+              await deleteEvent(activityId);
+              success("Event deleted successfully");
+              await fetchEvents();
+            } catch (err) {
+              console.error("Failed to delete event:", err);
+              error("Failed to delete event");
+            }
+          }}
+          className="modern-calendar"
         />
       ) : (
         <div className="flex flex-col items-center justify-center h-[600px] bg-white/5  rounded-xl p-4 ">
@@ -503,14 +451,79 @@ const GoogleCalendar: React.FC = () => {
         </div>
       )}
 
-      {modalOpen && selectedEvent && (
-        <CalendarEventModal
+      {modalOpen && (
+        <ActivityDialog
           isOpen={modalOpen}
-          mode={modalMode}
-          event={selectedEvent}
+          // For create mode use timeSlot, for edit mode pass event
+          event={
+            modalMode === "edit" && selectedEvent
+              ? {
+                  // Map TransformedEvent -> Activity-like shape
+                  title: selectedEvent.title,
+                  description: selectedEvent.description,
+                  color: selectedEvent.colorId || "#D4AF37",
+                  allDay: selectedEvent.allDay || false,
+                  startTime: selectedEvent.start,
+                  endTime: selectedEvent.end,
+                  location: selectedEvent.location,
+                }
+              : undefined
+          }
+          timeSlot={
+            modalMode === "create" && selectedEvent
+              ? { start: selectedEvent.start, end: selectedEvent.end }
+              : undefined
+          }
           onClose={() => setModalOpen(false)}
-          onSave={handleSaveEvent}
-          onDelete={handleDeleteEvent}
+          onSave={async (activityData) => {
+            try {
+              // Build API payload
+              const formattedEvent: any = {
+                summary: activityData.title,
+                description: activityData.description,
+                start: {
+                  dateTime: toLocalRFC3339(activityData.startTime as Date),
+                  timeZone,
+                },
+                end: {
+                  dateTime: toLocalRFC3339(activityData.endTime as Date),
+                  timeZone,
+                },
+                location: activityData.location,
+              };
+
+              if (modalMode === "create") {
+                await createEvent(formattedEvent, selectedCalendarId);
+                success("Event created successfully");
+              } else {
+                if (!selectedEvent?.id) {
+                  error("Cannot update event: missing ID");
+                  throw new Error("missing id");
+                }
+                await updateEvent(selectedEvent.id, formattedEvent);
+                success("Event updated successfully");
+              }
+
+              await fetchEvents();
+            } catch (err) {
+              console.error("Failed to save event (ActivityDialog):", err);
+              throw err;
+            }
+          }}
+          onDelete={async () => {
+            try {
+              if (!selectedEvent?.id) {
+                error("Cannot delete event: missing ID");
+                return;
+              }
+              await deleteEvent(selectedEvent.id);
+              success("Event deleted successfully");
+              await fetchEvents();
+            } catch (err) {
+              console.error("Failed to delete event (ActivityDialog):", err);
+              throw err;
+            }
+          }}
         />
       )}
     </div>

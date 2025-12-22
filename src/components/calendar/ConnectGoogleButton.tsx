@@ -81,11 +81,11 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
           <Calendar className="w-10 h-10 yellow-400" />
         </div>
 
-        <h2 className="text-2xl font-bold text-white mb-3">
+        <h2 className="text-2xl font-bold text-primary mb-3">
           Connect Google Calendar
         </h2>
 
-        <p className="text-white/70 mb-6">
+        <p className="text-primary/70 mb-6">
           Sync your Google Calendar with TimeWisely to manage all your events in
           one place. We'll never modify your events without permission.
         </p>
@@ -108,7 +108,7 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
             <div className="flex-shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
               <Check className="w-3 h-3 text-mint-400" />
             </div>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-primary/60">
               View and sync your Google Calendar events
             </p>
           </div>
@@ -117,7 +117,7 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
             <div className="flex-shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
               <Check className="w-3 h-3 text-mint-400" />
             </div>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-primary/60">
               Create and manage events from TimeWisely
             </p>
           </div>
@@ -126,7 +126,7 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
             <div className="flex-shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
               <Check className="w-3 h-3 text-mint-400" />
             </div>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-primary/60">
               Disconnect anytime from your settings
             </p>
           </div>
