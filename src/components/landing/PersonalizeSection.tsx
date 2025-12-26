@@ -13,7 +13,7 @@ const PersonalizationSection = memo(() => {
         <div className="floating-shape absolute bottom-20 right-20 w-24 h-24 bg-white/10 rounded-lg blur-xl" />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-8">
+      <div className="relative z-10  px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left column - Content */}
           <div className="text-white">

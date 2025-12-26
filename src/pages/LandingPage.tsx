@@ -3,11 +3,10 @@ import {
   useEffect,
   lazy,
   Suspense,
-  useMemo,
   memo,
   useRef,
 } from "react";
-import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
+// feature icons moved into FeaturesSection
 import Navbar from "@/components/layout/Navbar";
 import { Preloader } from "@/components/Preloader";
 import { gsap } from "gsap";
@@ -20,11 +19,6 @@ const FeaturesSection = lazy(
 const ScrollAnimationSection = lazy(
   () => import("@/components/landing/ScrollAnimationSection")
 );
-// const StorylineSection = lazy(() =>
-//   import("@/components/landing/StorylineSection").then((module) => ({
-//     default: module.StorylineSection,
-//   }))
-// );
 const PersonalizationSection = lazy(
   () => import("@/components/landing/PersonalizeSection")
 );
@@ -65,21 +59,51 @@ const LandingPage = () => {
       return -(sectionsWidth - window.innerWidth);
     };
 
+    const SCROLL_STRETCH = 1.8; // tăng => đi ngang lâu hơn
+
     const tween = gsap.to(sectionsContainer, {
       x: getScrollAmount,
       ease: "none",
       scrollTrigger: {
         trigger: container,
         start: "top top",
-        end: () => `+=${sectionsContainer.scrollWidth - window.innerWidth}`,
-        scrub: 1,
+        end: () =>
+          `+=${Math.max(
+            0,
+            (sectionsContainer.scrollWidth - window.innerWidth) * SCROLL_STRETCH
+          )}`,
+        scrub: 0.6, // nhỏ hơn 1 => cảm giác “nhanh/nhạy” hơn
         pin: true,
+        pinSpacing: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
       },
     });
 
     setScrollTween(tween);
+
+    const WHEEL_TURNS = 28; // tăng số này => bánh xe xoay nhanh hơn
+
+    // "Bánh xe" xoay theo đúng progress của horizontal tween (ổn định nhất)
+    const wheelEl = document.querySelector(
+      ".js-analog-wheel"
+    ) as HTMLElement | null;
+
+    let wheelTick: (() => void) | null = null;
+
+    if (wheelEl && tween.scrollTrigger) {
+      gsap.set(wheelEl, { transformOrigin: "50% 50%" });
+
+      const setRot = gsap.quickSetter(wheelEl, "rotation", "deg");
+
+      wheelTick = () => {
+        const st = tween.scrollTrigger!;
+        setRot(st.progress * 360 * WHEEL_TURNS);
+      };
+
+      wheelTick(); // set ngay frame đầu
+      gsap.ticker.add(wheelTick);
+    }
 
     // Track Hero section visibility for navbar
     const heroSection = heroSectionRef.current;
@@ -100,51 +124,11 @@ const LandingPage = () => {
     requestAnimationFrame(() => ScrollTrigger.refresh());
 
     return () => {
+      if (wheelTick) gsap.ticker.remove(wheelTick);
       ScrollTrigger.getAll().forEach((t) => t.kill());
       setScrollTween(null);
     };
   }, [isLoading]);
-
-  // Memoize features array to prevent recreation on every render
-  const features = useMemo(
-    () => [
-      {
-        icon: Calendar,
-        title: "Smart Calendar",
-        description:
-          "Intuitive calendar interface with drag & drop functionality",
-      },
-      {
-        icon: Sparkles,
-        title: "AI Suggestions",
-        description:
-          "Get personalized activity recommendations based on your interests",
-      },
-      {
-        icon: Clock,
-        title: "Time Optimization",
-        description:
-          "Maximize your productivity with intelligent time slot analysis",
-      },
-      {
-        icon: Target,
-        title: "Goal Tracking",
-        description:
-          "Set and achieve your personal and professional objectives",
-      },
-      {
-        icon: Users,
-        title: "Social Integration",
-        description: "Coordinate with friends and colleagues seamlessly",
-      },
-      {
-        icon: Zap,
-        title: "Quick Actions",
-        description: "Create events and tasks with lightning-fast shortcuts",
-      },
-    ],
-    []
-  );
 
   if (isLoading) {
     return <Preloader onComplete={handlePreloaderComplete} />;
@@ -156,13 +140,13 @@ const LandingPage = () => {
         style={{
           opacity: showNavbar ? 1 : 0,
           pointerEvents: showNavbar ? "auto" : "none",
-          transition: "opacity transition-all duration-300 ease-in-out 0.5 ",
+          transition: "opacity 300ms ease-in-out",
         }}
       >
         <Navbar />
       </div>
 
-      {/* Horizontal Scroll Container */}
+      {/* Horizontal Scroll Container (only first two sections) */}
       <div ref={containerRef} className="relative h-screen overflow-hidden">
         <div
           ref={sectionsRef}
@@ -174,7 +158,7 @@ const LandingPage = () => {
             ref={heroSectionRef}
             className="horizontal-section flex-shrink-0 w-screen h-screen"
           >
-            <HeroSection />
+            <HeroSection containerAnimation={scrollTween} />
           </div>
 
           {/* Scroll Animation Section */}
@@ -186,33 +170,29 @@ const LandingPage = () => {
               />
             </Suspense>
           </div>
+        </div>
+      </div>
 
-          {/* Features Section */}
-          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center overflow-y-auto">
-            <Suspense fallback={<SectionLoader />}>
-              <FeaturesSection features={features} />
-            </Suspense>
-          </div>
+      {/* From here on, layout switches back to normal vertical flow */}
+      <div className="w-full bg-background">
+        <div className="min-h-screen flex items-center justify-center  py-12">
+          <Suspense fallback={<SectionLoader />}>
+            <FeaturesSection />
+          </Suspense>
+        </div>
 
-          {/* <div className="horizontal-section flex-shrink-0 w-screen h-screen">
-  <Suspense fallback={<SectionLoader />}>
-    <StorylineSection />
-  </Suspense>
-</div> */}
-
-          {/* Personalize Section */}
-          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center">
+        <div className="min-h-screen flex py-12  ">
+          <div className="min-h-screen p-0">
             <Suspense fallback={<SectionLoader />}>
               <PersonalizationSection />
             </Suspense>
           </div>
+        </div>
 
-          {/* Footer */}
-          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center">
-            <Suspense fallback={<SectionLoader />}>
-              <FooterSection />
-            </Suspense>
-          </div>
+        <div className="min-h-screen flex  py-12">
+          <Suspense fallback={<SectionLoader />}>
+            <FooterSection />
+          </Suspense>
         </div>
       </div>
     </div>

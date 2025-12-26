@@ -131,20 +131,16 @@ html, body {
       Nó sẽ lấy vị trí từ --mouseX và --mouseY.
       Khi JS chạy, nó sẽ ghi đè các giá trị mặc định ở trên.
     */
-    linear-gradient(134deg, rgba(82, 26, 35, 1), rgba(243, 152, 19, 0.47)),
+    linear-gradient(284deg, rgb(0, 0, 0), rgba(250, 182, 36, 0.47)),
     /* LỚP 2: Lớp gradient tuyến tính ban đầu của bạn
     Dùng làm nền dự phòng và lấp đầy các cạnh
     */
     radial-gradient(circle at var(--mouseX) var(--mouseY),
       rgba(251, 251, 251, 0.6) 0%,
-      /* Màu sáng hơn ở tâm */
-      rgba(156, 44, 44, 0.4) 35%,
-      /* Màu nền chính */
+      rgba(90, 2, 61, 0.4) 35%,
       transparent 100%
-      /* Chuyển sang trong suốt */
     ),
-    /* LỚP 3: Lớp "hạt nhiễu" (grainy) SVG của bạn
-    */
+
     url("https://grainy-gradients.vercel.app/noise.svg");
 }
 
@@ -199,12 +195,10 @@ html, body {
   --sidebar-border: oklch(0.3 0.02 85);
   --sidebar-ring: oklch(0.7 0.15 85);
   
-  /* Goal Progress Colors */
   --progress-high: 160 84% 39%; /* Emerald-300 for 70%+ */
   --progress-medium: 48 96% 53%; /* Amber-400 for 30-70% */
   --progress-low: 346 77% 49%; /* Rose-400 for <30% */
   
-  /* Goal Tag Colors */
   --goal-fitness: 239 68 68; /* Red */
   --goal-productivity: 99 102 241; /* Indigo */
   --goal-balance: 139 92 246; /* Purple */
@@ -451,7 +445,7 @@ html, body {
   @apply bg-transparent border-0 font-sans;
 }
 
-.rbc-calendar {
+.rbc-calendar { 
   min-height: 790px;
 }
 

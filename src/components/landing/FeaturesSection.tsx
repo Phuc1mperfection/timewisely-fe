@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion, useInView } from "motion/react";
 import { useRef, useMemo, memo } from "react";
+import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
 
 const FeatureCard = memo(
   ({ feature, index }: { feature: any; index: number }) => {
@@ -49,10 +50,48 @@ const FeatureCard = memo(
 
 FeatureCard.displayName = "FeatureCard";
 
-const FeaturesSection = memo(({ features }: { features: any[] }) => {
+const FeaturesSection = memo(() => {
+  const features = useMemo(
+    () => [
+      {
+        icon: Calendar,
+        title: "Smart Calendar",
+        description:
+          "Intuitive calendar interface with drag & drop functionality",
+      },
+      {
+        icon: Sparkles,
+        title: "AI Suggestions",
+        description:
+          "Get personalized activity recommendations based on your interests",
+      },
+      {
+        icon: Clock,
+        title: "Time Optimization",
+        description:
+          "Maximize your productivity with intelligent time slot analysis",
+      },
+      {
+        icon: Target,
+        title: "Goal Tracking",
+        description:
+          "Set and achieve your personal and professional objectives",
+      },
+      {
+        icon: Users,
+        title: "Social Integration",
+        description: "Coordinate with friends and colleagues seamlessly",
+      },
+      {
+        icon: Zap,
+        title: "Quick Actions",
+        description: "Create events and tasks with lightning-fast shortcuts",
+      },
+    ],
+    []
+  );
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-
 
   // Memoize header animation variants
   const headerAnimationVariants = useMemo(
@@ -64,10 +103,6 @@ const FeaturesSection = memo(({ features }: { features: any[] }) => {
     [isInView]
   );
 
-
-
-
-
   // Memoize rendered feature cards
   const renderedFeatureCards = useMemo(
     () =>
@@ -76,7 +111,6 @@ const FeaturesSection = memo(({ features }: { features: any[] }) => {
       )),
     [features]
   );
-
 
   return (
     <section

@@ -2,50 +2,92 @@ import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, PlayCircle } from "lucide-react";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import AnalogClock from "./AnalogClock";
 import { FlipWords } from "@/components/ui/flip-words";
 import DarkVeil from "../ui/DarkVeil";
 import { useTheme } from "@/hooks/useTheme";
 
-const HeroSection = memo(() => {
+// ✅ GSAP
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+type HeroSectionProps = {
+  containerAnimation?: gsap.core.Tween | null;
+}
+gsap.registerPlugin(ScrollTrigger);
+
+const HeroSection = memo(({ containerAnimation }: HeroSectionProps) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const words = ["smarter", "faster", "better", "easier"];
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+  const clockWrapRef = useRef<HTMLDivElement>(null);
+
   const gradientRef = useRef<HTMLDivElement>(null);
   const [isGradientLoaded, setIsGradientLoaded] = useState(false);
 
   useEffect(() => {
-    // Preload gradient by setting it loaded after a short delay
-    const timer = setTimeout(() => {
-      setIsGradientLoaded(true);
-    }, 100);
-
+    const timer = setTimeout(() => setIsGradientLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
-      if (!gradientRef.current) {
-        return;
-      }
+      if (!gradientRef.current) return;
       const { clientWidth, clientHeight } = gradientRef.current;
       const mouseX = (event.clientX / clientWidth) * 100;
       const mouseY = (event.clientY / clientHeight) * 100;
-
       gradientRef.current.style.setProperty("--mouseX", `${mouseX}%`);
       gradientRef.current.style.setProperty("--mouseY", `${mouseY}%`);
     };
-
     window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  // ✅ Pin + slide left/right khi scroll
+useLayoutEffect(() => {
+  if (!sectionRef.current) return;
+
+  const ctx = gsap.context(() => {
+    const isHorizontal = !!containerAnimation;
+
+    const tl = gsap.timeline({
+      scrollTrigger: isHorizontal
+        ? {
+            trigger: sectionRef.current,
+            containerAnimation: containerAnimation!, // sync với scroll ngang
+            start: "left left",
+            end: "right left",
+            scrub: 0.6,
+          }
+        : {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "+=220%", // dài hơn 140% => đỡ “ngỏm”
+            scrub: true,
+            pin: true,
+            anticipatePin: 1,
+          },
+    });
+
+    tl.to(leftColRef.current, { x: -140, ease: "none" }, 0)
+      .to(rightColRef.current, { x: 140, ease: "none" }, 0)
+      .to(clockWrapRef.current, { rotate: 220, ease: "none" }, 0) // 18 -> 220 (nhanh/đã hơn)
+      .to(gradientRef.current, { scale: 1.08, ease: "none" }, 0);
+  }, sectionRef);
+
+  return () => ctx.revert();
+}, [containerAnimation]);
+
+
   return (
-    <section className="relative w-full h-full flex items-center justify-center overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
+    >
       {/* Background */}
       <div
         className={`absolute inset-0 -z-10 transition-opacity duration-700 ${
@@ -53,10 +95,7 @@ const HeroSection = memo(() => {
         }`}
         ref={gradientRef}
       >
-        {/* Light mode gradient with mouse tracking */}
         <div className="bg-hero-light dark:hidden w-full h-full absolute inset-0" />
-
-        {/* Dark mode background - only render in dark mode */}
         {theme === "dark" && (
           <DarkVeil
             hueShift={204}
@@ -71,8 +110,8 @@ const HeroSection = memo(() => {
 
       <div className="relative z-10 max-w-6xl mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left column - Content */}
-          <div className="text-center lg:text-left">
+          {/* Left column */}
+          <div ref={leftColRef} className="text-center lg:text-left">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -85,7 +124,6 @@ const HeroSection = memo(() => {
               </span>
             </motion.h1>
 
-            {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -96,7 +134,6 @@ const HeroSection = memo(() => {
               management.
             </motion.p>
 
-            {/* Tagline with flip words */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -106,7 +143,6 @@ const HeroSection = memo(() => {
               Achieve your goals with <FlipWords words={words} /> tools.
             </motion.div>
 
-            {/* CTA Buttons */}
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
@@ -131,7 +167,6 @@ const HeroSection = memo(() => {
               </Button>
             </motion.div>
 
-            {/* Trust indicators */}
             <motion.div
               className="flex flex-wrap justify-center lg:justify-start gap-4 mt-8 text-sm text-gray-500 dark:text-gray-400"
               initial={{ opacity: 0, y: 20 }}
@@ -153,14 +188,15 @@ const HeroSection = memo(() => {
             </motion.div>
           </div>
 
-          {/* Right column - Analog Clock */}
+          {/* Right column */}
           <motion.div
+            ref={rightColRef}
             className="flex justify-center lg:justify-end"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
           >
-            <div className="relative">
+            <div ref={clockWrapRef} className="relative will-change-transform">
               <AnalogClock />
             </div>
           </motion.div>
@@ -171,5 +207,4 @@ const HeroSection = memo(() => {
 });
 
 HeroSection.displayName = "HeroSection";
-
 export default HeroSection;
