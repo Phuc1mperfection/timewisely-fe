@@ -7,8 +7,6 @@ import AnalogClock from "./AnalogClock";
 import { FlipWords } from "@/components/ui/flip-words";
 import DarkVeil from "../ui/DarkVeil";
 import { useTheme } from "@/hooks/useTheme";
-
-// ✅ GSAP
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 type HeroSectionProps = {
@@ -47,7 +45,6 @@ const HeroSection = memo(({ containerAnimation }: HeroSectionProps) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // ✅ Pin + slide left/right khi scroll
 useLayoutEffect(() => {
   if (!sectionRef.current) return;
 
@@ -75,7 +72,7 @@ useLayoutEffect(() => {
 
     tl.to(leftColRef.current, { x: -140, ease: "none" }, 0)
       .to(rightColRef.current, { x: 140, ease: "none" }, 0)
-      .to(clockWrapRef.current, { rotate: 220, ease: "none" }, 0) 
+      .to(clockWrapRef.current, { rotate: 200, ease: "none" }, 0) 
       .to(gradientRef.current, { scale: 1.08, ease: "none" }, 0);
   }, sectionRef);
 
