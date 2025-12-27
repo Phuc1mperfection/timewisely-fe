@@ -62,7 +62,7 @@ const AnalogClock: React.FC = () => {
   };
 
   return (
-    <CardContainer className="py-10" containerClassName="w-auto h-auto">
+    <CardContainer className="" containerClassName="w-auto h-auto">
       <CardBody className="relative w-80 h-80 mx-auto rounded-full ">
         <CardItem
           translateZ={50}

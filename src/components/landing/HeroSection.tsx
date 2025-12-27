@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 import AnalogClock from "./AnalogClock";
 import { FlipWords } from "@/components/ui/flip-words";
@@ -58,7 +58,7 @@ useLayoutEffect(() => {
       scrollTrigger: isHorizontal
         ? {
             trigger: sectionRef.current,
-            containerAnimation: containerAnimation!, // sync với scroll ngang
+            containerAnimation: containerAnimation!,
             start: "left left",
             end: "right left",
             scrub: 0.6,
@@ -66,7 +66,7 @@ useLayoutEffect(() => {
         : {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=220%", // dài hơn 140% => đỡ “ngỏm”
+            end: "+=220%",
             scrub: true,
             pin: true,
             anticipatePin: 1,
@@ -75,7 +75,7 @@ useLayoutEffect(() => {
 
     tl.to(leftColRef.current, { x: -140, ease: "none" }, 0)
       .to(rightColRef.current, { x: 140, ease: "none" }, 0)
-      .to(clockWrapRef.current, { rotate: 220, ease: "none" }, 0) // 18 -> 220 (nhanh/đã hơn)
+      .to(clockWrapRef.current, { rotate: 220, ease: "none" }, 0) 
       .to(gradientRef.current, { scale: 1.08, ease: "none" }, 0);
   }, sectionRef);
 
@@ -158,33 +158,6 @@ useLayoutEffect(() => {
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
 
-              <Button
-                variant="outline"
-                size="lg"
-                className="px-8 py-4 rounded-full border-2 border-yellow-300 yellow-700 dark:yellow-200 font-semibold text-lg hover:bg-yellow-50 dark:hover:bg-yellow-800/20 transition-colors flex items-center gap-2"
-              >
-                <PlayCircle className="h-5 w-5" /> Watch Demo
-              </Button>
-            </motion.div>
-
-            <motion.div
-              className="flex flex-wrap justify-center lg:justify-start gap-4 mt-8 text-sm text-gray-500 dark:text-gray-400"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.1 }}
-            >
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-                Free to start
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-orange-500 rounded-full mr-2" />
-                No credit card
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2" />
-                AI-powered
-              </div>
             </motion.div>
           </div>
 
