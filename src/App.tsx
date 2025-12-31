@@ -26,6 +26,7 @@ import GoalsPage from "./pages/GoalsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import VerifyOtpPage from "./pages/VerifyOtpPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import { NotePage } from "./components/notes";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +99,7 @@ function App() {
                   <Route path="goals" element={<GoalsPage />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="settings" element={<SettingsPage />} />
+                  <Route path="notes" element={<NotePage />} />
                   {/* ...thêm các page con khác tại đây */}
                 </Route>
                 {/* Redirect các route cũ về route mới nếu cần */}

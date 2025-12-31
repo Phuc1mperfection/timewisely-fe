@@ -48,6 +48,7 @@ const mainMenuItems = [
   { title: "Goals", url: "/dashboard/goals", icon: Target },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
+  { title: "Notes", url: "/dashboard/notes", icon: ListTodo },
 ];
 
 const taskMenuItems = [
