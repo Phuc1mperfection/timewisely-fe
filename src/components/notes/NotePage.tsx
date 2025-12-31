@@ -50,7 +50,7 @@ export function NotePage() {
   const updateNote = useUpdateNote();
   const deleteNote = useDeleteNote();
 
-  const notes = data?.content || [];
+  const notes = useMemo(() => data?.content || [], [data?.content]);
 
   const selectedNote = useMemo(
     () => notes.find((n) => n.id === selectedNoteId) || null,
