@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-[var(--wisely-gold)] to-[var(--wisely-sand)] text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--wisely-sand)] hover:to-[var(--wisely-gold)] dark:bg-gradient-to-r dark:from-[var(--wisely-champagne)] dark:to-[var(--wisely-sand)] dark:text-primary-foreground dark:hover:bg-gradient-to-r dark:hover:from-[var(--wisely-sand)] dark:hover:to-[var(--wisely-opacity)]",
+          "bg-gradient-to-r from-(--wisely-gold) to-(--wisely-sand) text-primary-foreground hover:bg-gradient-to-r hover:from-(--wisely-sand) hover:to-(--wisely-gold) dark:bg-gradient-to-r dark:from-(--wisely-champagne) dark:to-(--wisely-sand) dark:text-primary-foreground dark:hover:bg-gradient-to-r dark:hover:from-(--wisely-sand) dark:hover:to-[var(--wisely-opacity)]",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

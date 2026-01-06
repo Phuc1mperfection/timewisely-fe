@@ -217,7 +217,7 @@ const SurveyResults = () => {
       <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold ">
-            <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-amber-300 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-linear-to-r from-yellow-400 to-amber-300 rounded-lg flex items-center justify-center mr-3">
               <Zap className="w-4 h-4 text-white" />
             </div>
             Favorite Categories
@@ -231,7 +231,7 @@ const SurveyResults = () => {
                   key={category}
                   className={`${getCategoryColor(
                     category
-                  )} px-4 py-2 rounded-full font-medium hover:scale-105 transition-all duration-200 animate-fade-in border text-foreground` }
+                  )} px-4 py-2 rounded-full font-medium hover:scale-105 transition-all duration-200 animate-fade-in border text-black` }
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   {category}
@@ -246,7 +246,7 @@ const SurveyResults = () => {
       <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold">
-            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-400 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-linear-to-r from-orange-500 to-yellow-400 rounded-lg flex items-center justify-center mr-3">
               <Clock className="w-4 h-4 text-white" />
             </div>
             Free Time
@@ -270,7 +270,7 @@ const SurveyResults = () => {
       <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold">
-            <div className="w-8 h-8 bg-gradient-to-r from-amber-300 to-rose-400 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-linear-to-r from-amber-300 to-rose-400 rounded-lg flex items-center justify-center mr-3">
               <Music className="w-4 h-4 text-white" />
             </div>
             Hobbies & Interests
@@ -294,7 +294,7 @@ const SurveyResults = () => {
       <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold">
-            <div className="w-8 h-8 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-linear-to-r from-teal-400 to-cyan-400 rounded-lg flex items-center justify-center mr-3">
               <Heart className="w-4 h-4 text-white" />
             </div>
             Activity Preferences
@@ -324,7 +324,7 @@ const SurveyResults = () => {
         <Card className="bg-white/80  border-0  hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center text-lg font-semibold">
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-lg flex items-center justify-center mr-3">
+              <div className="w-8 h-8 bg-linear-to-r from-orange-400 to-yellow-400 rounded-lg flex items-center justify-center mr-3">
                 <User className="w-4 h-4 text-white" />
               </div>
               Personal Details
@@ -353,7 +353,7 @@ const SurveyResults = () => {
         <Card className="bg-white/80  border-0  hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center text-lg font-semibold">
-              <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-teal-400 rounded-lg flex items-center justify-center mr-3">
+              <div className="w-8 h-8 bg-linear-to-r from-green-400 to-teal-400 rounded-lg flex items-center justify-center mr-3">
                 <Target className="w-4 h-4 text-white" />
               </div>
               Goals & Challenges

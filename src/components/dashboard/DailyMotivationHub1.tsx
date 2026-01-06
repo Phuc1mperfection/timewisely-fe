@@ -285,9 +285,7 @@ export const DailyMotivationHub1 = () => {
             <p className="text-sm text-muted-foreground/90 italic pr-8 transition-all duration-300 ease-in-out">
               <span
                 className={`font-semibold ${
-                  isDark
-                    ? "text-[var(--wisely-champagne)]"
-                    : "text-[var(--wisely-gold)]"
+                  isDark ? "text-(--wisely-champagne)" : "text-(--wisely-gold)"
                 }`}
               >
                 Today's Reminder:
@@ -307,9 +305,7 @@ export const DailyMotivationHub1 = () => {
             >
               <Sparkles
                 className={`h-4 w-4 ${
-                  isDark
-                    ? "text-[var(--wisely-yellow)]"
-                    : "text-[var(--wisely-gold)]"
+                  isDark ? "text-(--wisely-yellow)" : "text-(--wisely-gold)"
                 }`}
               />
               <span className="sr-only">Refresh nudge</span>

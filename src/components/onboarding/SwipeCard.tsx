@@ -74,7 +74,7 @@ export function SwipeCard({ card, onSwipe, isTop }: SwipeCardProps) {
       }}
     >
       <div
-        className={`relative w-full h-full rounded-2xl shadow-2xl overflow-hidden bg-gradient-to-br ${getCategoryGradient(
+        className={`relative w-full h-full rounded-2xl shadow-2xl overflow-hidden bg-linear-to-br ${getCategoryGradient(
           card.category
         )}`}
       >
@@ -103,12 +103,12 @@ export function SwipeCard({ card, onSwipe, isTop }: SwipeCardProps) {
         </motion.div>
 
         {/* Card Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/60 to-transparent text-white">
+        <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black/80 via-black/60 to-transparent text-white">
           <div className="flex items-center space-x-3 mb-2">
             <span className="text-5xl">{card.emoji}</span>
             <div>
               <h3 className="text-2xl font-bold">{card.title}</h3>
-              <span className="inline-block px-3 py-1 bg-[var(--wisely-gold)] text-white text-xs font-semibold rounded-full mt-1">
+              <span className="inline-block px-3 py-1 bg-(--wisely-gold) text-white text-xs font-semibold rounded-full mt-1">
                 {card.category}
               </span>
             </div>
@@ -167,10 +167,8 @@ export function SwipeCardStack({
     return (
       <div className="flex flex-col items-center justify-center h-full space-y-4">
         <div className="text-6xl">🎉</div>
-        <h3 className="text-2xl font-bold text-[var(--wisely-dark)]">
-          All Done!
-        </h3>
-        <p className="text-[var(--wisely-gray)]">
+        <h3 className="text-2xl font-bold text-(--wisely-dark)">All Done!</h3>
+        <p className="text-(--wisely-gray)">
           You liked {likedCards.length} out of {cards.length} activities
         </p>
       </div>
@@ -205,7 +203,7 @@ export function SwipeCardStack({
         </button>
 
         <div className="text-center">
-          <p className="text-sm text-[var(--wisely-gray)] font-medium">
+          <p className="text-sm text-(--wisely-gray) font-medium">
             {currentIndex + 1} / {cards.length}
           </p>
         </div>

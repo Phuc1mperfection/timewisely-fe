@@ -152,7 +152,7 @@ export function AISuggestions() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-[var(--wisely-gold)]" />
+          <Sparkles className="w-5 h-5 text-(--wisely-gold)" />
           <span className="bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
             Smart Activity Suggestions
           </span>
@@ -182,7 +182,7 @@ export function AISuggestions() {
           <TabsContent value="rule-based">
             {loadingRuleBased ? (
               <div className="text-center py-8">
-                <Target className="w-8 h-8 mx-auto mb-2 animate-pulse text-[var(--wisely-gold)]" />
+                <Target className="w-8 h-8 mx-auto mb-2 animate-pulse text-(--wisely-gold)" />
                 <p className="text-sm text-muted-foreground">
                   Analyzing your preferences...
                 </p>
@@ -407,7 +407,7 @@ function SuggestionCard({
           <div className="flex items-center gap-1 font-medium">
             <Clock
               className={`w-3.5 h-3.5 ${
-                isAdded ? "text-gray-400" : "text-[var(--wisely-gold)]"
+                isAdded ? "text-gray-400" : "text-(--wisely-gold)"
               }`}
             />
             <span>

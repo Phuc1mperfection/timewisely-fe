@@ -110,7 +110,7 @@ const ColorPicker = React.memo(function ColorPicker({
           }}
           className={`w-8 h-8 rounded-full border-2 ${
             color === option.value
-              ? "border-[var(--wisely-gold)]"
+              ? "border-(--wisely-gold)"
               : "border-gray-200"
           }`}
           style={{ backgroundColor: option.value }}
@@ -316,7 +316,7 @@ export function ActivityDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogOpenChange}>
-      <DialogContent className="sm:max-w-[800px] " aria-describedby={descId}>
+      <DialogContent className="sm:max-w-200 " aria-describedby={descId}>
         <DialogHeader>
           <DialogTitle>
             {event ? "Edit Activity" : "Create New Activity"}
@@ -334,7 +334,7 @@ export function ActivityDialog({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Add title"
-              className="border-gray-300 focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)]"
+              className="border-gray-300 focus:border-(--wisely-gold) focus:ring-(--wisely-gold)"
             />
             <div className="flex items-center space-x-2">
               <Checkbox
@@ -374,7 +374,7 @@ export function ActivityDialog({
           {!showMore && (
             <button
               onClick={() => setShowMore(true)}
-              className="text-sm text-[var(--wisely-gold)] hover:underline"
+              className="text-sm text-(--wisely-gold) hover:underline"
             >
               Show more options
             </button>
@@ -390,7 +390,7 @@ export function ActivityDialog({
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Add description"
                   rows={3}
-                  className=" focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
+                  className=" focus:border-(--wisely-gold) focus:ring-(--wisely-gold) "
                 />
               </div>
 
@@ -429,7 +429,7 @@ export function ActivityDialog({
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Enter location"
-                  className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)] "
+                  className="focus:border-(--wisely-gold) focus:ring-(--wisely-gold) "
                 />
               </div>
               <div className="space-y-2">
@@ -444,7 +444,7 @@ export function ActivityDialog({
                   }
                   disabled={isLoadingGoals}
                 >
-                  <SelectTrigger className="focus:border-[var(--wisely-gold)] focus:ring-[var(--wisely-gold)]">
+                  <SelectTrigger className="focus:border-(--wisely-gold) focus:ring-(--wisely-gold)">
                     <SelectValue placeholder="Select a goal (optional)" />
                   </SelectTrigger>
                   <SelectContent>
@@ -472,7 +472,7 @@ export function ActivityDialog({
 
               <button
                 onClick={() => setShowMore(false)}
-                className="text-sm text-[var(--wisely-gold)] hover:underline"
+                className="text-sm text-(--wisely-gold) hover:underline"
               >
                 Show less
               </button>
@@ -505,14 +505,14 @@ export function ActivityDialog({
               <Button
                 variant="outline"
                 onClick={handleClose}
-                className="border-gray-300 text-[var(--wisely-gray)] hover:bg-gray-50"
+                className="border-gray-300 text-(--wisely-gray) hover:bg-gray-50"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSave}
                 disabled={!title.trim() || saving}
-                className="bg-[var(--wisely-gold)] hover:bg-yellow-600 text-white"
+                className="bg-(--wisely-gold) hover:bg-yellow-600 text-white"
               >
                 {saving
                   ? event

@@ -6,6 +6,20 @@ import type {
   NotesResponse,
 } from "@/interfaces/Note";
 
+export type Channel = "EMAIL" | "PUSH";
+export type ReminderStatus = "SCHEDULED" | "SENT" | "CANCELLED";
+
+export interface NoteReminder {
+  remindAt: string; // ISO string in UTC
+  channels: Channel[];
+  status: ReminderStatus;
+}
+
+export interface SetReminderPayload {
+  remindAt: string; // ISO string in UTC
+  channels: Channel[];
+}
+
 export const noteService = {
   createNote: async (dto: CreateNoteDto): Promise<Note> => {
     const { data } = await apiClient.post("/notes", dto);
@@ -51,44 +65,25 @@ export const noteService = {
     await apiClient.delete(`/notes/${id}`);
   },
 
-  getTaskNote: async (taskId: number): Promise<Note | null> => {
+  // Note reminder APIs
+  getNoteReminder: async (id: number): Promise<NoteReminder | null> => {
     try {
-      const { data } = await apiClient.get(`/tasks/${taskId}/note`);
-      return data;
+      const { data } = await apiClient.get(`/notes/${id}/reminder`);
+      return data as NoteReminder;
     } catch (err: any) {
       if (err?.response?.status === 404) return null;
       throw err;
     }
   },
 
-  updateTaskNote: async (taskId: number, dto: UpdateNoteDto): Promise<Note> => {
-    const { data } = await apiClient.put(`/tasks/${taskId}/note`, dto);
-    return data;
+  setNoteReminder: async (
+    id: number,
+    payload: SetReminderPayload
+  ): Promise<void> => {
+    await apiClient.put(`/notes/${id}/reminder`, payload);
   },
 
-  deleteTaskNote: async (taskId: number): Promise<void> => {
-    await apiClient.delete(`/tasks/${taskId}/note`);
-  },
-
-  getActivityNote: async (activityId: string): Promise<Note | null> => {
-    try {
-      const { data } = await apiClient.get(`/activities/${activityId}/note`);
-      return data;
-    } catch (err: any) {
-      if (err?.response?.status === 404) return null;
-      throw err;
-    }
-  },
-
-  updateActivityNote: async (
-    activityId: string,
-    dto: UpdateNoteDto
-  ): Promise<Note> => {
-    const { data } = await apiClient.put(`/activities/${activityId}/note`, dto);
-    return data;
-  },
-
-  deleteActivityNote: async (activityId: string): Promise<void> => {
-    await apiClient.delete(`/activities/${activityId}/note`);
+  cancelNoteReminder: async (id: number): Promise<void> => {
+    await apiClient.delete(`/notes/${id}/reminder`);
   },
 };

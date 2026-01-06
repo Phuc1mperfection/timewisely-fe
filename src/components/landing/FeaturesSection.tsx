@@ -31,14 +31,14 @@ const FeatureCard = memo(
         initial={animationVariants.initial}
         animate={animationVariants.animate}
         transition={animationVariants.transition}
-        className="bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 hover:bg-[var(--wisely-sand)]/20 transition-all duration-300"
+        className="bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 hover:bg-(--wisely-sand)/20 transition-all duration-300"
       >
         <motion.div
           className="flex items-center mb-6"
           whileHover={hoverVariants}
         >
-          <div className="p-3 bg-gradient-to-r from-[var(--wisely-gold)] to-[var(--wisely-champagne)] rounded-xl mr-4 ">
-            <feature.icon className="w-6 h-6 text-[var(--wisely-white)]" />
+          <div className="p-3 bg-linear-to-r from-(--wisely-gold) to-(--wisely-champagne) rounded-xl mr-4 ">
+            <feature.icon className="w-6 h-6 text-(--wisely-white)" />
           </div>
           <h3 className="text-xl font-semibold ">{feature.title}</h3>
         </motion.div>
@@ -116,7 +116,7 @@ const FeaturesSection = memo(() => {
     <section
       ref={sectionRef}
       id="features"
-      className="w-full h-full flex items-center justify-center px-8 relative z-10 bg-white dark:bg-[#000]"
+      className="w-full h-full flex items-center justify-center px-8 relative z-10 bg-white dark:bg-black"
     >
       <div className="max-w-6xl w-full">
         <motion.div
@@ -128,7 +128,7 @@ const FeaturesSection = memo(() => {
           <h2 className="text-4xl font-bold text-foreground mb-4">
             Everything you need to manage time wisely
           </h2>
-          <p className="text-[var(--wisely-gray)] max-w-2xl mx-auto text-lg">
+          <p className="text-(--wisely-gray) max-w-2xl mx-auto text-lg">
             From smart scheduling to AI-powered suggestions, TimeWisely has all
             the tools you need to optimize your daily routine.
           </p>

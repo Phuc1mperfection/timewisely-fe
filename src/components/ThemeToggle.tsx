@@ -13,9 +13,9 @@ export function ThemeToggle() {
       className="rounded-full transition-colors"
     >
       {isDark ? (
-        <SunIcon className="h-[1.2rem] w-[1.2rem] text-[var(--wisely-yellow)]" />
+        <SunIcon className="h-[1.2rem] w-[1.2rem] text-(--wisely-yellow)" />
       ) : (
-        <MoonIcon className="h-[1.2rem] w-[1.2rem] text-[var(--wisely-gold)]" />
+        <MoonIcon className="h-[1.2rem] w-[1.2rem] text-(--wisely-gold)" />
       )}
       <span className="sr-only">Toggle theme</span>
     </Button>

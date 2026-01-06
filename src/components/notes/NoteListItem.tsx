@@ -30,7 +30,7 @@ export function NoteListItem({ note, isSelected, onClick }: NoteListItemProps) {
       )}
     >
       <div className="flex items-start gap-2">
-        <FileText className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+        <FileText className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <h3 className="font-medium text-foreground truncate">
             {note.title || "Untitled Note"}

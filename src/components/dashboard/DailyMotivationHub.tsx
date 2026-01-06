@@ -133,9 +133,7 @@ export function DailyMotivationHub() {
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <Sparkles
             className={`h-5 w-5 ${
-              isDark
-                ? "text-[var(--wisely-yellow)]"
-                : "text-[var(--wisely-gold)]"
+              isDark ? "text-(--wisely-yellow)" : "text-(--wisely-gold)"
             }`}
           />
           Daily Motivation
@@ -148,9 +146,7 @@ export function DailyMotivationHub() {
             <div className="relative">
               <Quote
                 className={`absolute -left-1 -top-1 h-5 w-5 ${
-                  isDark
-                    ? "text-[var(--wisely-champagne)]"
-                    : "text-[var(--wisely-gold)]"
+                  isDark ? "text-(--wisely-champagne)" : "text-(--wisely-gold)"
                 } opacity-40`}
               />
               <p className="pl-6 pt-2 text-base italic">{currentQuote.text}</p>
@@ -164,8 +160,8 @@ export function DailyMotivationHub() {
                   <span
                     className={`font-semibold ${
                       isDark
-                        ? "text-[var(--wisely-champagne)]"
-                        : "text-[var(--wisely-gold)]"
+                        ? "text-(--wisely-champagne)"
+                        : "text-(--wisely-gold)"
                     }`}
                   >
                     Today's Nudge:
@@ -185,9 +181,7 @@ export function DailyMotivationHub() {
                 >
                   <Sparkles
                     className={`h-4 w-4 ${
-                      isDark
-                        ? "text-[var(--wisely-yellow)]"
-                        : "text-[var(--wisely-gold)]"
+                      isDark ? "text-(--wisely-yellow)" : "text-(--wisely-gold)"
                     }`}
                   />
                   <span className="sr-only">Refresh nudge</span>

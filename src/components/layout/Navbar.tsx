@@ -60,7 +60,6 @@ const Navbar: React.FC = () => {
                 className="w-9 h-9 transition-transform duration-200"
               />
             </div>
-    
           </button>
         </div>
 
@@ -120,7 +119,7 @@ const Navbar: React.FC = () => {
                   onClick={() => {
                     navigate("app/dashboard");
                   }}
-                  className="hover:bg-[var(--wisely-gold)]/10 hover:cursor-pointer text-md "
+                  className="hover:bg-(--wisely-gold)/10 hover:cursor-pointer text-md "
                 >
                   Dashboard
                 </DropdownMenuItem>
@@ -129,7 +128,7 @@ const Navbar: React.FC = () => {
                     await logout();
                     navigate("/");
                   }}
-                  className="hover:bg-[var(--wisely-gold)]/10 hover:cursor-pointer text-md"
+                  className="hover:bg-(--wisely-gold)/10 hover:cursor-pointer text-md"
                 >
                   Logout
                 </DropdownMenuItem>

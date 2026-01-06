@@ -27,7 +27,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
   }) => {
     // Memoize color options
     const colorOptions = React.useMemo(
-      () => ["#D4AF37", "#5eead4", "#f9a8d4",  "#1e1e2f", "#6b7280"],
+      () => ["#D4AF37", "#5eead4", "#f9a8d4", "#1e1e2f", "#6b7280"],
       []
     );
 
@@ -35,7 +35,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
       <div className="relative">
         {loading && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/70 animate-fade-in">
-            <Loader2 className="animate-spin w-12 h-12 text-[var(--wisely-gold)]" />
+            <Loader2 className="animate-spin w-12 h-12 text-(--wisely-gold)" />
           </div>
         )}
         <div className="flex flex-wrap gap-2 items-center mb-2">
@@ -49,7 +49,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
           <button
             className={cn(
               "w-6 h-6 rounded-full border-2",
-              !filterColor ? "border-[var(--wisely-gold)]" : "border-gray-200"
+              !filterColor ? "border-(--wisely-gold)" : "border-gray-200"
             )}
             style={{
               background:
@@ -63,9 +63,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
               key={c}
               className={cn(
                 "w-6 h-6 rounded-full border-2",
-                filterColor === c
-                  ? "border-[var(--wisely-gold)]"
-                  : "border-gray-200"
+                filterColor === c ? "border-(--wisely-gold)" : "border-gray-200"
               )}
               style={{ backgroundColor: c }}
               onClick={() => setFilterColor(c)}
@@ -79,7 +77,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
               className={cn(
                 "px-2 py-1 rounded border cursor-pointer",
                 filterAllDay === null
-                  ? "border-[var(--wisely-gold)]"
+                  ? "border-(--wisely-gold)"
                   : "border-gray-200"
               )}
             >
@@ -92,7 +90,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
               className={cn(
                 "px-2 py-1 rounded border cursor-pointer",
                 filterAllDay === true
-                  ? "border-[var(--wisely-gold)]"
+                  ? "border-(--wisely-gold)"
                   : "border-gray-200"
               )}
             >
@@ -105,7 +103,7 @@ export const ActivityFilterBar = React.memo<ActivityFilterBarProps>(
               className={cn(
                 "px-2 py-1 rounded border cursor-pointer",
                 filterAllDay === false
-                  ? "border-[var(--wisely-gold)]"
+                  ? "border-(--wisely-gold)"
                   : "border-gray-200"
               )}
             >

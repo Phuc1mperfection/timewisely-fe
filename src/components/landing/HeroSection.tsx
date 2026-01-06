@@ -11,7 +11,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 type HeroSectionProps = {
   containerAnimation?: gsap.core.Tween | null;
-}
+};
 gsap.registerPlugin(ScrollTrigger);
 
 const HeroSection = memo(({ containerAnimation }: HeroSectionProps) => {
@@ -45,40 +45,39 @@ const HeroSection = memo(({ containerAnimation }: HeroSectionProps) => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-useLayoutEffect(() => {
-  if (!sectionRef.current) return;
+  useLayoutEffect(() => {
+    if (!sectionRef.current) return;
 
-  const ctx = gsap.context(() => {
-    const isHorizontal = !!containerAnimation;
+    const ctx = gsap.context(() => {
+      const isHorizontal = !!containerAnimation;
 
-    const tl = gsap.timeline({
-      scrollTrigger: isHorizontal
-        ? {
-            trigger: sectionRef.current,
-            containerAnimation: containerAnimation!,
-            start: "left left",
-            end: "right left",
-            scrub: 0.6,
-          }
-        : {
-            trigger: sectionRef.current,
-            start: "top top",
-            end: "+=220%",
-            scrub: true,
-            pin: true,
-            anticipatePin: 1,
-          },
-    });
+      const tl = gsap.timeline({
+        scrollTrigger: isHorizontal
+          ? {
+              trigger: sectionRef.current,
+              containerAnimation: containerAnimation!,
+              start: "left left",
+              end: "right left",
+              scrub: 0.6,
+            }
+          : {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: "+=220%",
+              scrub: true,
+              pin: true,
+              anticipatePin: 1,
+            },
+      });
 
-    tl.to(leftColRef.current, { x: -140, ease: "none" }, 0)
-      .to(rightColRef.current, { x: 140, ease: "none" }, 0)
-      .to(clockWrapRef.current, { rotate: 200, ease: "none" }, 0) 
-      .to(gradientRef.current, { scale: 1.08, ease: "none" }, 0);
-  }, sectionRef);
+      tl.to(leftColRef.current, { x: -140, ease: "none" }, 0)
+        .to(rightColRef.current, { x: 140, ease: "none" }, 0)
+        .to(clockWrapRef.current, { rotate: 200, ease: "none" }, 0)
+        .to(gradientRef.current, { scale: 1.08, ease: "none" }, 0);
+    }, sectionRef);
 
-  return () => ctx.revert();
-}, [containerAnimation]);
-
+    return () => ctx.revert();
+  }, [containerAnimation]);
 
   return (
     <section
@@ -113,10 +112,10 @@ useLayoutEffect(() => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 bg-gradient-to-l from-[var(--wisely-gold)] via-[var(--wisely-yellow)] to-[var(--wisely-sand)] bg-clip-text text-transparent"
+              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 bg-gradient-to-l from-(--wisely-gold) via-(--wisely-yellow) to-(--wisely-sand) bg-clip-text text-transparent"
             >
               Master Your
-              <span className="block mx-auto bg-gradient-to-r from-[var(--wisely-gold)] via-[var(--chart-2)] to-[var(--wisely-sand)] bg-clip-text text-transparent">
+              <span className="block mx-auto bg-gradient-to-r from-(--wisely-gold) via-[var(--chart-2)] to-(--wisely-sand) bg-clip-text text-transparent">
                 Time, Wisely
               </span>
             </motion.h1>
@@ -135,7 +134,7 @@ useLayoutEffect(() => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6 }}
-              className="text-xl mb-6 bg-gradient-to-r from-[var(--wisely-gold)] via-[var(--chart-2)] to-[var(--wisely-sand)] bg-clip-text text-transparent"
+              className="text-xl mb-6 bg-gradient-to-r from-(--wisely-gold) via-[var(--chart-2)] to-(--wisely-sand) bg-clip-text text-transparent"
             >
               Achieve your goals with <FlipWords words={words} /> tools.
             </motion.div>
@@ -154,7 +153,6 @@ useLayoutEffect(() => {
                 Start Your Journey
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-
             </motion.div>
           </div>
 

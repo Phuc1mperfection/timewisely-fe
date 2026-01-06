@@ -106,11 +106,11 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium ">
                 Today's Schedule
               </CardTitle>
-              <Clock className="h-4 w-4 text-[var(--wisely-gold)]" />
+              <Clock className="h-4 w-4 text-(--wisely-gold)" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold ">3 events</div>
-              <p className="text-xs text-[var(--wisely-gray)]">
+              <p className="text-xs text-(--wisely-gray)">
                 2 hours of free time
               </p>
             </CardContent>
@@ -121,11 +121,11 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium ">
                 AI Suggestions
               </CardTitle>
-              <Sparkles className="h-4 w-4 text-[var(--wisely-champagne)]" />
+              <Sparkles className="h-4 w-4 text-(--wisely-champagne)" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold ">5 new</div>
-              <p className="text-xs text-[var(--wisely-gray)]">
+              <p className="text-xs text-(--wisely-gray)">
                 Based on your preferences
               </p>
             </CardContent>
@@ -136,11 +136,11 @@ export function DashboardContent() {
               <CardTitle className="text-sm font-medium ">
                 Goals Progress
               </CardTitle>
-              <Target className="h-4 w-4 text-[var(--wisely-sand)]" />
+              <Target className="h-4 w-4 text-(--wisely-sand)" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold ">78%</div>
-              <p className="text-xs text-[var(--wisely-gray)]">
+              <p className="text-xs text-(--wisely-gray)">
                 This week's completion
               </p>
             </CardContent>
@@ -153,13 +153,13 @@ export function DashboardContent() {
           <Card className=" ">
             <CardHeader>
               <CardTitle className="">Calendar</CardTitle>
-              <CardDescription className="text-[var(--wisely-gray)]">
+              <CardDescription className="text-(--wisely-gray)">
                 Click on any time slot to create an activity, or click existing
                 activities to edit them.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-[700px]">
+              <div className="h-175">
                 <ScheduleCalendar
                   className="modern-calendar"
                   events={filteredActivities}
@@ -192,7 +192,6 @@ export function DashboardContent() {
               </div>
             </CardContent>
           </Card>
-
         </div>
         <DailyMotivationHub />
       </div>

@@ -43,7 +43,7 @@ export const ActivityCard = React.memo<ActivityCardProps>(
         )} ${
           activity.completed
             ? "bg-gray-50 border-gray-200 opacity-75"
-            : "bg-white border-gray-200 hover:border-[var(--wisely-gold)]/30"
+            : "bg-white border-gray-200 hover:border-(--wisely-gold)/30"
         }`}
       >
         <CardContent className="p-6">
@@ -59,7 +59,7 @@ export const ActivityCard = React.memo<ActivityCardProps>(
                   className={`text-lg font-semibold ${
                     activity.completed
                       ? "text-gray-500 line-through"
-                    : "text-primary"
+                      : "text-primary"
                   }`}
                 >
                   {activity.title}
@@ -80,7 +80,9 @@ export const ActivityCard = React.memo<ActivityCardProps>(
               {activity.description && (
                 <p
                   className={`text-sm mb-3 ml-9 ${
-                    activity.completed ? "text-gray-400" : "text-[var(--wisely-gold)]"
+                    activity.completed
+                      ? "text-gray-400"
+                      : "text-(--wisely-gold)"
                   }`}
                 >
                   {activity.description}
@@ -89,7 +91,7 @@ export const ActivityCard = React.memo<ActivityCardProps>(
 
               <div
                 className={`flex items-center gap-2 text-sm ml-9 ${
-                  activity.completed ? "text-gray-400" : "text-[var(--wisely-gold)]"
+                  activity.completed ? "text-gray-400" : "text-(--wisely-gold)"
                 }`}
               >
                 <Clock size={16} />

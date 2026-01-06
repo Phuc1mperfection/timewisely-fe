@@ -100,7 +100,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
         onChange={(e) => setName(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Task name"
-        className="min-h-[44px] max-h-[200px] resize-none text-base leading-relaxed"
+        className="min-h-11 max-h-50 resize-none text-base leading-relaxed"
         autoFocus
       />
 
@@ -109,7 +109,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description"
-        className="min-h-[60px] max-h-[120px] resize-none text-sm"
+        className="min-h-15 max-h-30 resize-none text-sm"
         rows={2}
       />
 

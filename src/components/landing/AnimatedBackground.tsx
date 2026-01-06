@@ -18,7 +18,7 @@ const AnimatedBackground = ({
   return (
     <div className="absolute inset-0 overflow-hidden">
       <motion.div
-        className="absolute w-96 h-96 bg-[var(--wisely-gold)]/10 rounded-full"
+        className="absolute w-96 h-96 bg-(--wisely-gold)/10 rounded-full"
         style={{
           x: springX1,
           y: springY1,
@@ -27,7 +27,7 @@ const AnimatedBackground = ({
         }}
       />
       <motion.div
-        className="absolute w-80 h-80 bg-[var(--wisely-champagne)]/10 rounded-full"
+        className="absolute w-80 h-80 bg-(--wisely-champagne)/10 rounded-full"
         style={{
           x: springX2,
           y: springY2,

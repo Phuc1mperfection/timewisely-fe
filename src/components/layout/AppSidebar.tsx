@@ -27,7 +27,7 @@ import {
   CheckCircle,
   ListTodo,
   Inbox,
-  Target
+  Target,
 } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -93,8 +93,8 @@ export function AppSidebar() {
                         className={
                           "flex items-center space-x-3 p-3 rounded-lg transition-colors group w-full text-left " +
                           (isActive
-                            ? " text-[var(--wisely-gold)] font-semibold "
-                            : "hover:bg-yellow-500 hover:text-[var(--wisely-gold)] hover:cursor-pointer")
+                            ? " text-(--wisely-gold) font-semibold "
+                            : "hover:bg-yellow-500 hover:text-(--wisely-gold) hover:cursor-pointer")
                         }
                         aria-current={isActive ? "page" : undefined}
                       >
@@ -102,15 +102,15 @@ export function AppSidebar() {
                           className={
                             "w-5 h-5 " +
                             (isActive
-                              ? "text-[var(--wisely-gold)]"
-                              : "hover:text-[var(--wisely-gold)]")
+                              ? "text-(--wisely-gold)"
+                              : "hover:text-(--wisely-gold)")
                           }
                         />
                         <span
                           className={
                             isActive
-                              ? "text-[var(--wisely-gold)]"
-                              : "hover:text-[var(--wisely-gold)] dark:hover:text-[var(--wisely-white)]"
+                              ? "text-(--wisely-gold)"
+                              : "hover:text-(--wisely-gold) dark:hover:text-[var(--wisely-white)]"
                           }
                         >
                           {item.title}
@@ -146,8 +146,8 @@ export function AppSidebar() {
                             className={
                               "flex items-center space-x-3 p-3 rounded-lg transition-colors group w-full text-left " +
                               (isActive
-                                ? " text-[var(--wisely-gold)] font-semibold "
-                                : "hover:bg-yellow-500 hover:text-[var(--wisely-gold)] hover:cursor-pointer")
+                                ? " text-(--wisely-gold) font-semibold "
+                                : "hover:bg-yellow-500 hover:text-(--wisely-gold) hover:cursor-pointer")
                             }
                             aria-current={isActive ? "page" : undefined}
                           >
@@ -155,15 +155,15 @@ export function AppSidebar() {
                               className={
                                 "w-5 h-5 " +
                                 (isActive
-                                  ? "text-[var(--wisely-gold)]"
-                                  : "hover:text-[var(--wisely-gold)]")
+                                  ? "text-(--wisely-gold)"
+                                  : "hover:text-(--wisely-gold)")
                               }
                             />
                             <span
                               className={
                                 isActive
-                                  ? "text-[var(--wisely-gold)]"
-                                  : "hover:text-[var(--wisely-gold)] dark:hover:text-[var(--wisely-white)]"
+                                  ? "text-(--wisely-gold)"
+                                  : "hover:text-(--wisely-gold) dark:hover:text-[var(--wisely-white)]"
                               }
                             >
                               {item.title}
@@ -196,7 +196,7 @@ export function AppSidebar() {
                   </span> */}
               </div>
               <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-medium text-[var(--wisely-gray)] ">
+                <p className="text-sm font-medium text-(--wisely-gray) ">
                   {user?.fullName || user?.username || user?.email}
                 </p>
               </div>

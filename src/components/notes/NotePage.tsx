@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Plus, Save, Trash2, Search, AlertCircle } from "lucide-react";
+import { Plus, Save, Trash2, Search, AlertCircle, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,12 +16,19 @@ import {
 import { useToast } from "@/hooks/useToast";
 import { QuillEditor } from "./QuillEditor";
 import { NoteListItem } from "./NoteListItem";
+import { ReminderDialog } from "./ReminderDialog";
 import {
   useStandaloneNote,
   useCreateNote,
   useUpdateNote,
   useDeleteNote,
 } from "@/hooks/useStandaloneNote";
+import {
+  useNoteReminder,
+  useSetNoteReminder,
+  useCancelNoteReminder,
+} from "@/hooks/useNoteReminder";
+import { format, parseISO } from "date-fns";
 import type { Note } from "@/interfaces";
 
 export function NotePage() {
@@ -33,6 +40,7 @@ export function NotePage() {
   const [editorContent, setEditorContent] = useState("");
   const [isNewNote, setIsNewNote] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [reminderDialogOpen, setReminderDialogOpen] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -49,6 +57,10 @@ export function NotePage() {
   const createNote = useCreateNote();
   const updateNote = useUpdateNote();
   const deleteNote = useDeleteNote();
+
+  const { data: reminder } = useNoteReminder(selectedNoteId);
+  const setReminder = useSetNoteReminder();
+  const cancelReminder = useCancelNoteReminder();
 
   const notes = useMemo(() => data?.content || [], [data?.content]);
 
@@ -218,11 +230,42 @@ export function NotePage() {
                 className="text-lg font-medium border-0 shadow-none focus-visible:ring-0 px-3 py-2 h-auto"
               />
               <div className="flex items-center gap-2">
+                {!isNewNote &&
+                  selectedNoteId &&
+                  reminder?.status === "SCHEDULED" && (
+                    <span className="text-xs text-muted-foreground">
+                      Reminder: {format(parseISO(reminder.remindAt), "PP p")}
+                    </span>
+                  )}
                 {hasUnsavedChanges && (
                   <span className="text-xs text-amber-500 font-medium">
                     Unsaved changes
                   </span>
                 )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setReminderDialogOpen(true)}
+                  disabled={isNewNote || !selectedNoteId}
+                >
+                  <Bell className="h-4 w-4 mr-1" />
+                  Remind
+                </Button>
+                {!isNewNote &&
+                  selectedNoteId &&
+                  reminder?.status === "SCHEDULED" && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        if (!selectedNoteId) return;
+                        cancelReminder.mutate(selectedNoteId);
+                      }}
+                      disabled={cancelReminder.isPending}
+                    >
+                      Cancel
+                    </Button>
+                  )}
                 <Button size="sm" onClick={handleSave} disabled={isSaving}>
                   <Save className="h-4 w-4 mr-1" />
                   {isSaving ? "Saving..." : "Save"}
@@ -288,6 +331,25 @@ export function NotePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Reminder Dialog */}
+      <ReminderDialog
+        open={reminderDialogOpen}
+        onOpenChange={setReminderDialogOpen}
+        existingReminder={reminder ?? null}
+        onSchedule={(payload) => {
+          if (!selectedNoteId) return;
+          setReminder.mutate(
+            { noteId: selectedNoteId, payload },
+            {
+              onSuccess: () => {
+                setReminderDialogOpen(false);
+              },
+            }
+          );
+        }}
+        isPending={setReminder.isPending}
+      />
     </div>
   );
 }
