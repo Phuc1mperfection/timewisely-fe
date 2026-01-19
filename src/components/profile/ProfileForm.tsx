@@ -46,7 +46,7 @@ export function ProfileForm() {
         // Check if we got a token in the response (email was changed)
         if (response && response.token && setToken) {
           console.log(
-            "Found token in response, updating token in localStorage"
+            "Found token in response, updating token in localStorage",
           );
           setToken(response.token);
         }
@@ -55,7 +55,7 @@ export function ProfileForm() {
         if (response && response.user) {
           console.log(
             "Updating user in AuthContext with response data",
-            response.user
+            response.user,
           );
           setUser({
             ...user,
@@ -70,7 +70,7 @@ export function ProfileForm() {
         }
       }
       toast.success(
-        "Profile updated successfully. You're still logged in with your new details."
+        "Profile updated successfully. You're still logged in with your new details.",
       );
     } catch {
       toast.error(error || "Có lỗi xảy ra khi cập nhật thông tin!");

@@ -11,7 +11,7 @@ import {
 } from "@/services/calendarServices";
 // CalendarEvent type intentionally not imported — we normalize responses ourselves
 import { useToast } from "@/hooks/useToast";
-import { useAuth } from "@/contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { Loader, Plus, AlertCircle } from "lucide-react"; // Added AlertCircle
 import { CustomToolbar } from "@/components/dashboard/CustomToolbar";
 import { ScheduleCalendar } from "@/components/dashboard/Calendar";

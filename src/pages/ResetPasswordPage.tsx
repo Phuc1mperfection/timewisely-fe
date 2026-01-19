@@ -75,7 +75,7 @@ const ResetPasswordPage: React.FC = () => {
     try {
       await resetPassword(resetToken, newPassword.trim());
       success(
-        "Password reset successfully! You can now log in with your new password."
+        "Password reset successfully! You can now log in with your new password.",
       );
       // Navigate to login page
       navigate("/auth");

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo, createContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  createContext,
+} from "react";
 import type { NotificationMessage, NotificationResponse } from "@/interfaces";
 import { NotificationStatus, NotificationChannel } from "@/interfaces";
 import { NotificationApiService } from "@/services/notificationServices";
@@ -22,7 +28,7 @@ export interface NotificationContextType {
   deleteNotification: (notificationId: string) => Promise<void>;
   deleteAllNotifications: () => Promise<void>;
   getNotificationsByStatus: (
-    status: NotificationStatus
+    status: NotificationStatus,
   ) => NotificationResponse[];
 }
 
@@ -37,7 +43,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   const { user, loading: authLoading } = useAuth();
 
   const [notifications, setNotifications] = useState<NotificationResponse[]>(
-    []
+    [],
   );
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -46,18 +52,17 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   const calculateUnreadCount = useCallback(
     (notificationList: NotificationResponse[]) => {
       return notificationList.filter(
-        (notif) => notif.status === NotificationStatus.SENT
+        (notif) => notif.status === NotificationStatus.SENT,
       ).length;
     },
-    []
+    [],
   );
 
   const fetchNotifications = useCallback(async () => {
     try {
       setIsLoading(true);
-      const notificationData = await NotificationApiService.getNotifications(
-        50
-      );
+      const notificationData =
+        await NotificationApiService.getNotifications(50);
 
       setNotifications(notificationData);
       setUnreadCount(calculateUnreadCount(notificationData));
@@ -118,7 +123,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
         soundService.playNotification();
       }
     },
-    [user]
+    [user],
   );
 
   const markAsRead = useCallback(
@@ -134,7 +139,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
                   status: NotificationStatus.READ,
                   readAt: new Date().toISOString(),
                 }
-              : notif
+              : notif,
           );
 
           setUnreadCount(calculateUnreadCount(updatedNotifications));
@@ -144,7 +149,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Failed to mark notification as read:", error);
       }
     },
-    [calculateUnreadCount]
+    [calculateUnreadCount],
   );
 
   const markAllAsRead = useCallback(async () => {
@@ -156,7 +161,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
           ...notif,
           status: NotificationStatus.READ,
           readAt: notif.readAt || new Date().toISOString(),
-        }))
+        })),
       );
 
       setUnreadCount(0);
@@ -173,7 +178,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
         // Update local state
         setNotifications((prev) => {
           const newNotifications = prev.filter(
-            (notif) => notif.id !== notificationId
+            (notif) => notif.id !== notificationId,
           );
           // Recalculate unread count from remaining notifications
           setUnreadCount(calculateUnreadCount(newNotifications));
@@ -183,7 +188,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Failed to delete notification:", error);
       }
     },
-    [calculateUnreadCount]
+    [calculateUnreadCount],
   );
 
   const deleteAllNotifications = useCallback(async () => {
@@ -202,7 +207,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     (status: NotificationStatus): NotificationResponse[] => {
       return notifications.filter((notif) => notif.status === status);
     },
-    [notifications]
+    [notifications],
   );
 
   useEffect(() => {
@@ -266,7 +271,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
       deleteNotification,
       deleteAllNotifications,
       getNotificationsByStatus,
-    ]
+    ],
   );
 
   return (

@@ -3,7 +3,7 @@ import { Calendar, Check, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { connectGoogleCalendar } from "@/services/calendarServices";
 import { useToast } from "@/hooks/useToast";
-import { useAuth } from "@/contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 // Custom Google icon component
 const GoogleIcon = ({ className }: { className?: string }) => (

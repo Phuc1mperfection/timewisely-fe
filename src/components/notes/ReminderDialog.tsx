@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from "react";
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { format, parseISO } from 'date-fns';
-import type { NoteReminder, SetReminderPayload } from '@/services/noteServices';
+} from "@/components/ui/dialog";
+import { format, parseISO } from "date-fns";
+import type { NoteReminder, SetReminderPayload } from "@/services/noteServices";
 
 interface ReminderDialogProps {
   open: boolean;
@@ -21,7 +21,7 @@ interface ReminderDialogProps {
   isPending: boolean;
 }
 
-type Channel = 'EMAIL' | 'PUSH';
+type Channel = "EMAIL" | "PUSH";
 
 export function ReminderDialog({
   open,
@@ -30,14 +30,14 @@ export function ReminderDialog({
   onSchedule,
   isPending,
 }: ReminderDialogProps) {
-  const [dateTimeValue, setDateTimeValue] = useState('');
-  const [channels, setChannels] = useState<Channel[]>(['PUSH']);
+  const [dateTimeValue, setDateTimeValue] = useState("");
+  const [channels, setChannels] = useState<Channel[]>(["PUSH"]);
   const [error, setError] = useState<string | null>(null);
 
   // Pre-fill if editing existing reminder
   useEffect(() => {
     if (open) {
-      if (existingReminder && existingReminder.status === 'SCHEDULED') {
+      if (existingReminder && existingReminder.status === "SCHEDULED") {
         // Convert ISO to local datetime-local format
         const date = parseISO(existingReminder.remindAt);
         const localDateTime = format(date, "yyyy-MM-dd'T'HH:mm");
@@ -47,7 +47,7 @@ export function ReminderDialog({
         // Default: 1 hour from now
         const defaultDate = new Date(Date.now() + 60 * 60 * 1000);
         setDateTimeValue(format(defaultDate, "yyyy-MM-dd'T'HH:mm"));
-        setChannels(['PUSH']);
+        setChannels(["PUSH"]);
       }
       setError(null);
     }
@@ -67,13 +67,13 @@ export function ReminderDialog({
     // Validate date is in the future
     const selectedDate = new Date(dateTimeValue);
     if (selectedDate <= new Date()) {
-      setError('Please select a future date and time');
+      setError("Please select a future date and time");
       return;
     }
 
     // Validate at least one channel
     if (channels.length === 0) {
-      setError('Please select at least one notification channel');
+      setError("Please select at least one notification channel");
       return;
     }
 
@@ -97,7 +97,6 @@ export function ReminderDialog({
             <Bell className="h-5 w-5" />
             Schedule Reminder
           </DialogTitle>
-         
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -124,24 +123,30 @@ export function ReminderDialog({
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="channel-email"
-                  checked={channels.includes('EMAIL')}
+                  checked={channels.includes("EMAIL")}
                   onCheckedChange={(checked) =>
-                    handleChannelToggle('EMAIL', checked as boolean)
+                    handleChannelToggle("EMAIL", checked as boolean)
                   }
                 />
-                <Label htmlFor="channel-email" className="font-normal cursor-pointer">
+                <Label
+                  htmlFor="channel-email"
+                  className="font-normal cursor-pointer"
+                >
                   Email
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="channel-push"
-                  checked={channels.includes('PUSH')}
+                  checked={channels.includes("PUSH")}
                   onCheckedChange={(checked) =>
-                    handleChannelToggle('PUSH', checked as boolean)
+                    handleChannelToggle("PUSH", checked as boolean)
                   }
                 />
-                <Label htmlFor="channel-push" className="font-normal cursor-pointer">
+                <Label
+                  htmlFor="channel-push"
+                  className="font-normal cursor-pointer"
+                >
                   In-app notification
                 </Label>
               </div>
@@ -149,9 +154,7 @@ export function ReminderDialog({
           </div>
 
           {/* Error Message */}
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
 
         <DialogFooter>
@@ -163,7 +166,7 @@ export function ReminderDialog({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isPending}>
-            {isPending ? 'Scheduling...' : 'Schedule Reminder'}
+            {isPending ? "Scheduling..." : "Schedule Reminder"}
           </Button>
         </DialogFooter>
       </DialogContent>

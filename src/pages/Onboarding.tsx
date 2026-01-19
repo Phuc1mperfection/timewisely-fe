@@ -26,11 +26,11 @@ const Onboarding = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState<SurveyQuestion[]>([]);
   const [visibleQuestions, setVisibleQuestions] = useState<SurveyQuestion[]>(
-    []
+    [],
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState<SurveyData & { [key: string]: any }>(
-    {}
+    {},
   );
 
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ const Onboarding = () => {
   // Filter questions based on conditions
   const updateVisibleQuestions = (
     allQuestions: SurveyQuestion[],
-    data: Record<string, string | string[]>
+    data: Record<string, string | string[]>,
   ) => {
     const filtered = allQuestions.filter((q) => {
       // Skip questions with unsatisfied conditions
@@ -126,14 +126,14 @@ const Onboarding = () => {
 
       // Update user state after successful submission
       const userData = await import("@/services/authservices").then((m) =>
-        m.getCurrentUser()
+        m.getCurrentUser(),
       );
       setUser?.(userData);
 
       if (userData.hasCompletedSurvey !== undefined) {
         localStorage.setItem(
           "hasCompletedSurvey",
-          String(userData.hasCompletedSurvey)
+          String(userData.hasCompletedSurvey),
         );
       }
 
@@ -183,7 +183,7 @@ const Onboarding = () => {
                 onChange={(value) => {
                   handleQuestionChange(
                     visibleQuestions[currentQuestionIndex].key,
-                    value
+                    value,
                   );
                 }}
                 onAutoAdvance={

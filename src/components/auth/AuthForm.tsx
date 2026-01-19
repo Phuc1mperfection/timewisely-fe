@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Mail, Lock, User } from "lucide-react";
-import { useAuth } from "@/contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import SocialLogin from "./SocialLogin";
 import AuthInput from "./AuthInput";

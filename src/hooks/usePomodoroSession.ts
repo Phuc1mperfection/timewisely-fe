@@ -47,7 +47,7 @@ interface UsePomodoroSessionOptions {
 }
 
 export const usePomodoroSession = (
-  options?: UsePomodoroSessionOptions
+  options?: UsePomodoroSessionOptions,
 ): UsePomodoroSessionReturn => {
   const { success, info, handleError } = useToast();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -195,14 +195,14 @@ export const usePomodoroSession = (
         const errorMessage = handleError(
           err,
           "Failed to start session",
-          "Start Session"
+          "Start Session",
         );
         setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
     },
-    [success, handleError]
+    [success, handleError],
   );
 
   const pause = useCallback(async () => {
@@ -218,7 +218,7 @@ export const usePomodoroSession = (
       const errorMessage = handleError(
         err,
         "Failed to pause session",
-        "Pause Session"
+        "Pause Session",
       );
       setError(errorMessage);
     } finally {
@@ -240,7 +240,7 @@ export const usePomodoroSession = (
       const errorMessage = handleError(
         err,
         "Failed to resume session",
-        "Resume Session"
+        "Resume Session",
       );
       setError(errorMessage);
     } finally {
@@ -270,7 +270,7 @@ export const usePomodoroSession = (
       const errorMessage = handleError(
         err,
         "Failed to complete session",
-        "Complete Session"
+        "Complete Session",
       );
       setError(errorMessage);
     } finally {
@@ -293,7 +293,7 @@ export const usePomodoroSession = (
       const errorMessage = handleError(
         err,
         "Failed to cancel session",
-        "Cancel Session"
+        "Cancel Session",
       );
       setError(errorMessage);
     } finally {
@@ -305,8 +305,8 @@ export const usePomodoroSession = (
   const totalTime = session
     ? session.duration * 60 // Convert minutes to seconds (backend uses 'duration')
     : settings?.focusDuration
-    ? settings.focusDuration * 60
-    : 25 * 60;
+      ? settings.focusDuration * 60
+      : 25 * 60;
   const progress =
     totalTime > 0 ? ((totalTime - timeLeft) / totalTime) * 100 : 0;
 

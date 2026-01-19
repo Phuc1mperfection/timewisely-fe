@@ -27,7 +27,7 @@ const Profile = () => {
   }
 
   return (
-      <div className="flex-1 p-6 space-y-6">
+    <div className="flex-1 p-6 space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 ">
@@ -45,7 +45,7 @@ const Profile = () => {
           <SurveyResults />
         </TabsContent>
       </Tabs>
-    </div>  
+    </div>
   );
 };
 

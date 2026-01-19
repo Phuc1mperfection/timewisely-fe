@@ -29,7 +29,7 @@ import {
   Inbox,
   Target,
 } from "lucide-react";
-import { useAuth } from "@/contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,

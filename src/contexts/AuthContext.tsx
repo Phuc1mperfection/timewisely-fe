@@ -19,11 +19,14 @@ export interface AuthContextType {
   register: (
     email: string,
     fullName: string,
-    password: string
+    password: string,
   ) => Promise<User | undefined>;
   logout: () => Promise<void>;
   loginWithGoogle: () => void;
-  handleOAuthCallback: (token: string, provider: string) => Promise<User | undefined>;
+  handleOAuthCallback: (
+    token: string,
+    provider: string,
+  ) => Promise<User | undefined>;
   setUser?: (user: User | null) => void;
   setToken?: (token: string) => void;
   getCurrentUser?: () => Promise<User>;
@@ -41,7 +44,9 @@ export const AuthContext = createContext<AuthContextType>({
   handleOAuthCallback: async () => undefined,
   setUser: undefined,
   setToken: undefined,
-  getCurrentUser: async () => { throw new Error('Not implemented'); }
+  getCurrentUser: async () => {
+    throw new Error("Not implemented");
+  },
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -153,7 +158,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (userData.hasCompletedSurvey !== undefined) {
         localStorage.setItem(
           "hasCompletedSurvey",
-          String(userData.hasCompletedSurvey)
+          String(userData.hasCompletedSurvey),
         );
       }
 
@@ -169,7 +174,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (
     email: string,
     fullName: string,
-    password: string
+    password: string,
   ) => {
     setLoading(true);
     try {
@@ -184,7 +189,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (userData.hasCompletedSurvey !== undefined) {
         localStorage.setItem(
           "hasCompletedSurvey",
-          String(userData.hasCompletedSurvey)
+          String(userData.hasCompletedSurvey),
         );
       }
 

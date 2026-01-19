@@ -33,20 +33,20 @@ import { Slider } from "@/components/ui/slider";
 
 export const SettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<NotificationSettings>(
-    loadNotificationSettings()
+    loadNotificationSettings(),
   );
   const [pomodoroSound, setPomodoroSound] = useState<PomodoroSoundType>(
-    soundService.getSettings().pomodoroSound
+    soundService.getSettings().pomodoroSound,
   );
   const [notificationSound, setNotificationSound] =
     useState<NotificationSoundType>(
-      soundService.getSettings().notificationSound
+      soundService.getSettings().notificationSound,
     );
   const [soundEnabled, setSoundEnabled] = useState<boolean>(
-    soundService.getSettings().enabled
+    soundService.getSettings().enabled,
   );
   const [soundVolume, setSoundVolume] = useState<number>(
-    soundService.getSettings().volume * 100 // Convert to 0-100 for slider
+    soundService.getSettings().volume * 100, // Convert to 0-100 for slider
   );
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export const SettingsPage: React.FC = () => {
   const handleToggle = (
     category: keyof NotificationSettings,
     field: string,
-    value: boolean
+    value: boolean,
   ) => {
     setSettings((prev) => ({
       ...prev,

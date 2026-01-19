@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import GoogleCalendar from "@/components/calendar/GoogleCalendar";
 import { useNavigate, useLocation } from "react-router-dom";
