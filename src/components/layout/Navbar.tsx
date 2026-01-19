@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Updated to framer-motion
-import { useAuth } from "../../contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
   DropdownMenuTrigger,

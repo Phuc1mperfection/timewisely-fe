@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import type { User } from "../interfaces/User";
 import {
   login as loginService,
@@ -7,9 +7,42 @@ import {
   logout as logoutService,
   loginWithGoogle,
   handleOAuthCallback,
-} from "../services/authservices";
+} from "../services/authServices";
 import { useNavigate, useLocation } from "react-router-dom";
-import { AuthContext } from "./AuthContextTypes";
+
+// ===== Types =====
+export interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<User | undefined>;
+  register: (
+    email: string,
+    fullName: string,
+    password: string
+  ) => Promise<User | undefined>;
+  logout: () => Promise<void>;
+  loginWithGoogle: () => void;
+  handleOAuthCallback: (token: string, provider: string) => Promise<User | undefined>;
+  setUser?: (user: User | null) => void;
+  setToken?: (token: string) => void;
+  getCurrentUser?: () => Promise<User>;
+}
+
+// ===== Context =====
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAuthenticated: false,
+  loading: true,
+  login: async () => undefined,
+  register: async () => undefined,
+  logout: async () => {},
+  loginWithGoogle: () => {},
+  handleOAuthCallback: async () => undefined,
+  setUser: undefined,
+  setToken: undefined,
+  getCurrentUser: async () => { throw new Error('Not implemented'); }
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -230,4 +263,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-export { AuthContext };

@@ -13,7 +13,7 @@ import {
   type UserSettings,
   type StartPomodoroRequest,
 } from "@/services/pomodoroServices";
-import { soundService } from "@/services/soundService";
+import { soundService } from "@/services/soundServices";
 
 interface UsePomodoroSessionReturn {
   // Session state

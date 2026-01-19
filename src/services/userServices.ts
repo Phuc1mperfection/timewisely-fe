@@ -1,7 +1,7 @@
 import apiClient from "./apiClient";
 import type { ProfileUpdateResponse } from "../interfaces/ProfileUpdateResponse";
 import type { User } from "../interfaces/User";
-import { getCurrentUser } from "./authservices";
+import { getCurrentUser } from "./authServices";
 
 // Use getCurrentUser from authservices instead, but maintain same return format for compatibility
 export const getProfile = async (): Promise<{ userProfile: User }> => {

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useProfileUpdate } from "../../hooks/useProfileUpdate";
 import {
   profileFormSchema,

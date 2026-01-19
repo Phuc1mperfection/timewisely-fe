@@ -1,16 +1,35 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, createContext } from "react";
 import type { NotificationMessage, NotificationResponse } from "@/interfaces";
 import { NotificationStatus, NotificationChannel } from "@/interfaces";
 import { NotificationApiService } from "@/services/notificationServices";
-import { webSocketService } from "@/services/webSocketService";
+import { webSocketService } from "@/services/webSocketServices";
 import { loadNotificationSettings } from "@/services/notificationSettings";
-import { soundService } from "@/services/soundService";
-import { useAuth } from "./useAuth";
+import { soundService } from "@/services/soundServices";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import {
-  NotificationContext,
-  type NotificationContextType,
-} from "./NotificationContextTypes";
+
+// ===== Types =====
+export interface NotificationContextType {
+  // State
+  notifications: NotificationResponse[];
+  unreadCount: number;
+  isConnected: boolean;
+  isLoading: boolean;
+  // Actions
+  fetchNotifications: () => Promise<void>;
+  markAsRead: (notificationId: string) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
+  deleteNotification: (notificationId: string) => Promise<void>;
+  deleteAllNotifications: () => Promise<void>;
+  getNotificationsByStatus: (
+    status: NotificationStatus
+  ) => NotificationResponse[];
+}
+
+// ===== Context =====
+export const NotificationContext = createContext<
+  NotificationContextType | undefined
+>(undefined);
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

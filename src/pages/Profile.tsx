@@ -6,7 +6,7 @@ import {
 } from "../components/ui/tabs";
 import ProfileForm from "../components/profile/ProfileForm";
 import SecuritySettings from "../components/settings/SecuritySettings";
-import { useAuth } from "../contexts/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import SurveyResults from "@/components/profile/SurveyResult";
 
 const Profile = () => {

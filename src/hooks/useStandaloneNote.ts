@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { noteService } from "@/services/noteService";
+import { noteService } from "@/services/noteServices";
 import type { CreateNoteDto, UpdateNoteDto } from "@/interfaces/Note";
 
 export function useStandaloneNote(params: {

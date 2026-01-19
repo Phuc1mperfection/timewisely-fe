@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowLeft, Shield, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
-import { verifyOtp, requestPasswordReset } from "@/services/authservices";
+import { verifyOtp, requestPasswordReset } from "@/services/authServices";
 import AuthLogo from "@/components/auth/AuthLogo";
 
 const VerifyOtpPage: React.FC = () => {

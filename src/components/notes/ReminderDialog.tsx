@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { format, parseISO } from 'date-fns';
-import type { NoteReminder, SetReminderPayload } from '@/services/noteService';
+import type { NoteReminder, SetReminderPayload } from '@/services/noteServices';
 
 interface ReminderDialogProps {
   open: boolean;

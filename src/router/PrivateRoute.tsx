@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContextTypes";
+import { AuthContext } from "../contexts/AuthContext";
 import { useToast } from "@/hooks/useToast";
 
 export const PrivateRoute = ({

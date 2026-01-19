@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowLeft, Mail } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
-import { requestPasswordReset } from "@/services/authservices";
+import { requestPasswordReset } from "@/services/authServices";
 import AuthLogo from "@/components/auth/AuthLogo";
 
 const ForgotPasswordPage: React.FC = () => {

@@ -5,7 +5,7 @@ import {
   SwipeCardStack,
   type SwipeCardData,
 } from "@/components/onboarding/SwipeCard";
-import type { SurveyQuestion } from "@/services/onboardingservices";
+import type { SurveyQuestion } from "@/services/onboardingServices";
 
 interface SingleQuestionProps {
   question: SurveyQuestion;

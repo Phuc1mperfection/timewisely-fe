@@ -2,7 +2,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "../layout/AppSidebar";
 import { Outlet } from "react-router-dom";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/ModeToggle";
 import { NotificationBell } from "@/components/notifications";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {

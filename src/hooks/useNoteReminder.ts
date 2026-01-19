@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { noteService } from "@/services/noteService";
-import type { SetReminderPayload, NoteReminder } from "@/services/noteService";
+import { noteService } from "@/services/noteServices";
+import type { SetReminderPayload, NoteReminder } from "@/services/noteServices";
 
 export function useNoteReminder(noteId: number | null) {
   return useQuery<NoteReminder | null>({

@@ -13,7 +13,7 @@ import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import CalendarPage from "@/pages/CalendarPage";
 import { OverviewPage } from "@/pages/OverviewPage";
 import { DashboardContent } from "./pages/Dashboard";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import PomodoroPage from "./pages/PomodoroPage";

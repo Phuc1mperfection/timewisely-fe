@@ -14,13 +14,13 @@ import { useToast } from "@/hooks/useToast";
 import {
   fetchSurveyQuestions,
   completeOnboarding,
-} from "@/services/onboardingservices";
-import type { SurveyData } from "@/services/onboardingservices";
-import { useAuth } from "@/contexts/useAuth";
+} from "@/services/onboardingServices";
+import type { SurveyData } from "@/services/onboardingServices";
+import { useAuth } from "@/hooks/useAuth";
 import { SingleQuestion } from "@/components/survey/SingleQuestion";
 
-// Sử dụng type từ onboardingservices.ts
-import type { SurveyQuestion } from "@/services/onboardingservices";
+// Sử dụng type từ onboardingServices.ts
+import type { SurveyQuestion } from "@/services/onboardingServices";
 
 const Onboarding = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

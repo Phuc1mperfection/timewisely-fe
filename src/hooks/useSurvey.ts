@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   fetchMySurvey,
   type SurveyResponse,
-} from "@/services/onboardingservices";
+} from "@/services/onboardingServices";
 
 export function useSurvey() {
   const [survey, setSurvey] = useState<SurveyResponse | null>(null);

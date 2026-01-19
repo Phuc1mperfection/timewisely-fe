@@ -28,7 +28,7 @@ import {
   soundService,
   type PomodoroSoundType,
   type NotificationSoundType,
-} from "@/services/soundService";
+} from "@/services/soundServices";
 import { Slider } from "@/components/ui/slider";
 
 export const SettingsPage: React.FC = () => {
