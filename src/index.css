@@ -131,13 +131,13 @@ html, body {
       Nó sẽ lấy vị trí từ --mouseX và --mouseY.
       Khi JS chạy, nó sẽ ghi đè các giá trị mặc định ở trên.
     */
-    linear-gradient(284deg, rgb(0, 0, 0), rgba(250, 182, 36, 0.47)),
+    linear-gradient(184deg, rgb(0, 0, 0), rgba(161, 114, 11, 0.47)),
     /* LỚP 2: Lớp gradient tuyến tính ban đầu của bạn
     Dùng làm nền dự phòng và lấp đầy các cạnh
     */
     radial-gradient(circle at var(--mouseX) var(--mouseY),
       rgba(251, 251, 251, 0.6) 0%,
-      rgba(90, 2, 61, 0.4) 35%,
+      rgba(90, 2, 2, 0.4) 15%,
       transparent 100%
     ),
 

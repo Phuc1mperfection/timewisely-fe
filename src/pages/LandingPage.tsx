@@ -8,10 +8,11 @@ import {
 } from "react";
 // feature icons moved into FeaturesSection
 import Navbar from "@/components/layout/Navbar";
-import { Preloader } from "@/components/Preloader";
+// import { Preloader } from "@/components/Preloader";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HeroSection from "@/components/landing/HeroSection";
+import { IntroPreloader } from "@/components/IntroPreloader";
 
 const FeaturesSection = lazy(
   () => import("@/components/landing/FeaturesSection")
@@ -23,7 +24,7 @@ const PersonalizationSection = lazy(
   () => import("@/components/landing/PersonalizeSection")
 );
 const FooterSection = lazy(() => import("@/components/layout/Footer"));
-
+import bg from "@/assets/images/productive-background.png";
 // Loading fallback component - memoized
 const SectionLoader = memo(() => (
   <div className="flex items-center justify-center py-20">
@@ -131,7 +132,11 @@ const LandingPage = () => {
   }, [isLoading]);
 
   if (isLoading) {
-    return <Preloader onComplete={handlePreloaderComplete} />;
+    // return <Preloader onComplete={handlePreloaderComplete} />;
+    return <IntroPreloader onComplete={handlePreloaderComplete}
+       images={[  { src: "/assets/bearing.png", alt: "Bridge bearing" },
+          { src: bg, alt: "Productive background" },
+          { src: "/assets/noise-barrier.png", alt: "Noise barrier" },]} />;
   }
 
   return (
@@ -156,13 +161,13 @@ const LandingPage = () => {
           {/* Hero Section */}
           <div
             ref={heroSectionRef}
-            className="horizontal-section flex-shrink-0 w-screen h-screen"
+            className="horizontal-section shrink-0 w-screen h-screen"
           >
             <HeroSection containerAnimation={scrollTween} />
           </div>
 
           {/* Scroll Animation Section */}
-          <div className="horizontal-section flex-shrink-0 w-screen h-screen flex items-center justify-center">
+          <div className="horizontal-section shrink-0 w-screen h-screen flex items-center justify-center">
             <Suspense fallback={<SectionLoader />}>
               <ScrollAnimationSection
                 title="Time is your most valuable asset"
