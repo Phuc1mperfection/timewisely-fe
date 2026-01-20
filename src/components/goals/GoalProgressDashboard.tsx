@@ -61,12 +61,6 @@ export function GoalProgressDashboard({
     <div className="space-y-6">
       {/* Header with Period Selector */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">Personal Goals</h2>
-          <p className="text-sm text-muted-foreground">
-            Track your progress towards your targets
-          </p>
-        </div>
         <div className="flex items-center gap-3">
           <PeriodSelector period={period} onPeriodChange={setPeriod} />
           <Button

@@ -47,13 +47,13 @@ const Navbar: React.FC = () => {
     >
       <nav className="flex items-center justify-between h-16 py-2">
         {/* Logo */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <button
             className="flex items-center space-x-2 group bg-transparent border-none p-0 focus:outline-none"
             onClick={() => navigate("/")}
             aria-label="Go to Home"
           >
-            <div className="p-1.5 rounded-full bg-gradient-to-r from-orange-600 to-orange-100">
+            <div className="p-1.5 rounded-full bg-linear-to-r from-orange-600 to-orange-100">
               <img
                 src="/src/assets/logos/icon.svg"
                 alt="Logo"
@@ -86,7 +86,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* User Dropdown or Sign In */}
-        <div className="flex-shrink-0 flex items-center space-x-2">
+        <div className="shrink-0 flex items-center space-x-2">
           <div className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
             <ThemeToggleButton />
           </div>
@@ -95,7 +95,7 @@ const Navbar: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30  font-semibold  max-w-[200px] sm:max-w-[250px]"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/20 hover:bg-white/30  font-semibold  max-w-50 sm:max-w-62.5"
                   aria-label="User menu"
                 >
                   <span className="truncate text-sm sm:text-base">
@@ -107,7 +107,7 @@ const Navbar: React.FC = () => {
                     alt="Dropdown"
                     width={16}
                     height={16}
-                    className="flex-shrink-0"
+                    className="shrink-0"
                   />
                 </button>
               </DropdownMenuTrigger>
@@ -166,7 +166,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-[4.5rem] left-4 right-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg">
+        <div className="md:hidden absolute top-18 left-4 right-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-lg">
           <div className="px-6 py-6 space-y-5">
             <a
               href="#features"

@@ -105,7 +105,7 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
 
         <div className="mt-6 border-t border-white/10 pt-6 grid grid-cols-1 gap-3">
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
+            <div className="shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
               <Check className="w-3 h-3 text-mint-400" />
             </div>
             <p className="text-sm text-primary/60">
@@ -114,7 +114,7 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
+            <div className="shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
               <Check className="w-3 h-3 text-mint-400" />
             </div>
             <p className="text-sm text-primary/60">
@@ -123,7 +123,7 @@ const ConnectGoogleButton: React.FC<ConnectGoogleButtonProps> = ({
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
+            <div className="shrink-0 w-5 h-5 mt-0.5 bg-white/10 rounded-full flex items-center justify-center">
               <Check className="w-3 h-3 text-mint-400" />
             </div>
             <p className="text-sm text-primary/60">

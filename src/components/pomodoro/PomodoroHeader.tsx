@@ -1,5 +1,5 @@
 import React from "react";
-import { Settings, BarChart3 } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,13 +52,10 @@ export const PomodoroHeader: React.FC<PomodoroHeaderProps> = ({
         {/* Statistics Button */}
         <Dialog open={isStatsOpen} onOpenChange={setIsStatsOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Stats
-            </Button>
+            
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-125">
             <DialogHeader>
               <DialogTitle>Statistics</DialogTitle>
             </DialogHeader>

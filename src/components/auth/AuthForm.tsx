@@ -62,7 +62,7 @@ const AuthForm: React.FC = () => {
       error(
         isLogin
           ? "Failed to sign in. Please check your credentials."
-          : "Failed to create account. Please try again."
+          : "Failed to create account. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -180,7 +180,7 @@ const AuthForm: React.FC = () => {
         )}
         <motion.button
           type="submit"
-          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-yellow-500 to-mint-400 text-white font-semibold hover:from-yellow-600 hover:to-mint-500 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-mint-400 focus:ring-opacity-50"
+          className="w-full py-3 px-4 rounded-xl bg-linear-to-r from-yellow-500 to-mint-400 text-white font-semibold hover:from-yellow-600 hover:to-mint-500 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-mint-400 focus:ring-opacity-50"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           disabled={isLoading}

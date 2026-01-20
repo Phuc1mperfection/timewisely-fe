@@ -99,7 +99,7 @@ export const IntroPreloader = ({
       revealText: 0.65,
       hold: 1.2,
       shrink: 0.85,
-      fadeOut: 9.38,
+      fadeOut: 1.38,
     };
     const EASE = {
       fade: "power1.inOut",

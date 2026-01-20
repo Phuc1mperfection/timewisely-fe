@@ -62,7 +62,7 @@ const CalendarPage: React.FC = () => {
           getCurrentUser()
             .then(() => {
               console.log(
-                "User data refreshed after Google Calendar connection"
+                "User data refreshed after Google Calendar connection",
               );
             })
             .catch((error: unknown) => {
@@ -74,7 +74,7 @@ const CalendarPage: React.FC = () => {
       } else if (code) {
         console.log("OAuth code received, waiting for backend to process");
         success(
-          "Google authentication successful, setting up calendar access..."
+          "Google authentication successful, setting up calendar access...",
         );
 
         // The code will be processed by the backend, we just need to wait
@@ -151,7 +151,7 @@ const CalendarPage: React.FC = () => {
   const slotToLegacy = useCallback(
     (slot: { startTime: Date; endTime: Date } | null) =>
       slot ? { start: slot.startTime, end: slot.endTime } : null,
-    []
+    [],
   );
 
   // Merge activities and tasks into one list
@@ -280,7 +280,7 @@ const CalendarPage: React.FC = () => {
                     }
                   }}
                 />
-                <AISuggestions/>
+                <AISuggestions />
               </CardContent>
             </Card>
           </TabsContent>

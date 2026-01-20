@@ -17,7 +17,7 @@ interface SurveyAnswers {
 }
 
 const SurveyResults = () => {
-  const printRef = useRef<HTMLDivElement>(null!);
+  const printRef = useRef<HTMLDivElement>(null);
   const { survey, loading, error } = useSurvey();
   const surveyData: SurveyAnswers = survey?.answers?.answers || {};
 
@@ -201,22 +201,24 @@ const SurveyResults = () => {
     );
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Print Button */}
-      <div className="flex justify-end">
-        <PrintButton
-          contentRef={printRef}
-          documentTitle="Survey Results"
-          buttonText="Print Survey Results"
-          variant="outline"
-        />
-      </div>
+return (
+  <div className="space-y-8">
+    {/* Print Button */}
+    <div className="flex justify-end print:hidden">
+      <PrintButton
+        contentRef={printRef}
+        documentTitle="Survey Results"
+        buttonText="Print Survey Results"
+        variant="outline"
+      />
+    </div>
 
+    {/* Printable Content */}
+    <div ref={printRef}>
       {/* Favorite Categories */}
-      <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
+      <Card className="bg-white/80 border-0 hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center text-lg font-semibold ">
+          <CardTitle className="flex items-center text-lg font-semibold">
             <div className="w-8 h-8 bg-linear-to-r from-yellow-400 to-amber-300 rounded-lg flex items-center justify-center mr-3">
               <Zap className="w-4 h-4 text-white" />
             </div>
@@ -231,7 +233,7 @@ const SurveyResults = () => {
                   key={category}
                   className={`${getCategoryColor(
                     category
-                  )} px-4 py-2 rounded-full font-medium hover:scale-105 transition-all duration-200 animate-fade-in border text-black` }
+                  )} px-4 py-2 rounded-full font-medium hover:scale-105 transition-all duration-200 animate-fade-in border text-black`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   {category}
@@ -243,7 +245,7 @@ const SurveyResults = () => {
       </Card>
 
       {/* Free Time */}
-      <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
+      <Card className="bg-white/80 border-0 hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold">
             <div className="w-8 h-8 bg-linear-to-r from-orange-500 to-yellow-400 rounded-lg flex items-center justify-center mr-3">
@@ -267,7 +269,7 @@ const SurveyResults = () => {
       </Card>
 
       {/* Hobbies */}
-      <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
+      <Card className="bg-white/80 border-0 hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold">
             <div className="w-8 h-8 bg-linear-to-r from-amber-300 to-rose-400 rounded-lg flex items-center justify-center mr-3">
@@ -291,7 +293,7 @@ const SurveyResults = () => {
       </Card>
 
       {/* Activity Preferences */}
-      <Card className="bg-white/80 border-0  hover:shadow-xl transition-all duration-300">
+      <Card className="bg-white/80 border-0 hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center text-lg font-semibold">
             <div className="w-8 h-8 bg-linear-to-r from-teal-400 to-cyan-400 rounded-lg flex items-center justify-center mr-3">
@@ -302,26 +304,25 @@ const SurveyResults = () => {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
-            {(surveyData.activityPreferences as string[] | undefined) ? (
-              getActivityTitles(surveyData.activityPreferences as string[]).map(
-                (title) => (
-                  <Badge
-                    key={title}
-                    className="bg-teal-50 text-teal-700 border border-teal-200"
-                  >
-                    {title}
-                  </Badge>
-                )
-              )
+            {surveyData.activityPreferences ? (
+              getActivityTitles(surveyData.activityPreferences).map((title) => (
+                <Badge
+                  key={title}
+                  className="bg-teal-50 text-teal-700 border border-teal-200"
+                >
+                  {title}
+                </Badge>
+              ))
             ) : (
               <span className="text-gray-500">Not answered</span>
             )}
           </div>
         </CardContent>
       </Card>
+
       {/* Personal Info Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="bg-white/80  border-0  hover:shadow-xl transition-all duration-300">
+        <Card className="bg-white/80 border-0 hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center text-lg font-semibold">
               <div className="w-8 h-8 bg-linear-to-r from-orange-400 to-yellow-400 rounded-lg flex items-center justify-center mr-3">
@@ -334,23 +335,19 @@ const SurveyResults = () => {
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Work Schedule</span>
               <Badge className="bg-orange-50 text-orange-700 border border-orange-200">
-                {surveyData.workSchedule
-                  ? (surveyData.workSchedule as string)
-                  : "Not answered"}
+                {surveyData.workSchedule ?? "Not answered"}
               </Badge>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Environment</span>
-              <Badge className="bg-yellow-50 yellow-700 border border-yellow-200">
-                {surveyData.environment
-                  ? (surveyData.environment as string)
-                  : "Not answered"}
+              <Badge className="bg-yellow-50 text-yellow-700 border border-yellow-200">
+                {surveyData.environment ?? "Not answered"}
               </Badge>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/80  border-0  hover:shadow-xl transition-all duration-300">
+        <Card className="bg-white/80 border-0 hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center text-lg font-semibold">
               <div className="w-8 h-8 bg-linear-to-r from-green-400 to-teal-400 rounded-lg flex items-center justify-center mr-3">
@@ -365,9 +362,7 @@ const SurveyResults = () => {
                 Primary Goal
               </span>
               <Badge className="bg-green-50 text-green-700 border border-green-200">
-                {surveyData.primaryGoal
-                  ? (surveyData.primaryGoal as string)
-                  : "Not answered"}
+                {surveyData.primaryGoal ?? "Not answered"}
               </Badge>
             </div>
             <div>
@@ -375,16 +370,15 @@ const SurveyResults = () => {
                 Biggest Challenge
               </span>
               <Badge className="bg-red-50 text-red-700 border border-red-200">
-                {surveyData.biggestChallenge
-                  ? (surveyData.biggestChallenge as string)
-                  : "Not answered"}
+                {surveyData.biggestChallenge ?? "Not answered"}
               </Badge>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default SurveyResults;

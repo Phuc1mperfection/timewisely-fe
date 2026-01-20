@@ -44,8 +44,8 @@ const mainMenuItems = [
   { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
   // { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
-  { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Goals", url: "/dashboard/goals", icon: Target },
+  { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
   { title: "Notes", url: "/dashboard/notes", icon: ListTodo },
@@ -110,7 +110,7 @@ export function AppSidebar() {
                           className={
                             isActive
                               ? "text-(--wisely-gold)"
-                              : "hover:text-(--wisely-gold) dark:hover:text-[var(--wisely-white)]"
+                              : "hover:text-(--wisely-gold) dark:hover:text-var(--wisely-white)"
                           }
                         >
                           {item.title}
@@ -163,7 +163,7 @@ export function AppSidebar() {
                               className={
                                 isActive
                                   ? "text-(--wisely-gold)"
-                                  : "hover:text-(--wisely-gold) dark:hover:text-[var(--wisely-white)]"
+                                  : "hover:text-(--wisely-gold) dark:hover:text-var(--wisely-white)"
                               }
                             >
                               {item.title}

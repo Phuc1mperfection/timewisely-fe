@@ -51,11 +51,11 @@ const GoogleCalendar: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState<string>(
-    localStorage.getItem("userEmail") || ""
+    localStorage.getItem("userEmail") || "",
   );
   const [selectedCalendarIds, setSelectedCalendarIds] = useState<string[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<TransformedEvent | null>(
-    null
+    null,
   );
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -160,7 +160,7 @@ const GoogleCalendar: React.FC = () => {
           // Determine all-day: Google all-day events use start.date (no time)
           const isDateOnly = Boolean(ev.start && ev.start.date);
           const isExplicitAllDay = Boolean(
-            ev.isAllDay || ev.isAllDayEvent || ev.allDay
+            ev.isAllDay || ev.isAllDayEvent || ev.allDay,
           );
 
           // Multi-day heuristic: duration >= 24h and both times at midnight
@@ -257,7 +257,7 @@ const GoogleCalendar: React.FC = () => {
       setModalMode("create");
       setModalOpen(true);
     },
-    []
+    [],
   );
 
   // (handlers moved to ActivityDialog onSave/onDelete usage)
@@ -292,14 +292,14 @@ const GoogleCalendar: React.FC = () => {
               selectedCalendarId={selectedCalendarId}
               onCalendarChange={(calendarId) => {
                 console.log(
-                  `Calendar selection changed from "${selectedCalendarId}" to "${calendarId}"`
+                  `Calendar selection changed from "${selectedCalendarId}" to "${calendarId}"`,
                 );
                 setSelectedCalendarId(calendarId);
               }}
               selectedCalendarIds={selectedCalendarIds}
               onCalendarsChange={(calendarIds) => {
                 console.log(
-                  `Selected calendars changed to: [${calendarIds.join(", ")}]`
+                  `Selected calendars changed to: [${calendarIds.join(", ")}]`,
                 );
                 setSelectedCalendarIds(calendarIds);
                 // Refetch events when selected calendars change
@@ -326,7 +326,7 @@ const GoogleCalendar: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center h-[600px]">
+        <div className="flex items-center justify-center h-150">
           <Loader className="w-10 h-10 animate-spin yellow-500" />
         </div>
       ) : events.length > 0 ? (
@@ -432,7 +432,7 @@ const GoogleCalendar: React.FC = () => {
           className="modern-calendar"
         />
       ) : (
-        <div className="flex flex-col items-center justify-center h-[600px] bg-white/5  rounded-xl p-4 ">
+        <div className="flex flex-col items-center justify-center h-150 bg-white/5  rounded-xl p-4 ">
           <AlertCircle className="w-16 h-16 text-yellow-500 mb-4" />
           <h3 className="text-xl font-semibold mb-2">
             No Calendar Events Found
