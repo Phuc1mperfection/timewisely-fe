@@ -14,26 +14,32 @@ import {
 import { useEffect, useState } from "react";
 import {
   getRuleBasedSuggestions,
-  getAISuggestions,
+  getSavedAISuggestions,
+  generateAISuggestions,
   acceptSuggestion,
   type Suggestion,
+  type SavedAISuggestion,
 } from "@/services/suggestionServices";
+import { fetchMySurvey } from "@/services/onboardingServices";
 import { useToast } from "@/hooks/useToast";
 
 export function AISuggestions() {
   const [ruleBasedSuggestions, setRuleBasedSuggestions] = useState<
     Suggestion[]
   >([]);
-  const [aiSuggestions, setAiSuggestions] = useState<Suggestion[]>([]);
+  const [savedAISuggestions, setSavedAISuggestions] = useState<
+    SavedAISuggestion[]
+  >([]);
   const [loadingRuleBased, setLoadingRuleBased] = useState(true);
   const [loadingAI, setLoadingAI] = useState(false);
   const [activeTab, setActiveTab] = useState<"rule-based" | "ai">("rule-based");
+  const [hasSavedSuggestions, setHasSavedSuggestions] = useState(false);
 
   // Track which suggestions have been added to calendar
   const [addedRuleBasedIds, setAddedRuleBasedIds] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
-  const [addedAIIds, setAddedAIIds] = useState<Set<string>>(new Set());
+  const [addedAIIds, setAddedAIIds] = useState<Set<number>>(new Set());
 
   const { success, error } = useToast();
 
@@ -55,13 +61,34 @@ export function AISuggestions() {
     }
   };
 
-  const fetchAISuggestions = async () => {
+  const fetchSavedAISuggestions = async () => {
     try {
       setLoadingAI(true);
-      const data = await getAISuggestions(5);
-      setAiSuggestions(data);
-      setAddedAIIds(new Set()); // Reset added IDs when fetching new suggestions
-      success("AI suggestions generated!");
+      const data = await getSavedAISuggestions();
+      setSavedAISuggestions(data.suggestions);
+      setHasSavedSuggestions(data.hasSuggestions);
+      setAddedAIIds(new Set()); // Reset added IDs
+    } catch (err: any) {
+      error("Failed to load AI suggestions");
+      console.error(err);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  const fetchNewAISuggestions = async () => {
+    try {
+      setLoadingAI(true);
+      // Get survey data
+      const surveyResponse = await fetchMySurvey();
+      // Generate new suggestions (saves to DB)
+      const result = await generateAISuggestions({
+        answers: surveyResponse.answers,
+      });
+      setSavedAISuggestions(result.suggestions);
+      setHasSavedSuggestions(true);
+      setAddedAIIds(new Set());
+      success("New AI suggestions generated and saved!");
     } catch (err: any) {
       if (err?.response?.status === 503 || err?.response?.status === 429) {
         error("AI quota exceeded. Please try again later.");
@@ -69,7 +96,6 @@ export function AISuggestions() {
         err?.response?.status === 404 ||
         err?.response?.status === 400
       ) {
-        setAiSuggestions([]);
         error("Please complete onboarding survey first");
       } else {
         error("AI service unavailable. Please try again later.");
@@ -83,6 +109,8 @@ export function AISuggestions() {
   useEffect(() => {
     // Auto-load rule-based suggestions on mount
     fetchRuleBasedSuggestions();
+    // Load saved AI suggestions (no quota cost)
+    fetchSavedAISuggestions();
   }, []);
 
   const handleAddSuggestion = async (suggestion: Suggestion) => {
@@ -106,13 +134,12 @@ export function AISuggestions() {
         }
       } else {
         const newAddedIds = new Set(addedAIIds);
-        newAddedIds.add(suggestion.id);
+        newAddedIds.add(Number(suggestion.id));
         setAddedAIIds(newAddedIds);
 
         // Auto-refresh if all suggestions have been added
-        if (newAddedIds.size === aiSuggestions.length) {
-          success("All suggestions added! Loading new ones...");
-          setTimeout(() => fetchAISuggestions(), 1000);
+        if (newAddedIds.size === savedAISuggestions.length) {
+          success("All suggestions added! You can regenerate more.");
         }
       }
     } catch (err) {
@@ -153,7 +180,7 @@ export function AISuggestions() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-(--wisely-gold)" />
-          <span className="bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
             Smart Activity Suggestions
           </span>
         </CardTitle>
@@ -220,7 +247,7 @@ export function AISuggestions() {
                 <Button
                   onClick={fetchRuleBasedSuggestions}
                   disabled={loadingRuleBased}
-                  className="w-full mt-4 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
+                  className="w-full mt-4 bg-linear-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
                 >
                   <Target className="w-4 h-4 mr-2" />
                   {loadingRuleBased ? "Loading..." : "Refresh Smart Picks"}
@@ -231,10 +258,11 @@ export function AISuggestions() {
 
           {/* AI-Powered Tab */}
           <TabsContent value="ai">
-            {!loadingAI && aiSuggestions.length === 0 && (
+            {!loadingAI && !hasSavedSuggestions && (
               <div className="text-center py-4 mb-4 bg-purple-50 border border-purple-200 rounded-lg">
                 <p className="text-sm text-purple-700">
-                  Click "Generate AI Suggestions" to use Gemini AI (uses quota)
+                  Generate AI suggestions once, they'll be saved to avoid quota
+                  usage 💡
                 </p>
               </div>
             )}
@@ -246,45 +274,72 @@ export function AISuggestions() {
                   AI is analyzing your patterns...
                 </p>
               </div>
-            ) : aiSuggestions.length > 0 ? (
+            ) : hasSavedSuggestions && savedAISuggestions.length > 0 ? (
               <>
                 {/* Progress indicator */}
                 {addedAIIds.size > 0 && (
                   <div className="mb-3 p-2 bg-green-50 border border-green-200 rounded-lg text-center">
                     <p className="text-sm text-green-700 font-medium">
-                      ✓ {addedAIIds.size} of {aiSuggestions.length} added to
-                      calendar
+                      ✓ {addedAIIds.size} of {savedAISuggestions.length} added
+                      to calendar
                     </p>
                   </div>
                 )}
 
                 <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {aiSuggestions.map((suggestion) => (
-                    <SuggestionCard
+                  {savedAISuggestions.map((suggestion) => (
+                    <SavedAISuggestionCard
                       key={suggestion.id}
                       suggestion={suggestion}
-                      onAdd={handleAddSuggestion}
-                      formatTimeRange={formatTimeRange}
-                      formatDuration={formatDuration}
-                      isAI={true}
+                      onAdd={async () => {
+                        try {
+                          // Use startDate and endDate directly from suggestion
+                          const activityData = {
+                            title: suggestion.title,
+                            category: suggestion.category,
+                            startTime: suggestion.startDate,
+                            endTime: suggestion.endDate,
+                            description: suggestion.rationale,
+                            isCompleted: false,
+                          };
+
+                          // Import and call createActivity API
+                          const { createActivity } =
+                            await import("@/services/activityServices");
+                          await createActivity(activityData);
+
+                          // Mark as added in UI
+                          const newAddedIds = new Set(addedAIIds);
+                          newAddedIds.add(suggestion.id);
+                          setAddedAIIds(newAddedIds);
+
+                          success(`"${suggestion.title}" added to calendar!`);
+                          window.dispatchEvent(
+                            new CustomEvent("activityAdded"),
+                          );
+                        } catch (err) {
+                          console.error("Failed to add activity:", err);
+                          error("Failed to add activity to calendar");
+                        }
+                      }}
                       isAdded={addedAIIds.has(suggestion.id)}
                     />
                   ))}
                 </div>
                 <Button
-                  onClick={fetchAISuggestions}
+                  onClick={fetchNewAISuggestions}
                   disabled={loadingAI}
-                  className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  className="w-full mt-4 bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                 >
                   <Brain className="w-4 h-4 mr-2" />
-                  {loadingAI ? "Loading..." : "Refresh AI Suggestions"}
+                  {loadingAI ? "Generating..." : "Regenerate AI Suggestions"}
                 </Button>
               </>
             ) : (
               <Button
-                onClick={fetchAISuggestions}
+                onClick={fetchNewAISuggestions}
                 disabled={loadingAI}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                className="w-full bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
               >
                 <Brain className="w-4 h-4 mr-2" />
                 Generate AI Suggestions
@@ -292,6 +347,126 @@ export function AISuggestions() {
             )}
           </TabsContent>
         </Tabs>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Component for saved AI suggestions (from database)
+function SavedAISuggestionCard({
+  suggestion,
+  onAdd,
+  isAdded = false,
+}: {
+  suggestion: SavedAISuggestion;
+  onAdd: () => void;
+  isAdded?: boolean;
+}) {
+  return (
+    <Card
+      className={`hover:shadow-lg transition-all ${
+        isAdded ? "opacity-50 bg-gray-50" : ""
+      }`}
+    >
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <h4
+                className={`font-semibold ${
+                  isAdded ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {suggestion.title}
+              </h4>
+              {isAdded && (
+                <span className="text-green-600 text-xs font-bold">
+                  ✓ Added
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2 text-xs mb-2">
+              <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium">
+                {suggestion.category}
+              </span>
+              <span className="px-2 py-0.5 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium">
+                AI
+              </span>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={onAdd}
+            disabled={isAdded}
+            className={`h-8 w-8 p-0 ${
+              isAdded
+                ? "bg-green-500 cursor-not-allowed"
+                : "bg-linear-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500"
+            }`}
+          >
+            {isAdded ? (
+              <span className="text-white font-bold">✓</span>
+            ) : (
+              <Plus className="w-4 h-4" />
+            )}
+          </Button>
+        </div>
+
+        {/* AI Reasoning/Rationale */}
+        <div
+          className={`flex items-start gap-2 mb-3 p-2 rounded-lg border ${
+            isAdded
+              ? "bg-gray-100 border-gray-300"
+              : "bg-purple-50 border-purple-200"
+          }`}
+        >
+          <Lightbulb
+            className={`w-4 h-4 mt-0.5 shrink-0 ${
+              isAdded ? "text-gray-400" : "text-purple-600"
+            }`}
+          />
+          <p
+            className={`text-xs italic ${
+              isAdded ? "text-gray-500" : "text-purple-900"
+            }`}
+          >
+            {suggestion.rationale}
+          </p>
+        </div>
+
+        <div
+          className={`flex items-center gap-3 text-xs ${
+            isAdded ? "text-gray-400" : "text-muted-foreground"
+          }`}
+        >
+          <div className="flex items-center gap-1 font-medium">
+            <Clock
+              className={`w-3.5 h-3.5 ${
+                isAdded ? "text-gray-400" : "text-purple-600"
+              }`}
+            />
+            <span>
+              {new Date(suggestion.startDate).toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              })}
+            </span>
+          </div>
+          <span
+            className={`font-medium ${
+              isAdded ? "text-gray-400" : "text-purple-600"
+            }`}
+          >
+            (
+            {Math.round(
+              (new Date(suggestion.endDate).getTime() -
+                new Date(suggestion.startDate).getTime()) /
+                60000,
+            )}{" "}
+            min)
+          </span>
+        </div>
       </CardContent>
     </Card>
   );
@@ -345,7 +520,7 @@ function SuggestionCard({
               </span>
 
               {isAI && (
-                <span className="px-2 py-0.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium">
+                <span className="px-2 py-0.5 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-full font-medium">
                   AI
                 </span>
               )}
@@ -358,7 +533,7 @@ function SuggestionCard({
             className={`h-8 w-8 p-0 ${
               isAdded
                 ? "bg-green-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500"
+                : "bg-linear-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500"
             }`}
           >
             {isAdded ? (
@@ -386,7 +561,7 @@ function SuggestionCard({
           }`}
         >
           <Lightbulb
-            className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
+            className={`w-4 h-4 mt-0.5 shrink-0 ${
               isAdded ? "text-gray-400" : "text-amber-600"
             }`}
           />

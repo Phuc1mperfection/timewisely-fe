@@ -15,13 +15,66 @@ export interface Suggestion {
 }
 
 /**
+ * NEW: Saved AI suggestion from database
+ */
+export interface SavedAISuggestion {
+  id: number;
+  title: string;
+  category: string;
+  startDate: string; // ISO datetime
+  endDate: string; // ISO datetime
+  rationale: string;
+  goalTag: string;
+  isAccepted: boolean;
+  templateId: string;
+  createdAt: string;
+}
+
+/**
+ * Get saved AI activity suggestions from database (no quota cost)
+ */
+export const getSavedAISuggestions = async (): Promise<{
+  hasSuggestions: boolean;
+  suggestions: SavedAISuggestion[];
+  count: number;
+}> => {
+  const response = await apiClient.get("/suggestions/activities");
+  return response.data;
+};
+
+/**
+ * Generate new AI activity suggestions (uses AI quota, saves to DB)
+ */
+export const generateAISuggestions = async (
+  surveyData: Record<string, unknown>,
+): Promise<{
+  success: boolean;
+  suggestions: SavedAISuggestion[];
+  count: number;
+  message: string;
+}> => {
+  const response = await apiClient.post(
+    "/suggestions/activities/generate",
+    surveyData,
+  );
+  return response.data;
+};
+
+/**
+ * Clear all saved AI suggestions
+ */
+export const clearAISuggestions = async (): Promise<void> => {
+  await apiClient.delete("/suggestions/activities");
+};
+
+/**
  * Get rule-based activity suggestions (no AI, no quota usage).
  *
  * @param limit - Maximum number of suggestions to return (default: 5)
  * @returns Array of personalized suggestions based on scoring algorithm
  */
 export const getRuleBasedSuggestions = async (
-  limit: number = 5
+  limit: number = 5,
 ): Promise<Suggestion[]> => {
   const response = await apiClient.get(`/suggestions?limit=${limit}`);
   return response.data;
@@ -36,7 +89,7 @@ export const getRuleBasedSuggestions = async (
  * @throws Error if AI quota exceeded or service unavailable
  */
 export const getAISuggestions = async (
-  limit: number = 5
+  limit: number = 5,
 ): Promise<Suggestion[]> => {
   const response = await apiClient.get(`/suggestions/ai?limit=${limit}`);
   return response.data;
@@ -56,11 +109,11 @@ export const getSuggestions = getRuleBasedSuggestions;
  */
 export const acceptSuggestion = async (
   suggestionId: string,
-  suggestionData: Suggestion
+  suggestionData: Suggestion,
 ): Promise<{ id: string }> => {
   const response = await apiClient.post(
     `/suggestions/${suggestionId}/accept`,
-    suggestionData
+    suggestionData,
   );
   return response.data;
 };
@@ -73,7 +126,7 @@ export const acceptSuggestion = async (
  * @returns Array of refreshed suggestions
  */
 export const refreshSuggestions = async (
-  limit: number = 5
+  limit: number = 5,
 ): Promise<Suggestion[]> => {
   const response = await apiClient.post(`/suggestions/refresh?limit=${limit}`);
   return response.data;

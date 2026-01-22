@@ -39,6 +39,19 @@ export interface SurveyResponse {
 export const completeOnboarding = async (surveyData: SurveyData) => {
   // Gửi survey lên backend với key answers
   await apiClient.post("/onboarding/complete", { answers: surveyData });
+
+  // Sau khi hoàn thành onboarding, generate AI suggestions và lưu vào DB
+  try {
+    const { generateAISuggestions } = await import("./suggestionServices");
+    await generateAISuggestions({ answers: surveyData });
+    console.log("AI suggestions generated and saved to database");
+  } catch (error) {
+    console.error(
+      "Failed to generate AI suggestions (will be available later):",
+      error,
+    );
+    // Don't block onboarding if AI generation fails
+  }
 };
 
 export const fetchSurveyQuestions = async (): Promise<SurveyQuestion[]> => {
