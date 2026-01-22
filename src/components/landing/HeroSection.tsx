@@ -112,10 +112,21 @@ const HeroSection = memo(({ containerAnimation }: HeroSectionProps) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 bg-gradient-to-l from-(--wisely-gold) via-(--wisely-yellow) to-(--wisely-sand) bg-clip-text text-transparent"
+              className="text-5xl lg:text-7xl font-bold leading-tight mb-6 
+             bg-clip-text text-transparent
+             /* Light Mode */
+              bg-linear-to-r from-orange-400 via-(--wisely-yellow) to-(--wisely-sand)
+             /* Dark Mode: Chuyển sang tông Trắng - Bạc hoặc Vàng sáng hơn */
+             dark:from-(--wisely-gold) dark:via-(--wisely-yellow) dark:to-(--wisely-sand)"
             >
               Master Your
-              <span className="block mx-auto bg-gradient-to-r from-(--wisely-gold) via-[var(--chart-2)] to-(--wisely-sand) bg-clip-text text-transparent">
+              <span
+                className="block mx-auto bg-clip-text text-transparent 
+                   /* Light Mode */
+                  bg-linear-to-r from-yellow-100 via-amber-400 to-orange-400
+                   /* Dark Mode */
+                   dark:from-(--wisely-gold) dark:via-amber-300 dark:to-white"
+              >
                 Time, Wisely
               </span>
             </motion.h1>
@@ -134,7 +145,7 @@ const HeroSection = memo(({ containerAnimation }: HeroSectionProps) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.6 }}
-              className="text-xl mb-6 bg-gradient-to-r from-(--wisely-gold) via-[var(--chart-2)] to-(--wisely-sand) bg-clip-text text-transparent"
+              className="text-xl mb-6 bg-linear-to-r from-(--wisely-gold) via-chart-2 to-(--wisely-sand) bg-clip-text text-transparent"
             >
               Achieve your goals with <FlipWords words={words} /> tools.
             </motion.div>

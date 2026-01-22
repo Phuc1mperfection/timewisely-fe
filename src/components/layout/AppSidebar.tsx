@@ -28,6 +28,7 @@ import {
   ListTodo,
   Inbox,
   Target,
+  NotebookPen
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -47,8 +48,8 @@ const mainMenuItems = [
   { title: "Goals", url: "/dashboard/goals", icon: Target },
   { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
   { title: "Profile", url: "/dashboard/profile", icon: User },
+  { title: "Notes", url: "/dashboard/notes", icon: NotebookPen },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
-  { title: "Notes", url: "/dashboard/notes", icon: ListTodo },
 ];
 
 const taskMenuItems = [

@@ -15,13 +15,11 @@ export function useTasks(filterContext: TaskFilterContext = "all") {
     if (filterContext === "all") return allTasks;
 
     if (filterContext === "pomodoro") {
-      return allTasks.filter(
-        (t) => t.type === "POMODORO_ONLY" || t.type === "BOTH"
-      );
+      return allTasks.filter((t) => t.type === "POMODORO_ONLY");
     }
 
     // filterContext === "todo"
-    return allTasks.filter((t) => t.type === "TODO_ONLY" || t.type === "BOTH");
+    return allTasks.filter((t) => t.type === "TODO_ONLY");
   }, [allTasks, filterContext]);
 
   // Helper function to sort tasks by order
@@ -65,7 +63,7 @@ export function useTasks(filterContext: TaskFilterContext = "all") {
       const updatedTask = await taskServices.toggleTaskComplete(id);
       setAllTasks((prev) => {
         const updated = prev.map((task) =>
-          task.id === id ? updatedTask : task
+          task.id === id ? updatedTask : task,
         );
         // Sort after updating
         return sortTasks(updated);
@@ -73,7 +71,7 @@ export function useTasks(filterContext: TaskFilterContext = "all") {
       success(
         updatedTask.completed
           ? "Task marked as complete!"
-          : "Task marked as incomplete!"
+          : "Task marked as incomplete!",
       );
     } catch (err) {
       handleError(err, "Failed to update task status", "Toggle Task Complete");
@@ -85,7 +83,7 @@ export function useTasks(filterContext: TaskFilterContext = "all") {
       const updatedTask = await taskServices.updateTask(id, taskData);
       setAllTasks((prev) => {
         const updated = prev.map((task) =>
-          task.id === id ? updatedTask : task
+          task.id === id ? updatedTask : task,
         );
         // Sort after updating
         return sortTasks(updated);

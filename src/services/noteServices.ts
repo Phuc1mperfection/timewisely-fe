@@ -78,12 +78,32 @@ export const noteService = {
 
   setNoteReminder: async (
     id: number,
-    payload: SetReminderPayload
+    payload: SetReminderPayload,
   ): Promise<void> => {
     await apiClient.put(`/notes/${id}/reminder`, payload);
   },
 
   cancelNoteReminder: async (id: number): Promise<void> => {
     await apiClient.delete(`/notes/${id}/reminder`);
+  },
+};
+export interface NoteAIRequest {
+  prompt: string;
+  tone?: "professional" | "casual" | "formal" | "creative";
+  format?: "meeting-summary" | "checklist" | "study-notes" | "freeform";
+  context?: string;
+}
+
+export interface NoteAIResponse {
+  contentHtml: string;
+  model: string;
+  detectedLanguage: string;
+}
+
+// AI Note Generation Service
+export const noteAIService = {
+  generateContent: async (request: NoteAIRequest): Promise<NoteAIResponse> => {
+    const { data } = await apiClient.post("/notes/ai/generate", request);
+    return data;
   },
 };

@@ -1,4 +1,4 @@
-﻿export type TaskType = "TODO_ONLY" | "POMODORO_ONLY" | "BOTH";
+﻿export type TaskType = "TODO_ONLY" | "POMODORO_ONLY";
 export type TaskContext = "pomodoro" | "todo"; // For UI context
 export type Priority = "low" | "medium" | "high" | "urgent";
 export type Category =
@@ -25,7 +25,7 @@ export interface Task {
   completed: boolean;
   createdAt: Date;
   order: number;
-  goalCategory?: string; 
+  goalCategory?: string;
   reminderEnabled?: boolean;
   reminderMinutesBefore?: number;
   lastReminderSentAt?: Date | null;
@@ -50,6 +50,6 @@ export interface TaskFormData {
   priority: Priority;
   category: Category;
   dueDate: Date;
-  goalCategory?: string; 
+  goalCategory?: string;
   order?: number;
 }

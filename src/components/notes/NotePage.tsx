@@ -1,5 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
-import { Plus, Save, Trash2, Search, AlertCircle, Bell } from "lucide-react";
+import {
+  Plus,
+  Save,
+  Trash2,
+  Search,
+  AlertCircle,
+  Bell,
+  Wand2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +25,7 @@ import { useToast } from "@/hooks/useToast";
 import { QuillEditor } from "./QuillEditor";
 import { NoteListItem } from "./NoteListItem";
 import { ReminderDialog } from "./ReminderDialog";
+import { AiNoteGenerateModal } from "./AiNoteGenerateModal";
 import {
   useStandaloneNote,
   useCreateNote,
@@ -41,6 +50,7 @@ export function NotePage() {
   const [isNewNote, setIsNewNote] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [reminderDialogOpen, setReminderDialogOpen] = useState(false);
+  const [aiGenerateDialogOpen, setAiGenerateDialogOpen] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -66,7 +76,7 @@ export function NotePage() {
 
   const selectedNote = useMemo(
     () => notes.find((n) => n.id === selectedNoteId) || null,
-    [notes, selectedNoteId]
+    [notes, selectedNoteId],
   );
 
   // Track unsaved changes
@@ -146,6 +156,10 @@ export function NotePage() {
 
   const isSaving = createNote.isPending || updateNote.isPending;
   const isDeleting = deleteNote.isPending;
+
+  const handleAIInsert = (html: string) => {
+    setEditorContent(html);
+  };
 
   return (
     <div className="h-full flex">
@@ -242,6 +256,14 @@ export function NotePage() {
                     Unsaved changes
                   </span>
                 )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setAiGenerateDialogOpen(true)}
+                >
+                  <Wand2 className="h-4 w-4 mr-1" />
+                  AI Generate
+                </Button>
                 <Button
                   size="sm"
                   variant="outline"
@@ -345,10 +367,18 @@ export function NotePage() {
               onSuccess: () => {
                 setReminderDialogOpen(false);
               },
-            }
+            },
           );
         }}
         isPending={setReminder.isPending}
+      />
+
+      {/* AI Generate Dialog */}
+      <AiNoteGenerateModal
+        open={aiGenerateDialogOpen}
+        onOpenChange={setAiGenerateDialogOpen}
+        currentContent={editorContent}
+        onInsert={handleAIInsert}
       />
     </div>
   );
