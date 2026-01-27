@@ -291,12 +291,45 @@ export function AISuggestions() {
                       suggestion={suggestion}
                       onAdd={async () => {
                         try {
-                          // Use startDate and endDate directly from suggestion
+                          // Reschedule if dates are in the past
+                          const now = new Date();
+                          const originalStart = new Date(suggestion.startDate);
+                          const originalEnd = new Date(suggestion.endDate);
+                          const duration =
+                            originalEnd.getTime() - originalStart.getTime();
+
+                          let startTime = suggestion.startDate;
+                          let endTime = suggestion.endDate;
+
+                          // If the original start time is in the past, reschedule
+                          if (originalStart < now) {
+                            // Extract time from original suggestion
+                            const hours = originalStart.getHours();
+                            const minutes = originalStart.getMinutes();
+
+                            // Create new date with today's date + original time
+                            const newStart = new Date();
+                            newStart.setHours(hours, minutes, 0, 0);
+
+                            // If that time has already passed today, schedule for tomorrow
+                            if (newStart < now) {
+                              newStart.setDate(newStart.getDate() + 1);
+                            }
+
+                            // Calculate new end time
+                            const newEnd = new Date(
+                              newStart.getTime() + duration,
+                            );
+
+                            startTime = newStart.toISOString();
+                            endTime = newEnd.toISOString();
+                          }
+
                           const activityData = {
                             title: suggestion.title,
                             category: suggestion.category,
-                            startTime: suggestion.startDate,
-                            endTime: suggestion.endDate,
+                            startTime: startTime,
+                            endTime: endTime,
                             description: suggestion.rationale,
                             isCompleted: false,
                           };
