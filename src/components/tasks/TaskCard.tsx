@@ -150,7 +150,7 @@ export const TaskCard = memo(
                 {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
               </Badge>
 
-              {(task.type === "POMODORO_ONLY" || task.type === "BOTH") && (
+              {(task.type === "POMODORO_ONLY") && (
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <span className="text-base">🍅</span>
                   <span>

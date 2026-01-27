@@ -25,7 +25,7 @@ import { DaySection } from "@/components/upcoming/DaySection";
 import { useTasks } from "@/hooks/useTasks";
 import { useToast } from "@/hooks/useToast";
 import type { Task, TaskFormData } from "@/interfaces/Task";
-import { createCleanDate } from "@/lib/taskUtils";
+import { createCleanDate } from "@/utils/taskUtils";
 
 export function UpcomingTasksPage() {
   const {
@@ -49,7 +49,7 @@ export function UpcomingTasksPage() {
       activationConstraint: {
         distance: 8,
       },
-    })
+    }),
   );
 
   // Memoized: Generate days array (only recalculate when daysToShow changes)
@@ -79,7 +79,7 @@ export function UpcomingTasksPage() {
     return days.map((day) => ({
       date: day,
       tasks: upcomingTasks.filter((task) =>
-        isSameDay(startOfDay(new Date(task.dueDate)), day)
+        isSameDay(startOfDay(new Date(task.dueDate)), day),
       ),
     }));
   }, [days, upcomingTasks]);
@@ -131,7 +131,7 @@ export function UpcomingTasksPage() {
     async (taskId: string) => {
       await toggleComplete(taskId);
     },
-    [toggleComplete]
+    [toggleComplete],
   );
 
   const handleTaskAdd = useCallback(
@@ -141,7 +141,7 @@ export function UpcomingTasksPage() {
         dueDate: createCleanDate(dayDate),
       });
     },
-    [createTaskAPI]
+    [createTaskAPI],
   );
 
   const handleTaskDelete = useCallback(
@@ -150,14 +150,14 @@ export function UpcomingTasksPage() {
         await deleteTaskAPI(taskId);
       }
     },
-    [deleteTaskAPI]
+    [deleteTaskAPI],
   );
 
   const handleTaskEdit = useCallback(
     async (taskId: string, updates: Partial<Task>) => {
       await updateTaskAPI(taskId, updates);
     },
-    [updateTaskAPI]
+    [updateTaskAPI],
   );
 
   // Format date for toast message
@@ -241,13 +241,13 @@ export function UpcomingTasksPage() {
         // Optionally handle error silently
       }
     },
-    [tasks, handleTaskEdit, formatDateForToast, success]
+    [tasks, handleTaskEdit, formatDateForToast, success],
   );
 
   // Get active task for drag overlay (memoized for performance)
   const activeTask = useMemo(
     () => (activeTaskId ? tasks.find((t) => t.id === activeTaskId) : null),
-    [activeTaskId, tasks]
+    [activeTaskId, tasks],
   );
 
   const handleDateSelect = useCallback((date: Date) => {

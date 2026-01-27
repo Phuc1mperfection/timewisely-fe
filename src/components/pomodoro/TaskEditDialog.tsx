@@ -12,7 +12,7 @@ import {
 import {
   clampPomodoroEstimate,
   validatePomodoroEstimate,
-} from "@/lib/taskUtils";
+} from "@/utils/taskUtils";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +34,7 @@ interface TaskEditDialogProps {
     taskId: string,
     name: string,
     estimatedPomodoros: number,
-    goalCategory?: string
+    goalTitle?: string,
   ) => void;
   settings: UserSettings | null;
 }
@@ -49,14 +49,18 @@ export const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
   const [editName, setEditName] = useState("");
   const [editEstimate, setEditEstimate] = useState(1);
   const [userGoals, setUserGoals] = useState<PersonalGoal[]>([]);
-  const [goalCategory, setGoalCategory] = useState<string>("");
+  const [goalTitle, setGoalTitle] = useState<string>("");
 
-  // Fetch user goals on mount
+  // Fetch user goals on mount (only pomodoro-linked goals)
   useEffect(() => {
     const fetchGoals = async () => {
       try {
         const goals = await getUserGoals();
-        setUserGoals(goals);
+        // Filter only goals linked to Pomodoro
+        const pomodoroGoals = goals.filter(
+          (goal) => goal.linkedToPomodoro === true,
+        );
+        setUserGoals(pomodoroGoals);
       } catch (error) {
         console.error("Failed to fetch goals:", error);
       }
@@ -69,13 +73,13 @@ export const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
     if (task) {
       setEditName(task.name);
       setEditEstimate(task.estimatedPomodoros || 1);
-      setGoalCategory(task.goalCategory || "");
+      setGoalTitle(task.goalTitle || "");
     }
   }, [task]);
 
   const handleSave = () => {
     if (task && editName.trim()) {
-      onSave(task.id, editName.trim(), editEstimate, goalCategory || undefined);
+      onSave(task.id, editName.trim(), editEstimate, goalTitle || undefined);
       onClose();
     }
   };
@@ -142,16 +146,17 @@ export const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
           <div className="space-y-2">
             <Label htmlFor="edit-goal">Linked Goal (Optional)</Label>
             <Select
-              value={goalCategory || "none"}
-              onValueChange={(v) => setGoalCategory(v === "none" ? "" : v)}
+              value={goalTitle || "none"}
+              onValueChange={(v) => setGoalTitle(v === "none" ? "" : v)}
             >
               <SelectTrigger id="edit-goal">
                 <SelectValue placeholder="🎯 No Goal" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">🚫 No Goal</SelectItem>
+                {/* Show only unique categories - first goal per category */}
                 {userGoals.map((goal) => (
-                  <SelectItem key={goal.id} value={goal.category}>
+                  <SelectItem key={goal.id} value={goal.title}>
                     🎯 {goal.title}
                   </SelectItem>
                 ))}

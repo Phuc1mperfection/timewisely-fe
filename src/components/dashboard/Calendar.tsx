@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import { CustomActivityCard } from "@/components/dashboard/CustomActivityCard";
 import ActivityPopover from "@/components/dashboard/ActivityPopover";
+import TaskPopover from "@/components/dashboard/TaskPopover";
 import YearView from "./YearView";
 import React, { useMemo, useCallback } from "react";
 import { CustomToolbar } from "@/components/dashboard/CustomToolbar";
@@ -44,7 +45,7 @@ interface ScheduleCalendarProps {
   onView?: (view: View) => void;
   date?: Date;
   onNavigate?: (date: Date) => void;
-  onEventDelete?: (activityId: string) => void;
+  onEventDelete?: (activity: Activity) => void;
   onToggleCompleted?: (activity: Activity) => void;
   className?: string;
 }
@@ -86,15 +87,26 @@ export function ScheduleCalendar({
         end: activity.endTime,
       };
 
-      // Tasks should not open edit dialog (only activities can be edited)
+      // Tasks use TaskPopover, Activities use ActivityPopover
       const isTask = activity.type === "task";
 
+      if (isTask) {
+        // Use TaskPopover for tasks
+        return (
+          <TaskPopover onDelete={() => onEventDelete?.(activity)}>
+            <CustomActivityCard
+              activity={legacyEvent}
+              onToggleCompleted={onToggleCompleted}
+            />
+          </TaskPopover>
+        );
+      }
+
+      // Use ActivityPopover for activities
       return (
         <ActivityPopover
-          onOpenEditDialog={
-            isTask ? undefined : () => onSelectEvent?.(activity)
-          }
-          onDelete={isTask ? undefined : () => onEventDelete?.(activity.id)}
+          onOpenEditDialog={() => onSelectEvent?.(activity)}
+          onDelete={() => onEventDelete?.(activity)}
         >
           <CustomActivityCard
             activity={legacyEvent}

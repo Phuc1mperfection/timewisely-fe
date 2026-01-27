@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -74,7 +73,7 @@ export function GoalManagementModal({
         category: "Health & Fitness",
         startDate: new Date().toISOString().split("T")[0],
         endDate: "",
-        linkedToPomodoro: false,
+        linkedToPomodoro: true,
       },
     });
 
@@ -89,7 +88,7 @@ export function GoalManagementModal({
         category: goal.category,
         startDate: goal.startDate,
         endDate: goal.endDate || "",
-        linkedToPomodoro: goal.linkedToPomodoro || false,
+        linkedToPomodoro: true,
       });
       setSelectedType(goal.type);
     } else {
@@ -102,6 +101,7 @@ export function GoalManagementModal({
         category: "Health & Fitness",
         startDate: new Date().toISOString().split("T")[0],
         endDate: "",
+        linkedToPomodoro: true,
       });
       setSelectedType("FREQUENCY");
     }
@@ -266,32 +266,6 @@ export function GoalManagementModal({
             </div>
           </div>
 
-          {/* Linked to Pomodoro - Only show for DURATION or FREQUENCY */}
-          {(selectedType === "DURATION" || selectedType === "FREQUENCY") && (
-            <div className="flex items-start space-x-3 p-4 bg-muted rounded-lg">
-              <Checkbox
-                id="linkedToPomodoro"
-                checked={watch("linkedToPomodoro") || false}
-                onCheckedChange={(checked) =>
-                  setValue("linkedToPomodoro", checked as boolean)
-                }
-              />
-              <div className="space-y-1">
-                <Label
-                  htmlFor="linkedToPomodoro"
-                  className="text-sm font-medium leading-none cursor-pointer"
-                >
-                  Link to Pomodoro sessions
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  Completed Pomodoro sessions will automatically count towards
-                  this goal
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Example Preview */}
           <div className="bg-muted p-4 rounded-lg">
             <p className="text-sm font-medium mb-2">Goal Preview:</p>
             <p className="text-sm text-muted-foreground">

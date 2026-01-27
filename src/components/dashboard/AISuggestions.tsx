@@ -107,9 +107,7 @@ export function AISuggestions() {
   };
 
   useEffect(() => {
-    // Auto-load rule-based suggestions on mount
     fetchRuleBasedSuggestions();
-    // Load saved AI suggestions (no quota cost)
     fetchSavedAISuggestions();
   }, []);
 

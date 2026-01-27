@@ -39,8 +39,8 @@ interface TaskSelectionCardProps {
   setNewTaskName: (name: string) => void;
   newTaskEstPomodoros: number;
   setNewTaskEstPomodoros: (pomodoros: number) => void;
-  newTaskGoalCategory: string;
-  setNewTaskGoalCategory: (category: string) => void;
+  newTaskGoalTitle: string;
+  setNewTaskGoalTitle: (title: string) => void;
   userGoals: PersonalGoal[];
   isCreatingTask: boolean;
   settings: UserSettings | null;
@@ -58,7 +58,7 @@ interface TaskSelectionCardProps {
     taskId: string,
     name: string,
     estimatedPomodoros: number,
-    goalCategory?: string
+    goalTitle?: string,
   ) => void;
   onDeleteTask: (taskId: string) => void;
   onCancelSession: () => void; // Cancel current session
@@ -78,8 +78,8 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
   setNewTaskName,
   newTaskEstPomodoros,
   setNewTaskEstPomodoros,
-  newTaskGoalCategory,
-  setNewTaskGoalCategory,
+  newTaskGoalTitle,
+  setNewTaskGoalTitle,
   userGoals,
   isCreatingTask,
   settings,
@@ -105,7 +105,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
     // If there's an active session (running or paused) and user is switching to a different task
     if (currentSessionTaskId && currentSessionTaskId !== taskId) {
       const confirmed = confirm(
-        "The timer will be reset. Do you want to switch task?"
+        "The timer will be reset. Do you want to switch task?",
       );
       if (confirmed) {
         onCancelSession();
@@ -205,7 +205,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                       }
 
                       setNewTaskEstPomodoros(
-                        Math.min(Math.max(value, 0.1), 20)
+                        Math.min(Math.max(value, 0.1), 20),
                       );
                     }}
                     onBlur={(e) => {
@@ -231,7 +231,7 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                   <span className="text-sm text-muted-foreground">
                     (≈{" "}
                     {Math.round(
-                      newTaskEstPomodoros * (settings?.focusDuration || 25)
+                      newTaskEstPomodoros * (settings?.focusDuration || 25),
                     )}{" "}
                     min)
                   </span>
@@ -242,9 +242,9 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
               <div className="space-y-2">
                 <Label htmlFor="newTaskGoal">Linked Goal (Optional)</Label>
                 <Select
-                  value={newTaskGoalCategory || "none"}
+                  value={newTaskGoalTitle || "none"}
                   onValueChange={(v) =>
-                    setNewTaskGoalCategory(v === "none" ? "" : v)
+                    setNewTaskGoalTitle(v === "none" ? "" : v)
                   }
                 >
                   <SelectTrigger id="newTaskGoal">
@@ -252,8 +252,9 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">🚫 No Goal</SelectItem>
+                    {/* Show only unique categories - first goal per category */}
                     {userGoals.map((goal) => (
-                      <SelectItem key={goal.id} value={goal.category}>
+                      <SelectItem key={goal.id} value={goal.title}>
                         🎯 {goal.title}
                       </SelectItem>
                     ))}
@@ -341,8 +342,8 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                             selectedTaskId === task.id
                               ? "bg-primary-60 text-primary border-primary"
                               : task.completed
-                              ? "bg-muted/50 border-muted"
-                              : "bg-background border-input hover:bg-accent"
+                                ? "bg-muted/50 border-muted"
+                                : "bg-background border-input hover:bg-accent"
                           } ${task.completed ? "opacity-60" : ""}`}
                         >
                           {/* Checkbox */}
@@ -386,8 +387,14 @@ export const TaskSelectionCard: React.FC<TaskSelectionCardProps> = ({
                                     }
                                     className="font-mono text-xs"
                                   >
-                                    🍅 {Math.round(completedPomodoros)}/
-                                    {Math.round(estimatedPomodoros)}
+                                    🍅{" "}
+                                    {completedPomodoros % 1 === 0
+                                      ? completedPomodoros
+                                      : completedPomodoros.toFixed(1)}
+                                    /
+                                    {estimatedPomodoros % 1 === 0
+                                      ? estimatedPomodoros
+                                      : estimatedPomodoros.toFixed(1)}
                                   </Badge>
                                 </div>
                               </div>

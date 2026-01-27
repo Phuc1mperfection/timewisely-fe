@@ -13,7 +13,7 @@ interface PomodoroTimerCardProps {
   session: PomodoroSession | null;
   selectedSessionType: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK";
   setSelectedSessionType: (
-    type: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK"
+    type: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK",
   ) => void;
   displayTimeLeft: number;
   displayTotalTime: number;
@@ -85,7 +85,7 @@ export const PomodoroTimerCard: React.FC<PomodoroTimerCardProps> = ({
           onValueChange={(value) => {
             if (!session) {
               setSelectedSessionType(
-                value as "FOCUS" | "SHORT_BREAK" | "LONG_BREAK"
+                value as "FOCUS" | "SHORT_BREAK" | "LONG_BREAK",
               );
             }
           }}
@@ -127,10 +127,10 @@ export const PomodoroTimerCard: React.FC<PomodoroTimerCardProps> = ({
             {session
               ? getCurrentTask()
               : selectedSessionType === "SHORT_BREAK"
-              ? "Time for a short break"
-              : selectedSessionType === "LONG_BREAK"
-              ? "Time for a long break"
-              : getCurrentTask()}
+                ? "Time for a short break"
+                : selectedSessionType === "LONG_BREAK"
+                  ? "Time for a long break"
+                  : getCurrentTask()}
           </CardTitle>
         </CardHeader>
 
@@ -215,10 +215,9 @@ export const PomodoroTimerCard: React.FC<PomodoroTimerCardProps> = ({
 
                   const actualPomodoros = task.completedPomodoros || 0;
                   const estimatedPomodoros = task.estimatedPomodoros || 1;
-                  const currentInProgress = actualPomodoros + 1;
                   const percentage =
-                    (currentInProgress / estimatedPomodoros) * 100;
-                  const remaining = estimatedPomodoros - currentInProgress;
+                    (actualPomodoros / estimatedPomodoros) * 100;
+                  const remaining = estimatedPomodoros - actualPomodoros;
 
                   return (
                     <div className="space-y-3">
@@ -263,11 +262,11 @@ export const PomodoroTimerCard: React.FC<PomodoroTimerCardProps> = ({
                         <div className="text-xs text-center text-muted-foreground mt-1">
                           {remaining > 0
                             ? `${remaining.toFixed(1)} more to complete`
-                            : currentInProgress > estimatedPomodoros
-                            ? `${(
-                                currentInProgress - estimatedPomodoros
-                              ).toFixed(1)} over estimate`
-                            : "Final pomodoro! 🎉"}
+                            : actualPomodoros > estimatedPomodoros
+                              ? `${(
+                                  actualPomodoros - estimatedPomodoros
+                                ).toFixed(1)} over estimate`
+                              : "Goal reached! 🎉"}
                         </div>
                       </div>
                     </div>

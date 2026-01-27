@@ -72,7 +72,7 @@ export function cleanSmartKeywords(text: string): string {
   // Remove date keywords
   cleaned = cleaned.replace(
     /\b(today|tomorrow|tmr|monday|mon|tuesday|tue|wednesday|wed|thursday|thu|friday|fri|saturday|sat|sunday|sun)\b/gi,
-    ""
+    "",
   );
 
   // Remove priority keywords

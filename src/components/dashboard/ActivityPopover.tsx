@@ -69,7 +69,11 @@ export default function ActivityPopover({
             <X className="w-3 h-3" />
           </Button>
 
-          <MemoizedPopoverContent activity={activity} onEdit={handleEdit} onDelete={handleDelete} />
+          <MemoizedPopoverContent
+            activity={activity}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         </PopoverContent>
       )}
     </Popover>
@@ -87,10 +91,12 @@ const MemoizedPopoverContent = React.memo(function ({
 }) {
   return (
     <div className="space-y-2 text-sm pt-6">
-      <div className="flex justify-between items-center">
-        <span className="font-bold">{activity.title}</span>
+      <div className="flex justify-between items-center gap-2">
+        <span className="font-bold wrap-break-word line-clamp-2 flex-1">
+          {activity.title}
+        </span>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Button size="icon" variant="ghost" onClick={onEdit}>
             <MoreVertical className="w-3 h-3" />
           </Button>
@@ -117,7 +123,9 @@ const MemoizedPopoverContent = React.memo(function ({
       </div>
 
       {activity.description && <div>{activity.description}</div>}
-      {activity.location && <div className="text-xs">📍 {activity.location}</div>}
+      {activity.location && (
+        <div className="text-xs">📍 {activity.location}</div>
+      )}
       {activity.goalTag && <div className="text-xs">🎯 {activity.goalTag}</div>}
       {typeof activity.completed === "boolean" && (
         <div className="text-xs">

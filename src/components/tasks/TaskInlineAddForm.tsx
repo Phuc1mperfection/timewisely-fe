@@ -35,7 +35,7 @@ import {
   clampPomodoroEstimate,
   validatePomodoroEstimate,
   cleanSmartKeywords,
-} from "@/lib/taskUtils";
+} from "@/utils/taskUtils";
 import { getUserGoals } from "@/services/goalServices";
 import type { PersonalGoal } from "@/interfaces/Goal";
 import type { Priority, Category, TaskType } from "@/interfaces";
@@ -49,7 +49,7 @@ interface TaskInlineAddFormProps {
     priority: Priority;
     category: Category;
     dueDate: Date;
-    goalCategory?: string;
+    goalTitle?: string;
   }) => void;
   onCancel: () => void;
   defaultDate?: Date;
@@ -117,7 +117,7 @@ export function TaskInlineAddForm({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<TaskType>(
-    context === "pomodoro" ? "POMODORO_ONLY" : "TODO_ONLY"
+    context === "pomodoro" ? "POMODORO_ONLY" : "TODO_ONLY",
   );
   const [estimatedPomodoros, setEstimatedPomodoros] = useState("1");
   const [priority, setPriority] = useState<Priority>("medium");
@@ -125,7 +125,7 @@ export function TaskInlineAddForm({
   const [dueDate, setDueDate] = useState<Date>(createCleanDate(defaultDate));
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userGoals, setUserGoals] = useState<PersonalGoal[]>([]);
-  const [goalCategory, setGoalCategory] = useState<string>("");
+  const [goalTitle, setGoalTitle] = useState<string>("");
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -133,7 +133,11 @@ export function TaskInlineAddForm({
     const fetchGoals = async () => {
       try {
         const goals = await getUserGoals();
-        setUserGoals(goals);
+        // Filter only goals linked to Pomodoro for task tracking
+        const pomodoroGoals = goals.filter(
+          (goal) => goal.linkedToPomodoro === true,
+        );
+        setUserGoals(pomodoroGoals);
       } catch (error) {
         console.error("Failed to fetch goals:", error);
       }
@@ -162,7 +166,7 @@ export function TaskInlineAddForm({
 
       // Ignore if clicking on Popover content (rendered in Portal outside form)
       const isClickingPopover = (target as Element).closest(
-        '[role="dialog"], [role="menu"], [data-radix-popper-content-wrapper]'
+        '[role="dialog"], [role="menu"], [data-radix-popper-content-wrapper]',
       );
       if (isClickingPopover) {
         return;
@@ -222,9 +226,8 @@ export function TaskInlineAddForm({
       priority,
       category,
       dueDate,
-      goalCategory: goalCategory || undefined,
+      goalTitle: goalTitle || undefined,
     });
-
   };
 
   return (
@@ -263,7 +266,7 @@ export function TaskInlineAddForm({
               className={cn(
                 "h-7 text-xs gap-1 px-2",
                 dueDate &&
-                  "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950 dark:border-green-800"
+                  "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950 dark:border-green-800",
               )}
             >
               <CalendarIcon className="h-3 w-3" />
@@ -343,8 +346,8 @@ export function TaskInlineAddForm({
         </Select>
 
         <Select
-          value={goalCategory || "none"}
-          onValueChange={(v) => setGoalCategory(v === "none" ? "" : v)}
+          value={goalTitle || "none"}
+          onValueChange={(v) => setGoalTitle(v === "none" ? "" : v)}
         >
           <SelectTrigger className="h-7 w-36 text-xs px-2">
             <SelectValue placeholder="🎯 No Goal" />
@@ -352,7 +355,7 @@ export function TaskInlineAddForm({
           <SelectContent>
             <SelectItem value="none">🚫 No Goal</SelectItem>
             {userGoals.map((goal) => (
-              <SelectItem key={goal.id} value={goal.category}>
+              <SelectItem key={goal.id} value={goal.title}>
                 🎯 {goal.title}
               </SelectItem>
             ))}
@@ -379,28 +382,30 @@ export function TaskInlineAddForm({
           </SelectContent>
         </Select>
 
-        {/* Estimated Pomodoros */}
-        <div className="flex items-center gap-1.5 border rounded px-2 h-7">
-          <span className="text-sm">🍅</span>
-          <input
-            type="number"
-            step="0.5"
-            min="0.5"
-            max="20"
-            value={estimatedPomodoros}
-            onChange={(e) =>
-              setEstimatedPomodoros(
-                String(clampPomodoroEstimate(e.target.value))
-              )
-            }
-            onBlur={(e) =>
-              setEstimatedPomodoros(
-                String(validatePomodoroEstimate(e.target.value))
-              )
-            }
-            className="w-12 text-xs bg-transparent border-none outline-none text-center [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-        </div>
+        {/* Estimated Pomodoros - Only show for POMODORO_ONLY type */}
+        {type === "POMODORO_ONLY" && (
+          <div className="flex items-center gap-1.5 border rounded px-2 h-7">
+            <span className="text-sm">🍅</span>
+            <input
+              type="number"
+              step="0.5"
+              min="0.5"
+              max="20"
+              value={estimatedPomodoros}
+              onChange={(e) =>
+                setEstimatedPomodoros(
+                  String(clampPomodoroEstimate(e.target.value)),
+                )
+              }
+              onBlur={(e) =>
+                setEstimatedPomodoros(
+                  String(validatePomodoroEstimate(e.target.value)),
+                )
+              }
+              className="w-12 text-xs bg-transparent border-none outline-none text-center [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+          </div>
+        )}
       </div>
 
       {/* Action Row */}

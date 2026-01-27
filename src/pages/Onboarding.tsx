@@ -28,6 +28,7 @@ const Onboarding = () => {
   const [visibleQuestions, setVisibleQuestions] = useState<SurveyQuestion[]>(
     [],
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState<SurveyData & { [key: string]: any }>(
     {},
@@ -121,11 +122,14 @@ const Onboarding = () => {
 
   // Handle form submission
   const handleSubmit = async () => {
+    if (isSubmitting) return; // Prevent double submission
+
     try {
+      setIsSubmitting(true);
       await completeOnboarding(formData as SurveyData);
 
       // Update user state after successful submission
-      const userData = await import("@/services/authservices").then((m) =>
+      const userData = await import("@/services/authServices").then((m) =>
         m.getCurrentUser(),
       );
       setUser?.(userData);
@@ -141,6 +145,7 @@ const Onboarding = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error submitting survey:", error);
+      setIsSubmitting(false);
     }
   };
 
@@ -211,10 +216,13 @@ const Onboarding = () => {
             </Button>
             <Button
               onClick={handleNext}
+              disabled={isSubmitting}
               className="bg-(--wisely-gold) hover:bg-yellow-600 text-white"
             >
               {currentQuestionIndex === visibleQuestions.length - 1
-                ? "Finish"
+                ? isSubmitting
+                  ? "Submitting..."
+                  : "Finish"
                 : "Next"}
             </Button>
           </CardFooter>

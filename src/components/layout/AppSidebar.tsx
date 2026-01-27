@@ -44,17 +44,17 @@ const mainMenuItems = [
   // { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
   { title: "Goals", url: "/dashboard/goals", icon: Target },
   { title: "Pomodoro", url: "/dashboard/pomodoro", icon: Timer },
-  { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Notes", url: "/dashboard/notes", icon: NotebookPen },
+  { title: "Profile", url: "/dashboard/profile", icon: User },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
 ];
-
 const taskMenuItems = [
   { title: "Inbox", url: "/dashboard/tasks/inbox", icon: Inbox },
   { title: "Today", url: "/dashboard/tasks/today", icon: CalendarDays },
   { title: "Upcoming", url: "/dashboard/tasks/upcoming", icon: Clock },
   { title: "Completed", url: "/dashboard/tasks/completed", icon: CheckCircle },
 ];
+
 
 export function AppSidebar() {
   const { user, logout } = useAuth();

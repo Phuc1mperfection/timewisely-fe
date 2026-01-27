@@ -18,7 +18,7 @@ import { PomodoroCounter } from "@/components/pomodoro/PomodoroCounter";
 const PomodoroPage: React.FC = () => {
   const { success, error, info } = useToast();
   const [selectedTaskId, setSelectedTaskId] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [customTask, setCustomTask] = useState<string>("");
   const [selectedSessionType, setSelectedSessionType] = useState<
@@ -32,7 +32,7 @@ const PomodoroPage: React.FC = () => {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskEstPomodoros, setNewTaskEstPomodoros] = useState<number>(1);
-  const [newTaskGoalCategory, setNewTaskGoalCategory] = useState<string>("");
+  const [newTaskGoalTitle, setNewTaskGoalTitle] = useState<string>("");
   const [isCreatingTask, setIsCreatingTask] = useState(false);
 
   // State to show/hide completed tasks
@@ -54,12 +54,16 @@ const PomodoroPage: React.FC = () => {
     ? allTasks
     : allTasks.filter((task) => !task.completed);
 
-  // Fetch user goals for linking
+  // Fetch user goals for linking (only pomodoro-linked goals)
   useEffect(() => {
     const fetchGoals = async () => {
       try {
         const goals = await getUserGoals();
-        setUserGoals(goals);
+        // Filter only goals linked to Pomodoro for task tracking
+        const pomodoroGoals = goals.filter(
+          (goal) => goal.linkedToPomodoro === true,
+        );
+        setUserGoals(pomodoroGoals);
       } catch (err) {
         console.error("Failed to fetch goals:", err);
       }
@@ -190,7 +194,7 @@ const PomodoroPage: React.FC = () => {
     // For FOCUS sessions, check if selected task is a micro-task (for preview only)
     if (selectedSessionType === "FOCUS" && selectedTaskId) {
       const selectedTask = tasks.find(
-        (t) => t.id === selectedTaskId?.toString()
+        (t) => t.id === selectedTaskId?.toString(),
       );
       if (
         selectedTask &&
@@ -199,7 +203,7 @@ const PomodoroPage: React.FC = () => {
       ) {
         // Preview micro-task duration (same calculation as backend)
         const customDuration = Math.round(
-          selectedTask.estimatedPomodoros * settings.focusDuration
+          selectedTask.estimatedPomodoros * settings.focusDuration,
         );
         return customDuration * 60; // Convert minutes to seconds
       }
@@ -231,7 +235,7 @@ const PomodoroPage: React.FC = () => {
     // If a task is selected, get its name from the tasks list
     if (selectedTaskId) {
       const selectedTask = tasks.find(
-        (t) => t.id === selectedTaskId?.toString()
+        (t) => t.id === selectedTaskId?.toString(),
       );
       if (selectedTask) {
         return selectedTask.name;
@@ -264,7 +268,7 @@ const PomodoroPage: React.FC = () => {
         priority: "medium",
         category: "other",
         dueDate: new Date(),
-        goalCategory: newTaskGoalCategory || undefined,
+        goalTitle: newTaskGoalTitle || undefined,
       });
 
       if (newTask) {
@@ -275,7 +279,7 @@ const PomodoroPage: React.FC = () => {
         // Reset form
         setNewTaskName("");
         setNewTaskEstPomodoros(1);
-        setNewTaskGoalCategory("");
+        setNewTaskGoalTitle("");
         setIsAddingTask(false);
         // Refresh task list
         await fetchTasks();
@@ -290,7 +294,7 @@ const PomodoroPage: React.FC = () => {
   const handleCancelAddTask = () => {
     setNewTaskName("");
     setNewTaskEstPomodoros(1);
-    setNewTaskGoalCategory("");
+    setNewTaskGoalTitle("");
     setIsAddingTask(false);
   };
 
@@ -304,13 +308,13 @@ const PomodoroPage: React.FC = () => {
     taskId: string,
     name: string,
     estimatedPomodoros: number,
-    goalCategory?: string
+    goalTitle?: string,
   ) => {
     try {
       await modifyTask(taskId, {
         name,
         estimatedPomodoros,
-        goalCategory,
+        goalTitle,
       });
       await fetchTasks(); // Refresh task list
       success("Task updated successfully!");
@@ -543,8 +547,8 @@ const PomodoroPage: React.FC = () => {
             setNewTaskName={setNewTaskName}
             newTaskEstPomodoros={newTaskEstPomodoros}
             setNewTaskEstPomodoros={setNewTaskEstPomodoros}
-            newTaskGoalCategory={newTaskGoalCategory}
-            setNewTaskGoalCategory={setNewTaskGoalCategory}
+            newTaskGoalTitle={newTaskGoalTitle}
+            setNewTaskGoalTitle={setNewTaskGoalTitle}
             userGoals={userGoals}
             isCreatingTask={isCreatingTask}
             settings={settings}

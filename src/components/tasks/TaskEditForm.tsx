@@ -21,7 +21,7 @@ import {
   createCleanDate,
   clampPomodoroEstimate,
   validatePomodoroEstimate,
-} from "@/lib/taskUtils";
+} from "@/utils/taskUtils";
 import type { Task, Priority, Category, TaskType } from "@/interfaces/Task";
 
 interface TaskEditFormProps {
@@ -49,7 +49,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
   const [description, setDescription] = useState(task.description || "");
   const [type, setType] = useState<TaskType>(task.type);
   const [estimatedPomodoros, setEstimatedPomodoros] = useState(
-    String(task.estimatedPomodoros || 1)
+    String(task.estimatedPomodoros || 1),
   );
   const [priority, setPriority] = useState<Priority>(task.priority);
   const [category, setCategory] = useState<Category>(task.category);
@@ -124,7 +124,7 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
               className={cn(
                 "h-7 text-xs gap-1 px-2",
                 dueDate &&
-                  "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950 dark:border-green-800"
+                  "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950 dark:border-green-800",
               )}
             >
               <CalendarIcon className="h-3 w-3" />
@@ -209,11 +209,6 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="BOTH">
-              <span className="flex items-center gap-1">
-                🔄 <span>Both</span>
-              </span>
-            </SelectItem>
             <SelectItem value="TODO_ONLY">
               <span className="flex items-center gap-1">
                 ✓ <span>Todo Only</span>
@@ -238,12 +233,12 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
             value={estimatedPomodoros}
             onChange={(e) =>
               setEstimatedPomodoros(
-                String(clampPomodoroEstimate(e.target.value))
+                String(clampPomodoroEstimate(e.target.value)),
               )
             }
             onBlur={(e) =>
               setEstimatedPomodoros(
-                String(validatePomodoroEstimate(e.target.value))
+                String(validatePomodoroEstimate(e.target.value)),
               )
             }
             className="w-12 text-xs bg-transparent border-none outline-none text-center [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"

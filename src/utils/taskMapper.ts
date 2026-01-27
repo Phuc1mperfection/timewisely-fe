@@ -14,7 +14,7 @@ export interface BackendTask {
   isCompleted?: boolean;
   createdAt?: string | Date;
   order?: number;
-  goalCategory?: string;
+  goalTitle?: string; // Title của Personal Goal
 }
 
 export class TaskMapper {
@@ -45,7 +45,7 @@ export class TaskMapper {
       completed: task.isCompleted || false,
       createdAt: task.createdAt ? new Date(task.createdAt) : new Date(),
       order: task.order || 0,
-      goalCategory: task.goalCategory,
+      goalTitle: task.goalTitle,
     };
   }
 
@@ -58,12 +58,12 @@ export class TaskMapper {
       priority: this.mapPriorityToBackend(taskData.priority),
       category: this.mapCategoryToBackend(taskData.category),
       dueDate: taskData.dueDate.toISOString(),
-      goalCategory: taskData.goalCategory,
+      goalTitle: taskData.goalTitle,
     };
   }
 
   static mapPartialTaskFormToBackend(
-    taskData: Partial<TaskFormData>
+    taskData: Partial<TaskFormData>,
   ): Record<string, unknown> {
     const payload: Record<string, unknown> = {};
 
@@ -81,8 +81,8 @@ export class TaskMapper {
     if (taskData.dueDate !== undefined)
       payload.dueDate = taskData.dueDate.toISOString();
     if (taskData.order !== undefined) payload.order = taskData.order;
-    if (taskData.goalCategory !== undefined)
-      payload.goalCategory = taskData.goalCategory;
+    if (taskData.goalTitle !== undefined)
+      payload.goalTitle = taskData.goalTitle;
 
     return payload;
   }
