@@ -597,6 +597,24 @@ html, body {
   @apply border-0 font-medium text-sm cursor-pointer transition-all;
 }
 
+/* Event text color */
+.light .modern-calendar .rbc-event {
+  color: var(--wisely-dark) !important;
+}
+
+.dark .modern-calendar .rbc-event {
+  color: var(--wisely-cream) !important;
+}
+
+/* Event content (time, title) */
+.light .modern-calendar .rbc-event-content {
+  color: var(--wisely-dark) !important;
+}
+
+.dark .modern-calendar .rbc-event-content {
+  color: #ffffff !important;
+}
+
 .modern-calendar .rbc-event.rbc-selected {
   @apply ring-2 ring-offset-2;
 }
@@ -625,11 +643,13 @@ html, body {
 .light .modern-calendar .rbc-slot-selection {
   background: rgba(212, 175, 55, 0.1);
   border-color: var(--wisely-gold);
+  color: var(--wisely-dark) !important;
 }
 
 .dark .modern-calendar .rbc-slot-selection {
   background: rgba(24, 18, 1, 0.1);
   border-color: var(--wisely-lightGold);
+  color: #ffffff !important;
 }
 
 /* Agenda View */

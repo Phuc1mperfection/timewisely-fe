@@ -28,6 +28,8 @@ function mapApiToUserActivity(api: ActivityApiData): Activity {
     location: api.location,
     goalTag: api.goalTag,
     completed: api.completed,
+    reminderEnabled: api.reminderEnabled,
+    reminderMinutesBefore: api.reminderMinutesBefore,
   };
 }
 
@@ -59,6 +61,8 @@ function mapUserActivityToApi(activity: Partial<Activity>): ActivityApiData {
     location: activity.location,
     goalTag: activity.goalTag,
     completed: activity.completed,
+    reminderEnabled: activity.reminderEnabled,
+    reminderMinutesBefore: activity.reminderMinutesBefore,
   };
 }
 
@@ -66,7 +70,7 @@ export function useActivities() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
-    null
+    null,
   );
   const [selectedSlot, setSelectedSlot] = useState<{
     startTime: Date;
@@ -113,26 +117,26 @@ export function useActivities() {
     // Optimistic update
     setActivities((prev) =>
       prev.map((a) =>
-        a.id === activityId ? { ...a, completed: !a.completed } : a
-      )
+        a.id === activityId ? { ...a, completed: !a.completed } : a,
+      ),
     );
     try {
       await updateActivity(
         activityId,
-        mapUserActivityToApi({ ...activity, completed: !activity.completed })
+        mapUserActivityToApi({ ...activity, completed: !activity.completed }),
       );
       toastSuccess(
         !activity.completed
           ? `Activity completed! ${activity.title}`
-          : `Activity marked as incomplete: ${activity.title}`
+          : `Activity marked as incomplete: ${activity.title}`,
       );
     } catch (err) {
       // Revert optimistic update on error
       console.error("Failed to update activity status:", err);
       setActivities((prev) =>
         prev.map((a) =>
-          a.id === activityId ? { ...a, completed: activity.completed } : a
-        )
+          a.id === activityId ? { ...a, completed: activity.completed } : a,
+        ),
       );
       toastError("Failed to update activity status. Please try again.");
     }
@@ -188,14 +192,14 @@ export function useActivities() {
           startTime,
           endTime,
           allDay: newAllDay,
-        })
+        }),
       );
       setActivities((prev) =>
         prev.map((existingActivity) =>
           existingActivity.id === activity.id
             ? { ...existingActivity, startTime, endTime, allDay: newAllDay }
-            : existingActivity
-        )
+            : existingActivity,
+        ),
       );
       setSuccess("Activity updated");
     } catch {
@@ -213,7 +217,7 @@ export function useActivities() {
       if (selectedActivity) {
         await updateActivity(
           selectedActivity.id,
-          mapUserActivityToApi({ ...selectedActivity, ...activityData })
+          mapUserActivityToApi({ ...selectedActivity, ...activityData }),
         );
         await fetchActivities();
         setSuccess("Activity updated");
@@ -241,7 +245,7 @@ export function useActivities() {
     try {
       await deleteActivity(activityId);
       setActivities((prev) =>
-        prev.filter((activity) => activity.id !== activityId)
+        prev.filter((activity) => activity.id !== activityId),
       );
       setSuccess("Activity deleted");
       setIsActivityModalOpen(false);
@@ -254,6 +258,22 @@ export function useActivities() {
 
   const activityStyleGetter = (activity: object) => {
     const userActivity = activity as Activity;
+
+    // Different styling for tasks vs activities
+    if (userActivity.type === "task") {
+      return {
+        style: {
+          backgroundColor: "#7D2A2A", // Blue for tasks
+          borderRadius: "6px",
+          color: "white",
+          padding: "2px 6px",
+          cursor: "default", // Not draggable
+          opacity: userActivity.completed ? 0.6 : 1,
+        },
+      };
+    }
+
+    // Regular activity styling
     return {
       style: {
         backgroundColor: userActivity.color || "#D4AF37",

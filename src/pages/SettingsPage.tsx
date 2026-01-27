@@ -103,13 +103,6 @@ export const SettingsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your notification and sound preferences
-        </p>
-      </div>
-
       {/* General Notification Settings */}
       <Card>
         <CardHeader>
@@ -117,9 +110,6 @@ export const SettingsPage: React.FC = () => {
             <Bell className="size-5" />
             Notification Settings
           </CardTitle>
-          <CardDescription>
-            Control when and how you receive notifications
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Master Toggle */}
@@ -148,7 +138,7 @@ export const SettingsPage: React.FC = () => {
                 Browser Notifications
               </Label>
               <p className="text-sm text-muted-foreground">
-                Show notifications in browser (requires permission)
+                Show notifications in browser 
               </p>
             </div>
             <Switch
@@ -266,23 +256,7 @@ export const SettingsPage: React.FC = () => {
           <CardDescription>Control sound playback and volume</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Sound Enabled */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="sound-enabled" className="text-base">
-                Enable Sound
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Play sounds for notifications and pomodoro
-              </p>
-            </div>
-            <Switch
-              id="sound-enabled"
-              checked={soundEnabled}
-              onCheckedChange={handleSoundEnabledChange}
-            />
-          </div>
-
+        
           {/* Volume Control */}
           <div className="space-y-2">
             <Label htmlFor="sound-volume" className="text-base">
@@ -298,9 +272,6 @@ export const SettingsPage: React.FC = () => {
               disabled={!soundEnabled}
               className="w-full"
             />
-            <p className="text-xs text-muted-foreground">
-              Adjust the volume level for all sounds
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -312,9 +283,6 @@ export const SettingsPage: React.FC = () => {
             <Volume2 className="size-5" />
             Notification Sound
           </CardTitle>
-          <CardDescription>
-            Choose sound to play when receiving notifications
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">

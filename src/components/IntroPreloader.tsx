@@ -9,8 +9,6 @@ type IntroPreloaderProps = {
   images: { src: string; alt?: string }[];
   // text
   brand?: string;
-  tagline?: string;
-  // (optional) chỉ hiện 1 lần / session
   oncePerSessionKey?: string;
 };
 
@@ -18,7 +16,6 @@ export const IntroPreloader = ({
   onComplete,
   images,
   brand = "TimeWisely",
-  tagline = "Think Different",
   oncePerSessionKey,
 }: IntroPreloaderProps) => {
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -32,7 +29,7 @@ export const IntroPreloader = ({
   const prefersReduced = useMemo(
     () =>
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false,
-    []
+    [],
   );
 
   // Sparkles (giữ y như file cũ của bạn) :contentReference[oaicite:1]{index=1}
@@ -47,7 +44,7 @@ export const IntroPreloader = ({
         particleColor="#ffffff"
       />
     ),
-    []
+    [],
   );
 
   // optional: chỉ chạy 1 lần mỗi session
@@ -166,7 +163,7 @@ export const IntroPreloader = ({
     tl.fromTo(
       overlay,
       { opacity: 0 },
-      { opacity: 1, duration: DUR.fadeInOverlay, ease: EASE.fade }
+      { opacity: 1, duration: DUR.fadeInOverlay, ease: EASE.fade },
     );
 
     const STAG = 0.2;
@@ -184,7 +181,7 @@ export const IntroPreloader = ({
           duration: DUR.throw,
           ease: EASE.throw,
         },
-        `throw+=${i * STAG}`
+        `throw+=${i * STAG}`,
       );
 
       tl.to(
@@ -196,7 +193,7 @@ export const IntroPreloader = ({
           duration: DUR.settle,
           ease: EASE.settle,
         },
-        `throw+=${i * STAG + DUR.throw - 0.1}`
+        `throw+=${i * STAG + DUR.throw - 0.1}`,
       );
     });
 
@@ -209,7 +206,7 @@ export const IntroPreloader = ({
         duration: DUR.revealText,
         ease: EASE.reveal,
       },
-      "reveal-=0.15"
+      "reveal-=0.15",
     );
 
     // ✅ typed chỉ bắt đầu sau khi text đã reveal
@@ -226,12 +223,12 @@ export const IntroPreloader = ({
         duration: DUR.shrink,
         ease: EASE.shrink,
       },
-      "shrink"
+      "shrink",
     );
     tl.to(
       overlay,
       { opacity: 0, duration: DUR.fadeOut, ease: EASE.fade },
-      "shrink+=0.18"
+      "shrink+=0.18",
     );
 
     return () => {
@@ -269,24 +266,30 @@ export const IntroPreloader = ({
         Skip
       </button>
 
-      <div className="w-[min(1400px,96vw)] h-[min(820px,86vh)] grid place-items-center relative z-10">
+      <div className="w-full h-full grid place-items-center relative z-10">
         <div
           ref={stageRef}
-          className="relative w-full h-full rounded-2xl overflow-hidden border border-white/15 shadow-[0_34px_110px_rgba(0,0,0,.60)]"
+          className="relative w-full h-full overflow-hidden "
           style={{
-            // container/panel khác nền
-            background: "rgba(17,44,59,.85)",
-            border: "1px solid rgba(255,255,255,.12)",
-            // layout ảnh (chỉnh nhanh ở đây)
-
-            "--i1x": 28,
-            "--i1y": 46,
-            "--i2x": 52,
-            "--i2y": 30,
-            "--i3x": 73,
-            "--i3y": 52,
+            background: " rgba(0, 0, 0, 0.05) 100%",
           }}
         >
+          <div className="absolute inset-x-0 top-8 flex justify-center">
+            {typedActive ? (
+              <>
+                <ReactTyped
+                  strings={[brand]}
+                  typeSpeed={58}
+                  showCursor={false}
+                  className="block text-6xl font-logo"
+                />
+              </>
+            ) : (
+              <div className="opacity-0 select-none">
+                <div className="text-6xl font-logo">{brand}</div>
+              </div>
+            )}
+          </div>
           {images.slice(0, 3).map((it, idx) => (
             <img
               key={idx}
@@ -295,43 +298,13 @@ export const IntroPreloader = ({
               }}
               src={it.src}
               alt={it.alt ?? `intro-${idx + 1}`}
-              className="absolute left-1/2 top-1/2 w-[clamp(190px,24vw,360px)] -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_18px_34px_rgba(0,0,0,.35)]"
-              draggable={false}
+              className="absolute left-1/2 top-1/3 w-[clamp(500px,24vw,360px)] -translate-x-1/2 -translate-y-1/2 "
             />
           ))}
-
           <div
             ref={textRef}
             className="absolute right-6 bottom-6 text-right text-white"
-          >
-            {typedActive ? (
-              <>
-                <ReactTyped
-                  strings={[brand]}
-                  typeSpeed={58}
-                  showCursor={false}
-                  className="block text-[clamp(30px,3.2vw,54px)] font-extrabold tracking-wide uppercase"
-                />
-                <ReactTyped
-                  strings={[tagline]}
-                  typeSpeed={40}
-                  startDelay={250}
-                  showCursor={false}
-                  className="mt-2 block text-[clamp(13px,1.1vw,16px)] tracking-[0.28em] opacity-90"
-                />
-              </>
-            ) : (
-              // freeze state: giữ layout nhưng không gõ
-              <div className="opacity-0 select-none">
-                <div className="text-[clamp(30px,3.2vw,54px)] font-extrabold tracking-wide uppercase">
-                  {brand}
-                </div>
-                <div className="mt-2 text-[clamp(13px,1.1vw,16px)] tracking-[0.28em] opacity-90">
-                  {tagline}
-                </div>
-              </div>
-            )}
-          </div>
+          ></div>
         </div>
       </div>
     </div>

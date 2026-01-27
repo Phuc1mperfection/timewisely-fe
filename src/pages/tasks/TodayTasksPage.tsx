@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { ListTodo } from "lucide-react";
 import { startOfToday } from "date-fns";
 import type { Task } from "@/interfaces";
 import { AddTaskButton } from "@/components/tasks/AddTaskButton";
@@ -68,10 +67,8 @@ export function TodayTasksPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 mb-2">
-            <ListTodo className="w-8 h-8 text-primary" />
             Today's Tasks
           </h1>
-          <p className="text-muted-foreground">Focus on what matters today</p>
         </div>
 
         {/* Task List */}

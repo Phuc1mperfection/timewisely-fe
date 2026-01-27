@@ -80,9 +80,6 @@ export function DashboardContent() {
             <h1 className="text-3xl font-bold dark:text-white text-gray-900">
               Dashboard
             </h1>
-            <CardDescription>
-              Welcome back! Here's your productivity overview.
-            </CardDescription>
           </div>
           <Button
             onClick={() => {

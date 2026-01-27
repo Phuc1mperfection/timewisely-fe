@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { motion, useInView } from "motion/react";
 import { useRef, useMemo, memo } from "react";
-import { Calendar, Clock, Sparkles, Target, Users, Zap } from "lucide-react";
+import { Calendar, Clock, Sparkles, Target, Zap,Notebook } from "lucide-react";
 
 const FeatureCard = memo(
   ({ feature, index }: { feature: any; index: number }) => {
@@ -78,9 +78,9 @@ const FeaturesSection = memo(() => {
           "Set and achieve your personal and professional objectives",
       },
       {
-        icon: Users,
-        title: "Social Integration",
-        description: "Coordinate with friends and colleagues seamlessly",
+        icon: Notebook,
+        title: "Note Taking",
+        description: "Jot down important details and ideas for your activities",
       },
       {
         icon: Zap,

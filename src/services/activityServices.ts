@@ -13,6 +13,8 @@ export interface ActivityApiData {
   completed?: boolean;
   latitude?: number;
   longitude?: number;
+  reminderEnabled?: boolean;
+  reminderMinutesBefore?: number;
 }
 
 export const getActivities = async () => {

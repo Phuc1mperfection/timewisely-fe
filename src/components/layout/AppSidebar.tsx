@@ -18,8 +18,6 @@ import {
   Settings,
   User,
   Home,
-  // Sparkles,
-  LayoutDashboard,
   ChevronUp,
   Timer,
   CalendarDays,
@@ -42,7 +40,6 @@ import Logo from "@/assets/logos/icon.svg";
 
 const mainMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Overview", url: "/dashboard/overview", icon: LayoutDashboard },
   { title: "Calendar", url: "/dashboard/calendar", icon: Calendar },
   // { title: "AI Suggestions", url: "/dashboard/ai-suggestions", icon: Sparkles },
   { title: "Goals", url: "/dashboard/goals", icon: Target },

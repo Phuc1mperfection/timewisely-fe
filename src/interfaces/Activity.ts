@@ -14,4 +14,6 @@ export interface Activity {
   latitude?: number;
   longitude?: number;
   type?: "activity" | "task" | "google";
+  reminderEnabled?: boolean;
+  reminderMinutesBefore?: number;
 }

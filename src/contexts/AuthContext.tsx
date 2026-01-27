@@ -204,13 +204,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await logoutService();
     } finally {
-      // Xóa token khỏi localStorage/cookie
       localStorage.removeItem("token");
       localStorage.removeItem("hasCompletedSurvey");
+      localStorage.removeItem("googleCalendarConnected");
+      localStorage.removeItem("googleOAuthProcessed");
+      localStorage.removeItem("ldcsv");
       // Cập nhật state user
       setUser(null);
       setLoading(false);
-      navigate("/auth"); // Điều hướng về trang đăng nhập
+      navigate("/auth"); 
     }
   };
 
@@ -226,14 +228,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Hàm cập nhật token mới (dùng cho đổi email)
   const setToken = (token: string) => {
     if (token) {
       localStorage.setItem("token", token);
     }
   };
 
-  // Add function to refresh user data
   const refreshUser = async () => {
     try {
       setLoading(true);

@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { CheckCircle } from "lucide-react";
 import type { Task } from "@/interfaces";
 import { TaskListSkeleton } from "@/components/tasks/TaskSkeleton";
 import { TaskItem } from "@/components/tasks/TaskItem";
@@ -39,12 +38,8 @@ export function CompletedTasksPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-foreground flex items-center gap-3 mb-2">
-            <CheckCircle className="w-8 h-8 text-primary" />
             Completed Tasks
           </h1>
-          <p className="text-muted-foreground">
-            Review your accomplishments and celebrate your progress
-          </p>
         </div>
 
         {/* Completed Tasks List */}

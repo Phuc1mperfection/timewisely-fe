@@ -38,7 +38,6 @@ function App() {
           <AuthProvider>
             <NotificationProvider>
               <Toaster position="top-center" richColors />
-              {/* You can place <ModeToggle /> in your layout or header for theme switching */}
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route
@@ -100,7 +99,6 @@ function App() {
                   <Route path="profile" element={<Profile />} />
                   <Route path="settings" element={<SettingsPage />} />
                   <Route path="notes" element={<NotePage />} />
-                  {/* ...thêm các page con khác tại đây */}
                 </Route>
                 {/* Redirect các route cũ về route mới nếu cần */}
                 <Route
@@ -111,7 +109,6 @@ function App() {
                   path="/app/*"
                   element={<Navigate to="/dashboard" replace />}
                 />
-                {/* Thêm các route khác tại đây nếu cần */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </NotificationProvider>

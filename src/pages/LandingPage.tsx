@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  lazy,
-  Suspense,
-  memo,
-  useRef,
-} from "react";
+import { useState, useEffect, lazy, Suspense, memo, useRef } from "react";
 // feature icons moved into FeaturesSection
 import Navbar from "@/components/layout/Navbar";
 // import { Preloader } from "@/components/Preloader";
@@ -15,16 +8,19 @@ import HeroSection from "@/components/landing/HeroSection";
 import { IntroPreloader } from "@/components/IntroPreloader";
 
 const FeaturesSection = lazy(
-  () => import("@/components/landing/FeaturesSection")
+  () => import("@/components/landing/FeaturesSection"),
 );
 const ScrollAnimationSection = lazy(
-  () => import("@/components/landing/ScrollAnimationSection")
+  () => import("@/components/landing/ScrollAnimationSection"),
 );
 const PersonalizationSection = lazy(
-  () => import("@/components/landing/PersonalizeSection")
+  () => import("@/components/landing/PersonalizeSection"),
 );
 const FooterSection = lazy(() => import("@/components/layout/Footer"));
-import bg from "@/assets/images/productive-background.png";
+import hourglass from "@/assets/images/hourglass.png";
+import tomato from "@/assets/images/tomato.png";
+import note from "@/assets/images/note.png";
+
 // Loading fallback component - memoized
 const SectionLoader = memo(() => (
   <div className="flex items-center justify-center py-20">
@@ -71,9 +67,10 @@ const LandingPage = () => {
         end: () =>
           `+=${Math.max(
             0,
-            (sectionsContainer.scrollWidth - window.innerWidth) * SCROLL_STRETCH
+            (sectionsContainer.scrollWidth - window.innerWidth) *
+              SCROLL_STRETCH,
           )}`,
-        scrub: 0.6, // nhỏ hơn 1 => cảm giác “nhanh/nhạy” hơn
+        scrub: 0.6, 
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
@@ -83,11 +80,10 @@ const LandingPage = () => {
 
     setScrollTween(tween);
 
-    const WHEEL_TURNS = 28; // tăng số này => bánh xe xoay nhanh hơn
+    const WHEEL_TURNS = 28; 
 
-    // "Bánh xe" xoay theo đúng progress của horizontal tween (ổn định nhất)
     const wheelEl = document.querySelector(
-      ".js-analog-wheel"
+      ".js-analog-wheel",
     ) as HTMLElement | null;
 
     let wheelTick: (() => void) | null = null;
@@ -133,10 +129,16 @@ const LandingPage = () => {
 
   if (isLoading) {
     // return <Preloader onComplete={handlePreloaderComplete} />;
-    return <IntroPreloader onComplete={handlePreloaderComplete}
-       images={[  { src: "/assets/bearing.png", alt: "Bridge bearing" },
-          { src: bg, alt: "Productive background" },
-          { src: "/assets/noise-barrier.png", alt: "Noise barrier" },]} />;
+    return (
+      <IntroPreloader
+        onComplete={handlePreloaderComplete}
+        images={[
+          { src: note, alt: "note" },
+          { src: hourglass, alt: "Hourglass" },
+          { src: tomato, alt: "Tomato" },
+        ]}
+      />
+    );
   }
 
   return (

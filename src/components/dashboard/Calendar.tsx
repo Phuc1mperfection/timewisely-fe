@@ -73,7 +73,7 @@ export function ScheduleCalendar({
       agenda: true,
       year: YearView,
     }),
-    []
+    [],
   );
 
   // Memoize event component
@@ -86,12 +86,15 @@ export function ScheduleCalendar({
         end: activity.endTime,
       };
 
+      // Tasks should not open edit dialog (only activities can be edited)
+      const isTask = activity.type === "task";
+
       return (
         <ActivityPopover
-          onOpenEditDialog={() => onSelectEvent?.(activity)}
-          onDelete={() => {
-            onEventDelete?.(activity.id);
-          }}
+          onOpenEditDialog={
+            isTask ? undefined : () => onSelectEvent?.(activity)
+          }
+          onDelete={isTask ? undefined : () => onEventDelete?.(activity.id)}
         >
           <CustomActivityCard
             activity={legacyEvent}
@@ -100,7 +103,7 @@ export function ScheduleCalendar({
         </ActivityPopover>
       );
     },
-    [onSelectEvent, onEventDelete, onToggleCompleted]
+    [onSelectEvent, onEventDelete, onToggleCompleted],
   );
 
   // Memoize toolbar component
@@ -114,7 +117,7 @@ export function ScheduleCalendar({
         view={toolbarProps.view}
       />
     ),
-    [customViews]
+    [customViews],
   );
 
   return (
@@ -129,7 +132,7 @@ export function ScheduleCalendar({
       onEventResize={onEventResize}
       selectable
       resizable
-      draggableAccessor={() => true}
+      draggableAccessor={(activity) => (activity as Activity).type !== "task"} // Tasks are not draggable
       eventPropGetter={eventStyleGetter}
       views={customViews}
       view={view}

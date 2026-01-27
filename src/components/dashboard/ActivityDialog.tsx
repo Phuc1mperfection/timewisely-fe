@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Trash2, MapPin, Goal, SquareMenu, Clock4 } from "lucide-react";
+import { Trash2, MapPin, Goal, SquareMenu, Clock4, Bell } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -159,6 +159,8 @@ export function ActivityDialog({
   const [completed, setCompleted] = useState(false);
   const [customColorLabel, setCustomColorLabel] = useState("");
   const [showMore, setShowMore] = useState(false);
+  const [reminderEnabled, setReminderEnabled] = useState(true);
+  const [reminderMinutesBefore, setReminderMinutesBefore] = useState(30);
   const descId = useId();
 
   const colorOptions = useMemo(
@@ -170,7 +172,7 @@ export function ActivityDialog({
       { label: "Dark", value: "#1e1e2f" }, // Dark
       { label: "Gray", value: "#6b7280" }, // Medium gray
     ],
-    []
+    [],
   );
 
   // Fetch user's goals for dropdown
@@ -193,6 +195,7 @@ export function ActivityDialog({
 
   useEffect(() => {
     if (event) {
+      console.log("📥 ActivityDialog received event:", event);
       setTitle(event.title ?? "");
       setDescription(event.description || "");
       setColor(event.color || "#D4AF37");
@@ -202,6 +205,12 @@ export function ActivityDialog({
       setLocation(event.location || "");
       setGoalTag(event.goalTag || "");
       setCompleted(event.completed || false);
+      setReminderEnabled(event.reminderEnabled ?? true);
+      setReminderMinutesBefore(event.reminderMinutesBefore ?? 30);
+      console.log(
+        "⏰ Set reminderMinutesBefore to:",
+        event.reminderMinutesBefore ?? 30,
+      );
     } else if (timeSlot) {
       setTitle("");
       setDescription("");
@@ -211,6 +220,8 @@ export function ActivityDialog({
       setLocation("");
       setGoalTag("");
       setCompleted(false);
+      setReminderEnabled(true);
+      setReminderMinutesBefore(30);
     } else {
       setTitle("");
       setDescription("");
@@ -220,6 +231,8 @@ export function ActivityDialog({
       setLocation("");
       setGoalTag("");
       setCompleted(false);
+      setReminderEnabled(true);
+      setReminderMinutesBefore(30);
     }
     setCustomColorLabel("");
     setShowMore(false);
@@ -236,7 +249,7 @@ export function ActivityDialog({
         setStart(new Date(d));
       }
     },
-    [start]
+    [start],
   );
   const handleEndDate = useCallback((date: Date) => setEnd(date), []);
   const handleEndTime = useCallback(
@@ -248,12 +261,12 @@ export function ActivityDialog({
         setEnd(new Date(d));
       }
     },
-    [end]
+    [end],
   );
   const handleSetColor = useCallback((c: string) => setColor(c), []);
   const handleSetCustomColorLabel = useCallback(
     (l: string) => setCustomColorLabel(l),
-    []
+    [],
   );
 
   const [saving, setSaving] = useState(false);
@@ -263,7 +276,7 @@ export function ActivityDialog({
     if (!title.trim() || !start || !end) return;
     try {
       setSaving(true);
-      await onSave({
+      const payload = {
         title: title.trim(),
         description: description.trim(),
         color,
@@ -273,7 +286,11 @@ export function ActivityDialog({
         location,
         goalTag,
         completed,
-      });
+        reminderEnabled,
+        reminderMinutesBefore,
+      };
+      console.log("💾 ActivityDialog saving with payload:", payload);
+      await onSave(payload);
       // reset local state only after successful save
       setTitle("");
       setDescription("");
@@ -283,6 +300,8 @@ export function ActivityDialog({
       setLocation("");
       setGoalTag("");
       setCompleted(false);
+      setReminderEnabled(true);
+      setReminderMinutesBefore(30);
       setShowMore(false);
       onClose();
     } catch (err) {
@@ -302,6 +321,8 @@ export function ActivityDialog({
     setLocation("");
     setGoalTag("");
     setCompleted(false);
+    setReminderEnabled(true);
+    setReminderMinutesBefore(30);
     setShowMore(false);
     onClose();
   };
@@ -470,6 +491,129 @@ export function ActivityDialog({
                 )}
               </div>
 
+              {/* Reminder Settings */}
+              <div className="space-y-3 border-t pt-4">
+                <div className="flex items-center justify-between">
+                  <Label
+                    htmlFor="reminderEnabled"
+                    className="flex items-center gap-2"
+                  >
+                    <Bell className="h-4 w-4" />
+                    Reminder
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="reminderEnabled"
+                      checked={reminderEnabled}
+                      onCheckedChange={(checked) =>
+                        setReminderEnabled(!!checked)
+                      }
+                    />
+                    <Label
+                      htmlFor="reminderEnabled"
+                      className="text-sm cursor-pointer"
+                    >
+                      Enable reminder
+                    </Label>
+                  </div>
+                </div>
+
+                {reminderEnabled && (
+                  <div className="pl-6 space-y-3">
+                    <div>
+                      <Label
+                        htmlFor="reminderTime"
+                        className="text-sm text-muted-foreground mb-2 block"
+                      >
+                        Remind me before (minutes)
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="reminderTime"
+                          type="number"
+                          min="1"
+                          max="1440"
+                          value={reminderMinutesBefore}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value);
+                            console.log("✏️ Input changed to:", val);
+                            if (!isNaN(val) && val >= 1 && val <= 1440) {
+                              setReminderMinutesBefore(val);
+                              console.log("✅ State updated to:", val);
+                            }
+                          }}
+                          className="w-24 focus:border-(--wisely-gold) focus:ring-(--wisely-gold)"
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          minutes
+                        </span>
+                      </div>
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => setReminderMinutesBefore(5)}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 5 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          5m
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            console.log("🔘 Clicked 10m button");
+                            setReminderMinutesBefore(10);
+                          }}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 10 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          10m
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReminderMinutesBefore(15)}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 15 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          15m
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReminderMinutesBefore(30)}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 30 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          30m
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReminderMinutesBefore(60)}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 60 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          1h
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReminderMinutesBefore(120)}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 120 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          2h
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReminderMinutesBefore(1440)}
+                          className={`px-2 py-1 text-xs rounded ${reminderMinutesBefore === 1440 ? "bg-yellow-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                        >
+                          1d
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      You'll receive an email notification{" "}
+                      {reminderMinutesBefore >= 60
+                        ? `${Math.floor(reminderMinutesBefore / 60)} hour${reminderMinutesBefore >= 120 ? "s" : ""}`
+                        : `${reminderMinutesBefore} minute${reminderMinutesBefore > 1 ? "s" : ""}`}{" "}
+                      before this activity starts
+                    </p>
+                  </div>
+                )}
+              </div>
+
               <button
                 onClick={() => setShowMore(false)}
                 className="text-sm text-(--wisely-gold) hover:underline"
@@ -519,8 +663,8 @@ export function ActivityDialog({
                     ? "Updating..."
                     : "Creating..."
                   : event
-                  ? "Update"
-                  : "Create"}
+                    ? "Update"
+                    : "Create"}
               </Button>
             </div>
           </div>
